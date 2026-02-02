@@ -1,6 +1,5 @@
 "use client"
 
-import { use } from "react"
 import { notFound } from "next/navigation"
 import { SessionMiniweb } from "@/components/miniweb/session-miniweb"
 import { SessionData } from "@/types"
@@ -187,12 +186,11 @@ const examPartialData: SessionData = {
 }
 
 interface PageProps {
-  params: Promise<{ sessionNumber: string }>
+  params: { sessionNumber: string }
 }
 
 export default function SessionPage({ params }: PageProps) {
-  const resolvedParams = use(params)
-  const sessionNum = parseInt(resolvedParams.sessionNumber)
+  const sessionNum = parseInt(params.sessionNumber)
 
   // In production, fetch session data from API
   let sessionData: SessionData | null = null
