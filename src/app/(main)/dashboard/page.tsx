@@ -19,12 +19,12 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { getGreeting, formatDateSpanish } from "@/lib/utils"
 
-// Mock data for demonstration
+// Mock data for demonstration - using ISO strings to avoid hydration issues
 const mockCurrentSession = {
   id: "session-1",
   sessionNumber: 1,
   title: "Toma de contacto e interacción social",
-  date: new Date(2026, 1, 3), // Feb 3, 2026
+  date: "2026-02-03" as unknown as Date, // Feb 3, 2026 - will be parsed by formatDateSpanish
   blockNumber: 1,
   blockTitle: "La argumentación formal",
 }
@@ -34,13 +34,13 @@ const mockUpcomingSessions = [
     id: "session-2",
     sessionNumber: 2,
     title: "Socialización y registro: tutear vs. usted",
-    date: new Date(2026, 1, 5),
+    date: "2026-02-05" as unknown as Date,
   },
   {
     id: "session-3",
     sessionNumber: 3,
     title: "Los bares como espacios de interacción",
-    date: new Date(2026, 1, 10),
+    date: "2026-02-10" as unknown as Date,
   },
 ]
 

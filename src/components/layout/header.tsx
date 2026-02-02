@@ -17,7 +17,7 @@ import {
   Users,
   X,
 } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -32,7 +32,6 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { ModeToggle } from "@/components/mode-toggle"
-import { useEffect, useState as useClientState } from "react"
 
 const studentNavItems = [
   { href: "/dashboard", label: "Inicio", icon: Home },
@@ -54,7 +53,7 @@ export function Header() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useClientState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
