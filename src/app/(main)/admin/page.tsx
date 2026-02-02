@@ -24,33 +24,7 @@ export default function AdminDashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [currentDate, setCurrentDate] = useState<Date | null>(null)
-
-  useEffect(() => {
-    if (status === "authenticated" && session?.user?.role !== "ADMIN") {
-      router.push("/dashboard")
-    } else if (status === "unauthenticated") {
-      router.push("/login")
-    }
-    setCurrentDate(new Date())
-  }, [status, session, router])
-
-  if (status === "loading" || session?.user?.role !== "ADMIN") {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    )
-  }
-
-  if (!currentDate) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    )
-  }
-
-  // Stats - se cargarán desde la API
+  const [mounted, setMounted] = useState(false)
   const [stats, setStats] = useState({
     totalStudents: 0,
     averageAttendance: 0,
@@ -61,6 +35,21 @@ export default function AdminDashboardPage() {
   })
 
   useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.role !== "ADMIN") {
+      router.push("/dashboard")
+    } else if (status === "unauthenticated") {
+      router.push("/login")
+    }
+    setCurrentDate(new Date())
+  }, [status, session, router])
+
+  useEffect(() => {
+    if (!mounted) return
+
     // Cargar estadísticas reales
     fetch("/api/dashboard/stats")
       .then((res) => res.json())
@@ -75,7 +64,23 @@ export default function AdminDashboardPage() {
       .catch(() => {
         // Si falla, mantener valores por defecto
       })
-  }, [])
+  }, [mounted])
+
+  if (status === "loading" || session?.user?.role !== "ADMIN") {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
+  }
+
+  if (!currentDate || !mounted) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
+  }
 
   const quickActions = [
     {
