@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     const { maxUses = 1, description } = body
 
     // Generar código único de 6 caracteres
-    let code
+    let code = ""
     let isUnique = false
     let attempts = 0
 
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
       attempts++
     }
 
-    if (!isUnique) {
+    if (!isUnique || !code) {
       return NextResponse.json(
         { error: "No se pudo generar un código único" },
         { status: 500 }
