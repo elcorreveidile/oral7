@@ -169,13 +169,13 @@ export function Header() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard" className="flex items-center">
+                  <Link href="/perfil" className="flex items-center">
                     <User className="mr-2 h-4 w-4" />
                     Mi perfil
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard" className="flex items-center">
+                  <Link href="/configuracion" className="flex items-center">
                     <Settings className="mr-2 h-4 w-4" />
                     Configuración
                   </Link>

@@ -78,12 +78,16 @@ export default function DashboardPage() {
     return "Buenas noches"
   }
 
-  // Stats (mock data)
+  // Stats - will be fetched from API in production
+  // For now, show initial state (course starts Feb 3, 2026)
+  const courseStartDate = new Date("2026-02-03T00:00:00")
+  const hasStarted = currentDate >= courseStartDate
+
   const stats = {
-    attendanceRate: 85,
-    sessionsCompleted: 5,
+    attendanceRate: 0,
+    sessionsCompleted: 0,
     totalSessions: 27,
-    checklistProgress: 72,
+    checklistProgress: 0,
   }
 
   return (
@@ -106,7 +110,9 @@ export default function DashboardPage() {
             <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.attendanceRate}%</div>
+            <div className="text-2xl font-bold">
+              {hasStarted ? `${stats.attendanceRate}%` : "--"}
+            </div>
             <Progress value={stats.attendanceRate} className="mt-2" />
             <p className="text-xs text-muted-foreground mt-2">
               Mínimo requerido: 80%
@@ -139,7 +145,9 @@ export default function DashboardPage() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.checklistProgress}%</div>
+            <div className="text-2xl font-bold">
+              {hasStarted ? `${stats.checklistProgress}%` : "--"}
+            </div>
             <Progress value={stats.checklistProgress} className="mt-2" />
             <p className="text-xs text-muted-foreground mt-2">
               Objetivos completados
@@ -171,7 +179,9 @@ export default function DashboardPage() {
       {/* Current/Today's session */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Sesión actual</h2>
+          <h2 className="text-xl font-semibold">
+            {hasStarted ? "Sesión actual" : "Primera sesión"}
+          </h2>
           <Button asChild variant="outline" size="sm">
             <Link href="/sesiones">
               Ver todas
@@ -186,7 +196,11 @@ export default function DashboardPage() {
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <Badge variant="clm">Sesión {mockCurrentSession.sessionNumber}</Badge>
-                  <Badge variant="success">Hoy</Badge>
+                  {hasStarted ? (
+                    <Badge variant="success">Hoy</Badge>
+                  ) : (
+                    <Badge variant="outline">Mañana comienza el curso</Badge>
+                  )}
                 </div>
                 <CardTitle className="text-xl">
                   {mockCurrentSession.title}
@@ -207,7 +221,7 @@ export default function DashboardPage() {
             <Button asChild className="w-full sm:w-auto">
               <Link href={`/sesiones/${mockCurrentSession.sessionNumber}`}>
                 <BookOpen className="mr-2 h-4 w-4" />
-                Ir a la sesión
+                Ver contenidos
               </Link>
             </Button>
           </CardContent>
