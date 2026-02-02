@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const { data, error } = await resend.emails.send({
       from: "PIO-7 <contacto@pio7.es>",
       to: ["benitezl@go.ugr.es"],
-      replyTo: email,
+      reply_to: email,
       subject: `[PIO-7 Contacto] ${subject}`,
       html: `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
