@@ -13,7 +13,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-2">
             <Mic className="h-6 w-6 text-orange-600" />
             <span className="text-xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-              Oral-7
+              PIO-7
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-6 text-sm">
@@ -52,7 +52,7 @@ export default function LandingPage() {
           <div className="mx-auto max-w-4xl text-center">
             <Badge className="mb-4 bg-orange-100 text-orange-700 border-orange-200">
               <GraduationCap className="mr-1 h-3 w-3" />
-              Nivel C1 - Universidad de Granada
+              Nivel C1 - Centro de Lenguas Modernas
             </Badge>
             <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
               Producción e Interacción{' '}
@@ -461,14 +461,14 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <Mic className="h-5 w-5 text-orange-600" />
-              <span className="font-semibold">Oral-7</span>
+              <span className="font-semibold">PIO-7</span>
               <span className="text-sm text-slate-500">| Centro de Lenguas Modernas · Universidad de Granada</span>
             </div>
             <div className="text-sm text-slate-600 text-center">
               Desarrollado por <span className="font-medium">Javier Benítez Láinez</span>
             </div>
             <div className="text-sm text-slate-500">
-              © 2026 Oral-7. Todos los derechos reservados.
+              © 2026 PIO-7. Todos los derechos reservados.
             </div>
           </div>
         </div>
