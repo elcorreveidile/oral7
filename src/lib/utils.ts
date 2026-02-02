@@ -28,18 +28,18 @@ export function isDateToday(date: Date | string): boolean {
   return isToday(d)
 }
 
-// Verificar si la sesión ya pasó
-export function isSessionPast(date: Date | string): boolean {
+// Verificar si la sesión ya pasó (requiere fecha de referencia para evitar hydration issues)
+export function isSessionPast(date: Date | string, referenceDate: Date = new Date()): boolean {
   const d = typeof date === 'string' ? parseISO(date) : date
-  const today = new Date()
+  const today = new Date(referenceDate)
   today.setHours(0, 0, 0, 0)
   return isBefore(d, today)
 }
 
-// Verificar si la sesión es futura
-export function isSessionFuture(date: Date | string): boolean {
+// Verificar si la sesión es futura (requiere fecha de referencia para evitar hydration issues)
+export function isSessionFuture(date: Date | string, referenceDate: Date = new Date()): boolean {
   const d = typeof date === 'string' ? parseISO(date) : date
-  const today = new Date()
+  const today = new Date(referenceDate)
   today.setHours(23, 59, 59, 999)
   return isAfter(d, today)
 }

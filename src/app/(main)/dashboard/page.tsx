@@ -47,9 +47,10 @@ const mockUpcomingSessions = [
 export default function DashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
-  const [currentDate] = useState(new Date())
+  const [currentDate, setCurrentDate] = useState<Date | null>(null)
 
   useEffect(() => {
+    setCurrentDate(new Date())
     if (status === "unauthenticated") {
       router.push("/login")
     }
@@ -61,6 +62,18 @@ export default function DashboardPage() {
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     )
+  }
+
+  if (!currentDate) {
+    return null // Prevent hydration mismatch
+  }
+
+  // Calculate greeting based on current date
+  const getGreetingForDate = (date: Date) => {
+    const hour = date.getHours()
+    if (hour < 12) return "Buenos días"
+    if (hour < 20) return "Buenas tardes"
+    return "Buenas noches"
   }
 
   // Stats (mock data)
@@ -76,7 +89,7 @@ export default function DashboardPage() {
       {/* Welcome header */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold">
-          {getGreeting()}, {session?.user?.name?.split(" ")[0]}
+          {getGreetingForDate(currentDate)}, {session?.user?.name?.split(" ")[0]}
         </h1>
         <p className="text-muted-foreground">
           {formatDateSpanish(currentDate)}

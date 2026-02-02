@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Calendar, BookOpen, CheckCircle, Clock, Search, Filter } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -99,6 +99,16 @@ const demoSessions = [
 export default function SesionesPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeBlock, setActiveBlock] = useState("all")
+  const [currentDate, setCurrentDate] = useState<Date | null>(null)
+
+  useEffect(() => {
+    setCurrentDate(new Date())
+  }, [])
+
+  // Prevent hydration mismatch
+  if (!currentDate) {
+    return null
+  }
 
   const filteredSessions = demoSessions.filter((session) => {
     const matchesSearch =
@@ -145,7 +155,7 @@ export default function SesionesPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredSessions.map((session) => {
           const isToday = isDateToday(session.date)
-          const isPast = isSessionPast(session.date)
+          const isPast = isSessionPast(session.date, currentDate)
 
           return (
             <Link key={session.id} href={`/sesiones/${session.sessionNumber}`}>
