@@ -32,6 +32,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { ModeToggle } from "@/components/mode-toggle"
+import { useEffect, useState as useClientState } from "react"
 
 const studentNavItems = [
   { href: "/dashboard", label: "Inicio", icon: Home },
@@ -53,6 +54,11 @@ export function Header() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useClientState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const isAdmin = session?.user?.role === "ADMIN"
   const navItems = isAdmin ? adminNavItems : studentNavItems
@@ -107,20 +113,22 @@ export function Header() {
 
         {/* Right side */}
         <div className="flex items-center gap-2">
-          {/* Mode Toggle - Visible for all */}
-          <ModeToggle />
+          {/* Theme toggle - Only render after mounted to prevent hydration mismatch */}
+          {mounted && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="hidden sm:flex"
+            >
+              <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">Cambiar tema</span>
+            </Button>
+          )}
 
-          {/* Theme toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="hidden sm:flex"
-          >
-            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Cambiar tema</span>
-          </Button>
+          {/* Mode Toggle - Pedagogical mode A/B */}
+          <ModeToggle />
 
           {/* User menu */}
           {session?.user && (
