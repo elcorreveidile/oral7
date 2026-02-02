@@ -19,6 +19,7 @@ function RegisterForm() {
     email: "",
     password: "",
     confirmPassword: "",
+    inviteCode: "",
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,6 +57,7 @@ function RegisterForm() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
+          inviteCode: formData.inviteCode,
         }),
       })
 
@@ -147,6 +149,22 @@ function RegisterForm() {
                 required
                 disabled={isLoading}
               />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="inviteCode">Código de invitación</Label>
+              <Input
+                id="inviteCode"
+                name="inviteCode"
+                type="text"
+                placeholder="Código proporcionado por el profesor"
+                value={formData.inviteCode}
+                onChange={handleChange}
+                required
+                disabled={isLoading}
+              />
+              <p className="text-xs text-muted-foreground">
+                Solicita el código a tu profesor para poder registrarte
+              </p>
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
