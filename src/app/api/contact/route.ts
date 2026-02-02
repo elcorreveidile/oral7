@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
     // Send email using Resend
     const { data, error } = await resend.emails.send({
-      from: "PIO-7 Contacto <contacto@diariodeuninstante.com>",
+      from: "PIO-7 Contacto <no-reply@pio7.com>",
       to: ["benitezl@go.ugr.es"],
       reply_to: email,
       subject: `[PIO-7 Contacto] ${subject}`,
