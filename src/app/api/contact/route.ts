@@ -16,9 +16,8 @@ export async function POST(req: Request) {
     }
 
     // Send email using Resend
-    // Using Resend's test domain - change to verified domain in production
     const { data, error } = await resend.emails.send({
-      from: "PIO-7 Contacto <onboarding@resend.dev>",
+      from: "PIO-7 Contacto <contacto@diariodeuninstante.com>",
       to: ["benitezl@go.ugr.es"],
       reply_to: email,
       subject: `[PIO-7 Contacto] ${subject}`,
