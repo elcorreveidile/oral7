@@ -36,9 +36,9 @@ export default function LandingPage() {
                 Iniciar sesión
               </Button>
             </Link>
-            <Link href="/login">
+            <Link href="/register">
               <Button size="sm" className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700">
-                Comenzar
+                Registrarse
               </Button>
             </Link>
           </div>
@@ -65,7 +65,7 @@ export default function LandingPage() {
               están 100% online. Metodología híbrida A/B con 16 sesiones prácticas y evaluación continua.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/login">
+              <Link href="/register">
                 <Button size="lg" className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-lg px-8">
                   Comenzar curso
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -440,7 +440,7 @@ export default function LandingPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/login">
+              <Link href="/register">
                 <Button size="lg" variant="secondary" className="text-lg px-8 bg-white text-orange-600 hover:bg-orange-50">
                   <GraduationCap className="mr-2 h-5 w-5" />
                   Registrarse ahora
