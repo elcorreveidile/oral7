@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import {
   Users,
@@ -23,6 +23,7 @@ import { getGreeting, formatDateSpanish } from "@/lib/utils"
 export default function AdminDashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const [currentDate, setCurrentDate] = useState<Date | null>(null)
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role !== "ADMIN") {
@@ -30,6 +31,7 @@ export default function AdminDashboardPage() {
     } else if (status === "unauthenticated") {
       router.push("/login")
     }
+    setCurrentDate(new Date())
   }, [status, session, router])
 
   if (status === "loading" || session?.user?.role !== "ADMIN") {
@@ -38,6 +40,10 @@ export default function AdminDashboardPage() {
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     )
+  }
+
+  if (!currentDate) {
+    return null // Prevents hydration mismatch
   }
 
   // Mock stats
@@ -96,7 +102,7 @@ export default function AdminDashboardPage() {
             {getGreeting()}, Profesor
           </h1>
           <p className="text-muted-foreground">
-            {formatDateSpanish(new Date())} · Panel de control
+            {formatDateSpanish(currentDate)} · Panel de control
           </p>
         </div>
         <Button asChild size="lg" variant="clm">
