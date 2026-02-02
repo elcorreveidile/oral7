@@ -10,37 +10,47 @@ import {
   CheckCircle2,
   Clock,
   QrCode,
-  TrendingUp,
   ArrowRight,
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { getGreeting, formatDateSpanish } from "@/lib/utils"
+import { formatDateSpanish } from "@/lib/utils"
 
-// Mock data for demonstration - using ISO strings to avoid hydration issues
-const mockCurrentSession = {
+interface DashboardStats {
+  totalStudents: number
+  totalSessions: number
+  currentSession: number
+}
+
+interface SessionInfo {
+  id: string
+  sessionNumber: number
+  title: string
+  date: Date
+}
+
+// Mock data - se reemplazará con datos reales de la API
+const mockCurrentSession: SessionInfo = {
   id: "session-1",
   sessionNumber: 1,
   title: "Toma de contacto e interacción social",
-  date: "2026-02-03" as unknown as Date, // Feb 3, 2026 - will be parsed by formatDateSpanish
-  blockNumber: 1,
-  blockTitle: "La argumentación formal",
+  date: new Date("2026-02-03"),
 }
 
-const mockUpcomingSessions = [
+const mockUpcomingSessions: SessionInfo[] = [
   {
     id: "session-2",
     sessionNumber: 2,
     title: "Socialización y registro: tutear vs. usted",
-    date: "2026-02-05" as unknown as Date,
+    date: new Date("2026-02-05"),
   },
   {
     id: "session-3",
     sessionNumber: 3,
     title: "Los bares como espacios de interacción",
-    date: "2026-02-10" as unknown as Date,
+    date: new Date("2026-02-10"),
   },
 ]
 
@@ -48,13 +58,32 @@ export default function DashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [currentDate, setCurrentDate] = useState<Date | null>(null)
+  const [stats, setStats] = useState<DashboardStats | null>(null)
 
   useEffect(() => {
     setCurrentDate(new Date())
+
     if (status === "unauthenticated") {
       router.push("/login")
     }
   }, [status, router])
+
+  useEffect(() => {
+    // Cargar estadísticas reales
+    if (status === "authenticated") {
+      fetch("/api/dashboard/stats")
+        .then((res) => res.json())
+        .then((data) => setStats(data))
+        .catch(() => {
+          // Si falla, usar valores por defecto
+          setStats({
+            totalStudents: 0,
+            totalSessions: 27,
+            currentSession: 1,
+          })
+        })
+    }
+  }, [status])
 
   if (status === "loading") {
     return (
@@ -72,20 +101,11 @@ export default function DashboardPage() {
     )
   }
 
-  // Calculate greeting based on current date
   const getGreetingForDate = (date: Date) => {
     const hour = date.getHours()
     if (hour < 12) return "Buenos días"
     if (hour < 20) return "Buenas tardes"
     return "Buenas noches"
-  }
-
-  // Stats (mock data)
-  const stats = {
-    attendanceRate: 85,
-    sessionsCompleted: 5,
-    totalSessions: 27,
-    checklistProgress: 72,
   }
 
   return (
@@ -100,18 +120,17 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* Quick stats */}
+      {/* Quick stats - ahora muestra datos reales o "Sin datos" */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Asistencia</CardTitle>
+            <CardTitle className="text-sm font-medium">Estudiantes</CardTitle>
             <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.attendanceRate}%</div>
-            <Progress value={stats.attendanceRate} className="mt-2" />
+            <div className="text-2xl font-bold">{stats?.totalStudents ?? 0}</div>
             <p className="text-xs text-muted-foreground mt-2">
-              Mínimo requerido: 80%
+              Registrados en el curso
             </p>
           </CardContent>
         </Card>
@@ -123,28 +142,29 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats.sessionsCompleted}/{stats.totalSessions}
+              {stats?.currentSession ?? 1}/{stats?.totalSessions ?? 27}
             </div>
-            <Progress
-              value={(stats.sessionsCompleted / stats.totalSessions) * 100}
-              className="mt-2"
-            />
             <p className="text-xs text-muted-foreground mt-2">
-              Progreso del curso
+              Sesión actual
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Autoevaluación</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Progreso</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.checklistProgress}%</div>
-            <Progress value={stats.checklistProgress} className="mt-2" />
+            <div className="text-2xl font-bold">
+              {stats?.currentSession ? Math.round((stats.currentSession / 27) * 100) : 0}%
+            </div>
+            <Progress
+              value={stats?.currentSession ? (stats.currentSession / 27) * 100 : 0}
+              className="mt-2"
+            />
             <p className="text-xs text-muted-foreground mt-2">
-              Objetivos completados
+              Del curso completado
             </p>
           </CardContent>
         </Card>
@@ -193,15 +213,6 @@ export default function DashboardPage() {
                 <CardTitle className="text-xl">
                   {mockCurrentSession.title}
                 </CardTitle>
-                <CardDescription>
-                  Bloque {mockCurrentSession.blockNumber}: {mockCurrentSession.blockTitle}
-                </CardDescription>
-              </div>
-              <div className="text-right text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  <span>{formatDateSpanish(mockCurrentSession.date)}</span>
-                </div>
               </div>
             </div>
           </CardHeader>
@@ -220,17 +231,17 @@ export default function DashboardPage() {
       <section>
         <h2 className="text-xl font-semibold mb-4">Próximas sesiones</h2>
         <div className="grid gap-4 md:grid-cols-2">
-          {mockUpcomingSessions.map((session) => (
-            <Card key={session.id} className="session-card future">
+          {mockUpcomingSessions.map((sessionInfo) => (
+            <Card key={sessionInfo.id} className="session-card future">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <Badge variant="outline">Sesión {session.sessionNumber}</Badge>
-                    <CardTitle className="text-lg">{session.title}</CardTitle>
+                    <Badge variant="outline">Sesión {sessionInfo.sessionNumber}</Badge>
+                    <CardTitle className="text-lg">{sessionInfo.title}</CardTitle>
                   </div>
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <Clock className="h-4 w-4" />
-                    <span>{formatDateSpanish(session.date)}</span>
+                    <Calendar className="h-4 w-4" />
+                    <span>{formatDateSpanish(sessionInfo.date)}</span>
                   </div>
                 </div>
               </CardHeader>
