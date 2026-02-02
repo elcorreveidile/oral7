@@ -58,7 +58,12 @@ export default function DashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [currentDate, setCurrentDate] = useState<Date | null>(null)
+  const [mounted, setMounted] = useState(false)
   const [stats, setStats] = useState<DashboardStats | null>(null)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     setCurrentDate(new Date())
@@ -69,6 +74,8 @@ export default function DashboardPage() {
   }, [status, router])
 
   useEffect(() => {
+    if (!mounted) return
+
     // Cargar estadísticas reales
     if (status === "authenticated") {
       fetch("/api/dashboard/stats")
@@ -83,7 +90,7 @@ export default function DashboardPage() {
           })
         })
     }
-  }, [status])
+  }, [status, mounted])
 
   if (status === "loading") {
     return (
@@ -93,7 +100,7 @@ export default function DashboardPage() {
     )
   }
 
-  if (!currentDate) {
+  if (!currentDate || !mounted) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
