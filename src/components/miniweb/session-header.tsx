@@ -12,14 +12,25 @@ interface SessionHeaderProps {
 
 export function SessionHeader({ session }: SessionHeaderProps) {
   const [currentDate, setCurrentDate] = useState<Date | null>(null)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     setCurrentDate(new Date())
   }, [])
 
   // Prevent hydration mismatch by not rendering until client-side
-  if (!currentDate) {
-    return null
+  if (!currentDate || !mounted) {
+    return (
+      <div className="animate-pulse space-y-4">
+        <div className="h-6 bg-muted rounded w-32"></div>
+        <div className="h-8 bg-muted rounded w-3/4"></div>
+        <div className="h-4 bg-muted rounded w-1/2"></div>
+      </div>
+    )
   }
 
   const isToday = isDateToday(session.date)
