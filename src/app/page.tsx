@@ -458,17 +458,32 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t bg-white">
         <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Mic className="h-5 w-5 text-orange-600" />
-              <span className="font-semibold">PIO-7</span>
-              <span className="text-sm text-slate-500">| Centro de Lenguas Modernas · Universidad de Granada</span>
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Mic className="h-5 w-5 text-orange-600" />
+                <span className="font-semibold">PIO-7</span>
+                <span className="text-sm text-slate-500">| Centro de Lenguas Modernas · Universidad de Granada</span>
+              </div>
+              <div className="flex items-center gap-6 text-sm">
+                <Link href="/terminos" className="text-slate-600 hover:text-orange-600 transition-colors">
+                  Términos
+                </Link>
+                <Link href="/privacidad" className="text-slate-600 hover:text-orange-600 transition-colors">
+                  Privacidad
+                </Link>
+                <Link href="/contacto" className="text-slate-600 hover:text-orange-600 transition-colors">
+                  Contacto
+                </Link>
+              </div>
             </div>
-            <div className="text-sm text-slate-600 text-center">
-              Desarrollado por <span className="font-medium">Javier Benítez Láinez</span>
-            </div>
-            <div className="text-sm text-slate-500">
-              © 2026 PIO-7. Todos los derechos reservados.
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-4 border-t">
+              <div className="text-sm text-slate-600 text-center">
+                Desarrollado por <span className="font-medium">Javier Benítez Láinez</span>
+              </div>
+              <div className="text-sm text-slate-500">
+                © 2026 PIO-7. Todos los derechos reservados.
+              </div>
             </div>
           </div>
         </div>
