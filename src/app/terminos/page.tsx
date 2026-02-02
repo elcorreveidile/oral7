@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { Link } from "next/link"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { FileText, Scale } from "lucide-react"
 
