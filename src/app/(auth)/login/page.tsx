@@ -53,34 +53,6 @@ function LoginForm() {
     }
   }
 
-  // Quick login for demo (dev mode)
-  const handleDemoLogin = async (role: "admin" | "student") => {
-    setIsLoading(true)
-    const credentials = role === "admin"
-      ? { email: "benitezl@go.ugr.es", password: "admin123" }
-      : { email: "test.student1@ugr.es", password: "estudiante123" }
-
-    try {
-      const result = await signIn("credentials", {
-        ...credentials,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: "Usuario demo no disponible. Ejecuta el seed de la base de datos.",
-        })
-      } else {
-        router.push(role === "admin" ? "/admin" : "/dashboard")
-        router.refresh()
-      }
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-clm-50 via-white to-granada-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4">
       <Card className="w-full max-w-md">
@@ -124,34 +96,6 @@ function LoginForm() {
               Iniciar sesión
             </Button>
           </form>
-
-          {/* Demo login buttons */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">
-                Acceso rápido (demo)
-              </span>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              variant="outline"
-              onClick={() => handleDemoLogin("student")}
-              disabled={isLoading}
-            >
-              Estudiante
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => handleDemoLogin("admin")}
-              disabled={isLoading}
-            >
-              Profesor
-            </Button>
-          </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-2 text-center text-sm text-muted-foreground">
           <p>Centro de Lenguas Modernas</p>
