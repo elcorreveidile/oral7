@@ -1,6 +1,6 @@
 "use client"
 
-import { notFound } from "next/navigation"
+import { useParams } from "next/navigation"
 import { SessionMiniweb } from "@/components/miniweb/session-miniweb"
 import { SessionData } from "@/types"
 
@@ -189,21 +189,19 @@ const examPartialData: SessionData = {
   dynamics: [],
 }
 
-interface PageProps {
-  params: { sessionNumber: string }
-}
-
-export default function SessionPage({ params }: PageProps) {
-  const sessionNum = parseInt(params.sessionNumber)
+export default function SessionPage() {
+  const params = useParams()
+  const sessionNumber = params?.sessionNumber as string
+  const sessionNum = parseInt(sessionNumber || "1")
 
   // In production, fetch session data from API
-  let sessionData: SessionData | null = null
+  let sessionData: SessionData
 
   if (sessionNum === 1) {
     sessionData = demoSessionData
   } else if (sessionNum === 15) {
     sessionData = examPartialData
-  } else {
+  } else if (sessionNum >= 1 && sessionNum <= 27) {
     // Generate placeholder data for other sessions - using ISO string to avoid hydration issues
     const month = sessionNum <= 7 ? "02" : "03"
     const day = 3 + (sessionNum - 1) * 2
@@ -217,10 +215,9 @@ export default function SessionPage({ params }: PageProps) {
         { id: "obj-1", text: "Objetivo de ejemplo para esta sesión" },
       ],
     }
-  }
-
-  if (!sessionData) {
-    notFound()
+  } else {
+    // Invalid session number - show session 1 as fallback
+    sessionData = demoSessionData
   }
 
   return <SessionMiniweb session={sessionData} />
