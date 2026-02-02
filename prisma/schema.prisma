@@ -29,6 +29,7 @@ model User {
   progress      UserProgress[]
   checklistItems UserChecklistItem[]
   submissions   Submission[]
+  registrations UserRegistration[]
 
   @@map("users")
 }
@@ -257,6 +258,40 @@ model UserProgress {
 
   @@unique([userId, sessionId])
   @@map("user_progress")
+}
+
+// ============================================
+// MODELO DE CÓDIGOS DE REGISTRO
+// ============================================
+
+model RegistrationCode {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  isActive    Boolean  @default(true)
+  maxUses     Int      @default(1)
+  usedCount   Int      @default(0)
+  description String?
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime?
+
+  // Relaciones
+  registrations UserRegistration[]
+
+  @@map("registration_codes")
+}
+
+model UserRegistration {
+  id     String            @id @default(cuid())
+  userId String
+  user   User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  codeId String
+  code   RegistrationCode  @relation(fields: [codeId], references: [id], onDelete: Cascade)
+
+  usedAt DateTime @default(now())
+
+  @@unique([codeId, userId])
+  @@map("user_registrations")
 }
 
 // ============================================
