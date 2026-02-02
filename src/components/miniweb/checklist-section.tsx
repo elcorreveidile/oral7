@@ -38,7 +38,7 @@ export function ChecklistSection({ sessionId, items, onSave }: ChecklistSectionP
     setCheckedItems(newChecked)
 
     // Auto-save to localStorage
-    localStorage.setItem(`checklist-${sessionId}`, JSON.stringify([...newChecked]))
+    localStorage.setItem(`checklist-${sessionId}`, JSON.stringify(Array.from(newChecked)))
   }
 
   const handleSave = async () => {
@@ -46,7 +46,7 @@ export function ChecklistSection({ sessionId, items, onSave }: ChecklistSectionP
 
     setIsSaving(true)
     try {
-      await onSave([...checkedItems])
+      await onSave(Array.from(checkedItems))
       toast({
         title: "Guardado",
         description: "Tu progreso ha sido guardado",
