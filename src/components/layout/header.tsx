@@ -17,7 +17,7 @@ import {
   Users,
   X,
 } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -53,6 +53,11 @@ export function Header() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const isAdmin = session?.user?.role === "ADMIN"
   const navItems = isAdmin ? adminNavItems : studentNavItems
@@ -64,6 +69,19 @@ export function Header() {
       .join("")
       .toUpperCase()
       .slice(0, 2)
+  }
+
+  // Return early if session is loading to prevent hydration issues
+  if (session === undefined || session === null) {
+    return (
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center justify-between px-4">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-granada-500 to-clm-600 text-white font-bold">
+            O7
+          </div>
+        </div>
+      </header>
+    )
   }
 
   return (
@@ -107,20 +125,22 @@ export function Header() {
 
         {/* Right side */}
         <div className="flex items-center gap-2">
-          {/* Mode Toggle - Visible for all */}
-          <ModeToggle />
+          {/* Theme toggle - Only render after mounted to prevent hydration mismatch */}
+          {mounted && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="hidden sm:flex"
+            >
+              <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">Cambiar tema</span>
+            </Button>
+          )}
 
-          {/* Theme toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="hidden sm:flex"
-          >
-            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Cambiar tema</span>
-          </Button>
+          {/* Mode Toggle - Pedagogical mode A/B */}
+          <ModeToggle />
 
           {/* User menu */}
           {session?.user && (

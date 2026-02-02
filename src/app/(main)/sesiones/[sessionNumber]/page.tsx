@@ -5,10 +5,11 @@ import { SessionMiniweb } from "@/components/miniweb/session-miniweb"
 import { SessionData } from "@/types"
 
 // Demo session data - in production this would come from API/database
+// Using ISO strings to avoid hydration issues
 const demoSessionData: SessionData = {
   id: "session-1",
   sessionNumber: 1,
-  date: new Date(2026, 1, 3),
+  date: "2026-02-03" as unknown as Date,
   title: "Toma de contacto e interacción social",
   subtitle: "Conocernos y establecer las dinámicas del curso",
   blockNumber: 1,
@@ -124,26 +125,29 @@ const demoSessionData: SessionData = {
         items: [
           {
             id: "q1",
+            type: "question",
             content: { question: "Pides información en una tienda a una dependienta de tu edad" },
             options: [
-              { id: "a", text: "Tú (tuteo)" },
-              { id: "b", text: "Usted (ustedeo)" },
+              { id: "a", type: "option", text: "Tú (tuteo)" },
+              { id: "b", type: "option", text: "Usted (ustedeo)" },
             ],
           },
           {
             id: "q2",
+            type: "question",
             content: { question: "Hablas con un profesor de universidad en su despacho" },
             options: [
-              { id: "a", text: "Tú (tuteo)" },
-              { id: "b", text: "Usted (ustedeo)" },
+              { id: "a", type: "option", text: "Tú (tuteo)" },
+              { id: "b", type: "option", text: "Usted (ustedeo)" },
             ],
           },
           {
             id: "q3",
+            type: "question",
             content: { question: "Conoces a un amigo de un amigo en una fiesta" },
             options: [
-              { id: "a", text: "Tú (tuteo)" },
-              { id: "b", text: "Usted (ustedeo)" },
+              { id: "a", type: "option", text: "Tú (tuteo)" },
+              { id: "b", type: "option", text: "Usted (ustedeo)" },
             ],
           },
         ],
@@ -170,11 +174,11 @@ const demoSessionData: SessionData = {
   ],
 }
 
-// Exam day data
+// Exam day data - using ISO string to avoid hydration issues
 const examPartialData: SessionData = {
   id: "exam-partial",
   sessionNumber: 15,
-  date: new Date(2026, 2, 26),
+  date: "2026-03-26" as unknown as Date,
   title: "Día de evaluación oral - Examen parcial",
   blockNumber: 2,
   blockTitle: "La conferencia y la entrevista",
@@ -200,13 +204,15 @@ export default function SessionPage({ params }: PageProps) {
   } else if (sessionNum === 15) {
     sessionData = examPartialData
   } else {
-    // Generate placeholder data for other sessions
+    // Generate placeholder data for other sessions - using ISO string to avoid hydration issues
+    const month = sessionNum <= 7 ? "02" : "03"
+    const day = 3 + (sessionNum - 1) * 2
     sessionData = {
       ...demoSessionData,
       id: `session-${sessionNum}`,
       sessionNumber: sessionNum,
       title: `Sesión ${sessionNum} - Contenido en desarrollo`,
-      date: new Date(2026, 1, 3 + (sessionNum - 1) * 2),
+      date: `2026-${month}-${day.toString().padStart(2, '0')}` as unknown as Date,
       objectives: [
         { id: "obj-1", text: "Objetivo de ejemplo para esta sesión" },
       ],

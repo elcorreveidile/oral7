@@ -4,14 +4,26 @@ import { Badge } from "@/components/ui/badge"
 import { formatDateSpanish, isDateToday, isSessionPast } from "@/lib/utils"
 import { Calendar, Clock, BookOpen, Target } from "lucide-react"
 import { SessionData } from "@/types"
+import { useState, useEffect } from "react"
 
 interface SessionHeaderProps {
   session: SessionData
 }
 
 export function SessionHeader({ session }: SessionHeaderProps) {
+  const [currentDate, setCurrentDate] = useState<Date | null>(null)
+
+  useEffect(() => {
+    setCurrentDate(new Date())
+  }, [])
+
+  // Prevent hydration mismatch by not rendering until client-side
+  if (!currentDate) {
+    return null
+  }
+
   const isToday = isDateToday(session.date)
-  const isPast = isSessionPast(session.date)
+  const isPast = isSessionPast(session.date, currentDate)
 
   return (
     <div className="space-y-4">
