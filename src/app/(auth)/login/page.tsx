@@ -125,41 +125,37 @@ function LoginForm() {
             </Button>
           </form>
 
-          {/* Demo login buttons - only in dev */}
-          {process.env.NODE_ENV === "development" && (
-            <>
-              <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">
-                    Acceso rápido (demo)
-                  </span>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <Button
-                  variant="outline"
-                  onClick={() => handleDemoLogin("student")}
-                  disabled={isLoading}
-                >
-                  Estudiante
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => handleDemoLogin("admin")}
-                  disabled={isLoading}
-                >
-                  Profesor
-                </Button>
-              </div>
-            </>
-          )}
+          {/* Demo login buttons */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">
+                Acceso rápido (demo)
+              </span>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              variant="outline"
+              onClick={() => handleDemoLogin("student")}
+              disabled={isLoading}
+            >
+              Estudiante
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => handleDemoLogin("admin")}
+              disabled={isLoading}
+            >
+              Profesor
+            </Button>
+          </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-2 text-center text-sm text-muted-foreground">
           <p>Centro de Lenguas Modernas</p>
-          <p>Universidad de Granada · Curso 2025-2026</p>
+          <p>Universidad de Granada · Curso 2026</p>
         </CardFooter>
       </Card>
     </div>
