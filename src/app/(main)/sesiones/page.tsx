@@ -100,14 +100,23 @@ export default function SesionesPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [activeBlock, setActiveBlock] = useState("all")
   const [currentDate, setCurrentDate] = useState<Date | null>(null)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     setCurrentDate(new Date())
   }, [])
 
   // Prevent hydration mismatch
-  if (!currentDate) {
-    return null
+  if (!currentDate || !mounted) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
   }
 
   const filteredSessions = demoSessions.filter((session) => {
