@@ -51,7 +51,7 @@ export default function AdminDashboardPage() {
   const hasStarted = currentDate >= courseStartDate
 
   // Stats - will be fetched from API in production
-  // For now, show initial state before course starts
+  // Initial state - course starts Feb 3, 2026
   const stats = {
     totalStudents: 15,
     averageAttendance: hasStarted ? 0 : 0,
