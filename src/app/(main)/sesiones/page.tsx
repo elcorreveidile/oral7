@@ -10,12 +10,12 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { formatDateSpanish, formatDateShort, isDateToday, isSessionPast } from "@/lib/utils"
 
-// Demo session data
+// Demo session data - using ISO strings to avoid hydration issues
 const demoSessions = [
   {
     id: "1",
     sessionNumber: 1,
-    date: new Date(2026, 1, 3),
+    date: "2026-02-03" as unknown as Date,
     title: "Toma de contacto e interacción social",
     blockNumber: 1,
     blockTitle: "La argumentación formal",
@@ -24,7 +24,7 @@ const demoSessions = [
   {
     id: "2",
     sessionNumber: 2,
-    date: new Date(2026, 1, 5),
+    date: "2026-02-05" as unknown as Date,
     title: "Socialización y registro: tutear vs. usted",
     blockNumber: 1,
     blockTitle: "La argumentación formal",
@@ -33,7 +33,7 @@ const demoSessions = [
   {
     id: "3",
     sessionNumber: 3,
-    date: new Date(2026, 1, 10),
+    date: "2026-02-10" as unknown as Date,
     title: "Los bares como espacios de interacción",
     blockNumber: 1,
     blockTitle: "La argumentación formal",
@@ -42,7 +42,7 @@ const demoSessions = [
   {
     id: "4",
     sessionNumber: 4,
-    date: new Date(2026, 1, 12),
+    date: "2026-02-12" as unknown as Date,
     title: "Recursos de intensificación en español",
     blockNumber: 1,
     blockTitle: "La argumentación formal",
@@ -51,7 +51,7 @@ const demoSessions = [
   {
     id: "5",
     sessionNumber: 5,
-    date: new Date(2026, 1, 17),
+    date: "2026-02-17" as unknown as Date,
     title: "Recursos de atenuación: suavizar el mensaje",
     blockNumber: 1,
     blockTitle: "La argumentación formal",
@@ -60,7 +60,7 @@ const demoSessions = [
   {
     id: "6",
     sessionNumber: 6,
-    date: new Date(2026, 1, 19),
+    date: "2026-02-19" as unknown as Date,
     title: "Conectores para organizar el discurso",
     blockNumber: 1,
     blockTitle: "La argumentación formal",
@@ -69,7 +69,7 @@ const demoSessions = [
   {
     id: "7",
     sessionNumber: 7,
-    date: new Date(2026, 1, 24),
+    date: "2026-02-24" as unknown as Date,
     title: "El humor en español: chistes y estereotipos",
     blockNumber: 1,
     blockTitle: "La argumentación formal",
@@ -78,7 +78,7 @@ const demoSessions = [
   {
     id: "8",
     sessionNumber: 8,
-    date: new Date(2026, 1, 26),
+    date: "2026-02-26" as unknown as Date,
     title: "Explicar y analizar el humor",
     blockNumber: 1,
     blockTitle: "La argumentación formal",
@@ -87,7 +87,7 @@ const demoSessions = [
   {
     id: "exam-partial",
     sessionNumber: 15,
-    date: new Date(2026, 2, 26),
+    date: "2026-03-26" as unknown as Date,
     title: "Examen parcial",
     blockNumber: 2,
     blockTitle: "La conferencia y la entrevista",
