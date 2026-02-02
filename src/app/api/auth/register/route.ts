@@ -4,13 +4,22 @@ import { prisma } from "@/lib/prisma"
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password } = await req.json()
+    const { name, email, password, inviteCode } = await req.json()
 
     // Validate input
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !inviteCode) {
       return NextResponse.json(
-        { error: "Nombre, correo y contraseña son requeridos" },
+        { error: "Todos los campos son requeridos, incluido el código de invitación" },
         { status: 400 }
+      )
+    }
+
+    // Validate invite code
+    const validInviteCode = process.env.STUDENT_INVITE_CODE
+    if (!validInviteCode || inviteCode !== validInviteCode) {
+      return NextResponse.json(
+        { error: "Código de invitación inválido. Solicítalo a tu profesor." },
+        { status: 403 }
       )
     }
 
