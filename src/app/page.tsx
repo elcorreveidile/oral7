@@ -13,7 +13,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-2">
             <Mic className="h-6 w-6 text-orange-600" />
             <span className="text-xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-              Oral-7
+              PIO-7
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-6 text-sm">
@@ -52,7 +52,7 @@ export default function LandingPage() {
           <div className="mx-auto max-w-4xl text-center">
             <Badge className="mb-4 bg-orange-100 text-orange-700 border-orange-200">
               <GraduationCap className="mr-1 h-3 w-3" />
-              Nivel C1 - Universidad de Granada
+              Nivel C1 - Centro de Lenguas Modernas
             </Badge>
             <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
               Producción e Interacción{' '}
@@ -61,8 +61,8 @@ export default function LandingPage() {
               </span>
             </h1>
             <p className="mb-8 max-w-2xl text-lg text-slate-600 sm:text-xl">
-              Plataforma educativa innovadora para desarrollar competencias orales avanzadas en español.
-              Metodología híbrida A/B con 16 sesiones prácticas y evaluación continua.
+              Curso presencial de Producción e Interacción Oral. Todos los materiales del curso
+              están 100% online. Metodología híbrida A/B con 16 sesiones prácticas y evaluación continua.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/login">
@@ -102,7 +102,7 @@ export default function LandingPage() {
             </div>
             <div>
               <div className="text-3xl font-bold text-orange-600">100%</div>
-              <div className="text-sm text-slate-600">Online</div>
+              <div className="text-sm text-slate-600">Materiales online</div>
             </div>
           </div>
         </div>
@@ -186,9 +186,9 @@ export default function LandingPage() {
                 <div className="h-12 w-12 rounded-lg bg-yellow-100 flex items-center justify-center mb-4">
                   <Clock className="h-6 w-6 text-yellow-600" />
                 </div>
-                <CardTitle>100% Flexible</CardTitle>
+                <CardTitle>Acceso Flexible</CardTitle>
                 <CardDescription>
-                  Accede cuando quieras, desde donde quieras. Mobile-first para aprender sobre la marcha.
+                  Todos los materiales disponibles 24/7. Mobile-first para acceder desde cualquier lugar.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -461,16 +461,16 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <Mic className="h-5 w-5 text-orange-600" />
-              <span className="font-semibold">Oral-7</span>
-              <span className="text-sm text-slate-500">| Universidad de Granada</span>
+              <span className="font-semibold">PIO-7</span>
+              <span className="text-sm text-slate-500">| Centro de Lenguas Modernas</span>
             </div>
             <div className="flex gap-6 text-sm text-slate-600">
-              <a href="#" className="hover:text-orange-600 transition-colors">Términos</a>
-              <a href="#" className="hover:text-orange-600 transition-colors">Privacidad</a>
-              <a href="#" className="hover:text-orange-600 transition-colors">Contacto</a>
+              <a href="/terminos" className="hover:text-orange-600 transition-colors">Términos</a>
+              <a href="/privacidad" className="hover:text-orange-600 transition-colors">Privacidad</a>
+              <a href="/contacto" className="hover:text-orange-600 transition-colors">Contacto</a>
             </div>
             <div className="text-sm text-slate-500">
-              © 2025 Oral-7. Todos los derechos reservados.
+              © 2026 PIO-7 · Desarrollado por Javier Benítez Láinez
             </div>
           </div>
         </div>
