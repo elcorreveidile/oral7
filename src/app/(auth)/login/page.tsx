@@ -88,7 +88,7 @@ function LoginForm() {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-granada-500 to-clm-600 text-white">
             <GraduationCap className="h-8 w-8" />
           </div>
-          <CardTitle className="text-2xl">Oral-7</CardTitle>
+          <CardTitle className="text-2xl">PIO-7</CardTitle>
           <CardDescription>
             Producción e interacción oral en español · Nivel C1
           </CardDescription>
@@ -157,9 +157,20 @@ function LoginForm() {
             </>
           )}
         </CardContent>
-        <CardFooter className="flex flex-col gap-2 text-center text-sm text-muted-foreground">
-          <p>Centro de Lenguas Modernas</p>
-          <p>Universidad de Granada · Curso 2025-2026</p>
+        <CardFooter className="flex flex-col gap-3 text-center text-sm text-muted-foreground">
+          <Link href="/" className="text-primary hover:underline">
+            ← Volver a la página principal
+          </Link>
+          <div className="border-t pt-3">
+            <span className="text-muted-foreground">¿No tienes cuenta? </span>
+            <Link href="/register" className="font-medium text-primary hover:underline ml-1">
+              Regístrate
+            </Link>
+          </div>
+          <div className="border-t pt-3">
+            <p>Centro de Lenguas Modernas</p>
+            <p>Universidad de Granada · Curso 2025-2026</p>
+          </div>
         </CardFooter>
       </Card>
     </div>
