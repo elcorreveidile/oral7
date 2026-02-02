@@ -125,26 +125,29 @@ const demoSessionData: SessionData = {
         items: [
           {
             id: "q1",
+            type: "question",
             content: { question: "Pides información en una tienda a una dependienta de tu edad" },
             options: [
-              { id: "a", text: "Tú (tuteo)" },
-              { id: "b", text: "Usted (ustedeo)" },
+              { id: "a", type: "option", text: "Tú (tuteo)" },
+              { id: "b", type: "option", text: "Usted (ustedeo)" },
             ],
           },
           {
             id: "q2",
+            type: "question",
             content: { question: "Hablas con un profesor de universidad en su despacho" },
             options: [
-              { id: "a", text: "Tú (tuteo)" },
-              { id: "b", text: "Usted (ustedeo)" },
+              { id: "a", type: "option", text: "Tú (tuteo)" },
+              { id: "b", type: "option", text: "Usted (ustedeo)" },
             ],
           },
           {
             id: "q3",
+            type: "question",
             content: { question: "Conoces a un amigo de un amigo en una fiesta" },
             options: [
-              { id: "a", text: "Tú (tuteo)" },
-              { id: "b", text: "Usted (ustedeo)" },
+              { id: "a", type: "option", text: "Tú (tuteo)" },
+              { id: "b", type: "option", text: "Usted (ustedeo)" },
             ],
           },
         ],
