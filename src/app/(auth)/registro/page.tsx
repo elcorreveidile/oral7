@@ -1,8 +1,7 @@
 "use client"
 
 import { useState, Suspense } from "react"
-import { signIn } from "next-auth/react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,42 +10,72 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2, GraduationCap } from "lucide-react"
 
-function LoginForm() {
+function RegisterForm() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  })
 
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Las contraseñas no coinciden",
+      })
+      return
+    }
+
+    if (formData.password.length < 6) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "La contraseña debe tener al menos 6 caracteres",
+      })
+      return
+    }
+
     setIsLoading(true)
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
       })
 
-      if (result?.error) {
-        toast({
-          variant: "destructive",
-          title: "Error de autenticación",
-          description: "Correo o contraseña incorrectos",
-        })
-      } else {
-        router.push(callbackUrl)
-        router.refresh()
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error al registrar usuario")
       }
+
+      toast({
+        title: "Cuenta creada",
+        description: "Tu cuenta ha sido creada exitosamente. Ya puedes iniciar sesión.",
+      })
+
+      router.push("/login")
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Ha ocurrido un error. Inténtalo de nuevo.",
+        description: error instanceof Error ? error.message : "Ha ocurrido un error. Inténtalo de nuevo.",
       })
     } finally {
       setIsLoading(false)
@@ -60,23 +89,35 @@ function LoginForm() {
           <Link href="/" className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-granada-500 to-clm-600 text-white hover:opacity-90 transition-opacity">
             <GraduationCap className="h-8 w-8" />
           </Link>
-          <CardTitle className="text-2xl">
-            <Link href="/" className="hover:text-primary transition-colors">PIO-7</Link>
-          </CardTitle>
+          <CardTitle className="text-2xl">Crear cuenta</CardTitle>
           <CardDescription>
-            Producción e interacción oral en español · Nivel C1
+            Regístrate para acceder al curso PIO-7
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
+              <Label htmlFor="name">Nombre completo</Label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Tu nombre"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                disabled={isLoading}
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="email">Correo electrónico</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="tu.correo@ugr.es"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={handleChange}
                 required
                 disabled={isLoading}
               />
@@ -85,17 +126,31 @@ function LoginForm() {
               <Label htmlFor="password">Contraseña</Label>
               <Input
                 id="password"
+                name="password"
                 type="password"
                 placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={handleChange}
+                required
+                disabled={isLoading}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirmar contraseña</Label>
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                placeholder="••••••••"
+                value={formData.confirmPassword}
+                onChange={handleChange}
                 required
                 disabled={isLoading}
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Iniciar sesión
+              Crear cuenta
             </Button>
           </form>
 
@@ -105,14 +160,14 @@ function LoginForm() {
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-card px-2 text-muted-foreground">
-                ¿Nuevo estudiante?
+                ¿Ya tienes cuenta?
               </span>
             </div>
           </div>
 
-          <Link href="/registro" className="w-full">
+          <Link href="/login" className="w-full block">
             <Button variant="outline" className="w-full">
-              Crear cuenta
+              Iniciar sesión
             </Button>
           </Link>
         </CardContent>
@@ -127,14 +182,14 @@ function LoginForm() {
   )
 }
 
-export default function LoginPage() {
+export default function RegisterPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     }>
-      <LoginForm />
+      <RegisterForm />
     </Suspense>
   )
 }

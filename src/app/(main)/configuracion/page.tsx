@@ -42,7 +42,7 @@ export default function ConfiguracionPage() {
       <div>
         <h1 className="text-3xl font-bold">Configuración</h1>
         <p className="text-muted-foreground mt-2">
-          Personaliza tu experiencia en Oral-7
+          Personaliza tu experiencia en PIO-7
         </p>
       </div>
 

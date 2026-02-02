@@ -76,8 +76,8 @@ export function Header() {
     return (
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between px-4">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-granada-500 to-clm-600 text-white font-bold">
-            O7
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-granada-500 to-clm-600 text-white font-bold text-sm">
+            PIO
           </div>
         </div>
       </header>
@@ -89,13 +89,13 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link href={isAdmin ? "/admin" : "/dashboard"} className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-granada-500 to-clm-600 text-white font-bold">
-            O7
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-granada-500 to-clm-600 text-white font-bold text-sm">
+            PIO
           </div>
           <div className="hidden sm:block">
-            <span className="font-semibold text-lg">Oral-7</span>
+            <span className="font-semibold text-lg">PIO-7</span>
             <span className="text-xs text-muted-foreground ml-2 hidden md:inline">
-              CLM · Universidad de Granada
+              Centro de Lenguas Modernas
             </span>
           </div>
         </Link>
