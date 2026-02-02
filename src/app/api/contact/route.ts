@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
           </body>
         </html>
       `,
-      replyTo: email,
+      reply_to: email,
     })
 
     if (error) {
