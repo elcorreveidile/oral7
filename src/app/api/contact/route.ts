@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
         </html>
       `,
       replyTo: email,
-    })
+    } as any)
 
     if (error) {
       console.error("Error sending email:", error)
