@@ -7,12 +7,23 @@ import { QRGenerator } from "@/components/qr/qr-generator"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { formatDateSpanish } from "@/lib/utils"
-import { Users, Clock } from "lucide-react"
+import { Users, Clock, Loader2 } from "lucide-react"
+
+interface SessionData {
+  id: string
+  sessionNumber: number
+  date: string
+  title: string
+  subtitle?: string
+}
 
 export default function AdminQRPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [attendanceCount, setAttendanceCount] = useState(0)
+  const [currentSession, setCurrentSession] = useState<SessionData | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role !== "ADMIN") {
@@ -22,20 +33,50 @@ export default function AdminQRPage() {
     }
   }, [status, session, router])
 
-  if (status === "loading" || session?.user?.role !== "ADMIN") {
+  useEffect(() => {
+    async function fetchCurrentSession() {
+      if (status !== "authenticated" || session?.user?.role !== "ADMIN") {
+        return
+      }
+
+      try {
+        const response = await fetch("/api/sessions/current")
+        if (!response.ok) {
+          throw new Error("Error al obtener la sesión actual")
+        }
+        const data = await response.json()
+        setCurrentSession(data)
+      } catch (err) {
+        console.error("Error fetching session:", err)
+        setError("No se pudo cargar la sesión actual")
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchCurrentSession()
+  }, [status, session])
+
+  // Handle loading state
+  if (status === "loading" || isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     )
   }
 
-  // Mock current session data
-  const currentSession = {
-    id: "session-5",
-    sessionNumber: 5,
-    title: "Recursos de atenuación: suavizar el mensaje",
-    date: new Date(),
+  // Handle error state
+  if (error || !currentSession) {
+    return (
+      <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">
+            {error || "No se pudo cargar la información de la sesión"}
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -57,8 +98,11 @@ export default function AdminQRPage() {
         </CardHeader>
         <CardContent>
           <p className="font-medium">{currentSession.title}</p>
+          {currentSession.subtitle && (
+            <p className="text-sm text-muted-foreground mt-1">{currentSession.subtitle}</p>
+          )}
           <p className="text-sm text-muted-foreground mt-1">
-            {formatDateSpanish(currentSession.date)}
+            {formatDateSpanish(new Date(currentSession.date))}
           </p>
         </CardContent>
       </Card>

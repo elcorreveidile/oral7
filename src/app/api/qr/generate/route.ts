@@ -23,6 +23,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Verify that the session exists
+    const sessionData = await prisma.session.findUnique({
+      where: { id: sessionId },
+    })
+
+    if (!sessionData) {
+      return NextResponse.json(
+        { error: "La sesión especificada no existe" },
+        { status: 400 }
+      )
+    }
+
     // Deactivate any previous active codes for this session
     await prisma.qRCode.updateMany({
       where: {
