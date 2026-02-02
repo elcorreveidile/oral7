@@ -46,14 +46,19 @@ export default function AdminDashboardPage() {
     return null // Prevents hydration mismatch
   }
 
-  // Mock stats
+  // Check if course has started (Feb 3, 2026)
+  const courseStartDate = new Date("2026-02-03T00:00:00")
+  const hasStarted = currentDate >= courseStartDate
+
+  // Stats - will be fetched from API in production
+  // For now, show initial state before course starts
   const stats = {
     totalStudents: 15,
-    averageAttendance: 87,
-    currentSession: 5,
+    averageAttendance: hasStarted ? 0 : 0,
+    currentSession: hasStarted ? 1 : 0,
     totalSessions: 27,
-    studentsAtRisk: 2,
-    todayAttendance: 13,
+    studentsAtRisk: 0,
+    todayAttendance: 0,
   }
 
   const quickActions = [
@@ -87,11 +92,9 @@ export default function AdminDashboardPage() {
     },
   ]
 
-  const recentActivity = [
-    { student: "María Chen", action: "registró asistencia", time: "hace 5 min", session: 5 },
-    { student: "John Smith", action: "completó checklist", time: "hace 12 min", session: 4 },
-    { student: "Li Wei", action: "registró asistencia", time: "hace 15 min", session: 5 },
-  ]
+  // Recent activity - will be fetched from API
+  // Empty for now until course starts and we have real data
+  const recentActivity: Array<{ student: string; action: string; time: string; session: number }> = []
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -134,7 +137,9 @@ export default function AdminDashboardPage() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.averageAttendance}%</div>
+            <div className="text-2xl font-bold">
+              {hasStarted ? `${stats.averageAttendance}%` : "--"}
+            </div>
             <Progress value={stats.averageAttendance} className="mt-2" />
           </CardContent>
         </Card>
@@ -205,29 +210,52 @@ export default function AdminDashboardPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Asistencia de hoy</CardTitle>
-              <Badge variant="success">
-                {stats.todayAttendance}/{stats.totalStudents}
-              </Badge>
+              {hasStarted ? (
+                <Badge variant="success">
+                  {stats.todayAttendance}/{stats.totalStudents}
+                </Badge>
+              ) : (
+                <Badge variant="outline">Sin iniciar</Badge>
+              )}
             </div>
             <CardDescription>
-              Sesión {stats.currentSession} - Registros de asistencia
+              {hasStarted
+                ? `Sesión ${stats.currentSession} - Registros de asistencia`
+                : "El curso comienza el 3 de febrero"
+              }
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-2">
-              <Progress
-                value={(stats.todayAttendance / stats.totalStudents) * 100}
-                className="h-4"
-              />
-              <p className="text-sm text-muted-foreground">
-                {stats.totalStudents - stats.todayAttendance} estudiantes sin registrar
-              </p>
-            </div>
-            <Button asChild className="w-full mt-4" variant="outline">
-              <Link href="/admin/asistencia">
-                Ver detalle
-              </Link>
-            </Button>
+            {hasStarted ? (
+              <>
+                <div className="space-y-2">
+                  <Progress
+                    value={(stats.todayAttendance / stats.totalStudents) * 100}
+                    className="h-4"
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    {stats.totalStudents - stats.todayAttendance} estudiantes sin registrar
+                  </p>
+                </div>
+                <Button asChild className="w-full mt-4" variant="outline">
+                  <Link href="/admin/asistencia">
+                    Ver detalle
+                  </Link>
+                </Button>
+              </>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-muted-foreground">
+                  Mañana comienza la primera sesión
+                </p>
+                <Button asChild className="mt-4" variant="clm">
+                  <Link href="/admin/qr">
+                    <QrCode className="mr-2 h-4 w-4" />
+                    Preparar QR para mañana
+                  </Link>
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -240,27 +268,35 @@ export default function AdminDashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {recentActivity.map((activity, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50"
-                >
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <CheckCircle2 className="h-5 w-5 text-primary" />
+            {recentActivity.length > 0 ? (
+              <div className="space-y-4">
+                {recentActivity.map((activity, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <CheckCircle2 className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium truncate">{activity.student}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {activity.action} · Sesión {activity.session}
+                      </p>
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      {activity.time}
+                    </span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{activity.student}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {activity.action} · Sesión {activity.session}
-                    </p>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {activity.time}
-                  </span>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                <p>Sin actividad todavía</p>
+                <p className="text-sm">La actividad aparecerá aquí cuando comience el curso</p>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
