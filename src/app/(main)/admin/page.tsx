@@ -43,7 +43,11 @@ export default function AdminDashboardPage() {
   }
 
   if (!currentDate) {
-    return null // Prevents hydration mismatch
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
   }
 
   // Mock stats
@@ -61,8 +65,15 @@ export default function AdminDashboardPage() {
       title: "Generar QR",
       description: "Crear código de asistencia",
       icon: QrCode,
-      href: "/admin/qr",
+      href: "/admin/asistencia",
       variant: "clm" as const,
+    },
+    {
+      title: "Códigos de registro",
+      description: "Gestionar registros",
+      icon: Users,
+      href: "/admin/codigos",
+      variant: "outline" as const,
     },
     {
       title: "Ver estudiantes",
