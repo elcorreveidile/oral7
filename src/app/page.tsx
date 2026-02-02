@@ -102,7 +102,7 @@ export default function LandingPage() {
             </div>
             <div>
               <div className="text-3xl font-bold text-orange-600">100%</div>
-              <div className="text-sm text-slate-600">Online</div>
+              <div className="text-sm text-slate-600">Materiales online</div>
             </div>
           </div>
         </div>
@@ -186,9 +186,9 @@ export default function LandingPage() {
                 <div className="h-12 w-12 rounded-lg bg-yellow-100 flex items-center justify-center mb-4">
                   <Clock className="h-6 w-6 text-yellow-600" />
                 </div>
-                <CardTitle>100% Flexible</CardTitle>
+                <CardTitle>Materiales siempre accesibles</CardTitle>
                 <CardDescription>
-                  Accede cuando quieras, desde donde quieras. Mobile-first para aprender sobre la marcha.
+                  Todos los contenidos del curso disponibles online. Mobile-first para consultar sobre la marcha.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -462,15 +462,13 @@ export default function LandingPage() {
             <div className="flex items-center gap-2">
               <Mic className="h-5 w-5 text-orange-600" />
               <span className="font-semibold">Oral-7</span>
-              <span className="text-sm text-slate-500">| Universidad de Granada</span>
+              <span className="text-sm text-slate-500">| Centro de Lenguas Modernas · Universidad de Granada</span>
             </div>
-            <div className="flex gap-6 text-sm text-slate-600">
-              <a href="#" className="hover:text-orange-600 transition-colors">Términos</a>
-              <a href="#" className="hover:text-orange-600 transition-colors">Privacidad</a>
-              <a href="#" className="hover:text-orange-600 transition-colors">Contacto</a>
+            <div className="text-sm text-slate-600 text-center">
+              Desarrollado por <span className="font-medium">Javier Benítez Láinez</span>
             </div>
             <div className="text-sm text-slate-500">
-              © 2025 Oral-7. Todos los derechos reservados.
+              © 2026 Oral-7. Todos los derechos reservados.
             </div>
           </div>
         </div>

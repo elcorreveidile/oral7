@@ -30,12 +30,12 @@ export default function AdminQRPage() {
     )
   }
 
-  // Mock current session data
+  // Current session data - course starts Feb 3, 2026
   const currentSession = {
-    id: "session-5",
-    sessionNumber: 5,
-    title: "Recursos de atenuación: suavizar el mensaje",
-    date: new Date(),
+    id: "session-1",
+    sessionNumber: 1,
+    title: "Toma de contacto e interacción social",
+    date: "2026-02-03",
   }
 
   return (
