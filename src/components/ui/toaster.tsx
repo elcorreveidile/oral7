@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import {
   Toast,
   ToastClose,
@@ -11,7 +12,17 @@ import {
 import { useToast } from "@/components/ui/use-toast"
 
 export function Toaster() {
+  const [mounted, setMounted] = useState(false)
   const { toasts } = useToast()
+
+  // Prevent hydration mismatch by only rendering after mount
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
 
   return (
     <ToastProvider>
