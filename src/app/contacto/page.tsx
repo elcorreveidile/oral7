@@ -141,32 +141,6 @@ export default function ContactoPage() {
           </CardContent>
         </Card>
 
-        <Card className="mt-6 bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800">
-          <CardHeader>
-            <CardTitle className="text-blue-800 dark:text-blue-200 flex items-center gap-2">
-              <Mail className="h-5 w-5" />
-              Información de contacto
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-blue-700 dark:text-blue-300 space-y-2">
-            <p>
-              <strong>Email:</strong> benitezl@go.ugr.es
-            </p>
-            <p>
-              <strong>Centro:</strong> Centro de Lenguas Modernas
-            </p>
-            <p>
-              <strong>Universidad:</strong> Universidad de Granada
-            </p>
-            <p className="text-xs mt-4">
-              También puedes visitar el{" "}
-              <Link href="/" className="underline hover:text-blue-900">
-                sitio web del curso
-              </Link>
-            </p>
-          </CardContent>
-        </Card>
-
         <div className="mt-8 text-center">
           <Link href="/">
             <Button variant="outline">
