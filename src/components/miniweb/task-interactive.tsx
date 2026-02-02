@@ -20,7 +20,7 @@ export function TaskInteractive({ task, onSubmit }: TaskInteractiveProps) {
 
   // Don't render Mode B only tasks in Mode A
   if (task.isModeBOnly && mode === "A") {
-    return null
+    return <></>
   }
 
   const handleCheck = () => {
