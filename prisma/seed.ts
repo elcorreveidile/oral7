@@ -30,9 +30,7 @@ async function main() {
   // Estudiantes de PRUEBA para desarrollo local
   // En producción, los estudiantes se registrarán por sí mismos
   const testStudents = [
-    { email: 'test.student1@ugr.es', name: 'Estudiante Prueba 1' },
-    { email: 'test.student2@ugr.es', name: 'Estudiante Prueba 2' },
-    { email: 'test.student3@ugr.es', name: 'Estudiante Prueba 3' },
+    { email: 'test.student1@ugr.es', name: 'Estudiante Demo' },
   ]
 
   const students: any[] = []

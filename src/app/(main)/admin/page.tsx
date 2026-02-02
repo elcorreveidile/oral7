@@ -50,15 +50,32 @@ export default function AdminDashboardPage() {
     )
   }
 
-  // Mock stats
-  const stats = {
-    totalStudents: 15,
-    averageAttendance: 87,
-    currentSession: 5,
+  // Stats - se cargarán desde la API
+  const [stats, setStats] = useState({
+    totalStudents: 0,
+    averageAttendance: 0,
+    currentSession: 1,
     totalSessions: 27,
-    studentsAtRisk: 2,
-    todayAttendance: 13,
-  }
+    studentsAtRisk: 0,
+    todayAttendance: 0,
+  })
+
+  useEffect(() => {
+    // Cargar estadísticas reales
+    fetch("/api/dashboard/stats")
+      .then((res) => res.json())
+      .then((data) => {
+        setStats((prev) => ({
+          ...prev,
+          totalStudents: data.totalStudents,
+          currentSession: data.currentSession,
+          totalSessions: data.totalSessions,
+        }))
+      })
+      .catch(() => {
+        // Si falla, mantener valores por defecto
+      })
+  }, [])
 
   const quickActions = [
     {
