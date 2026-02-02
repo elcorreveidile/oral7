@@ -1,0 +1,275 @@
+// Esquema de base de datos para Oral-7
+// Plataforma educativa para "Producción e interacción oral en español" - Nivel C1
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// MODELOS DE AUTENTICACIÓN Y USUARIOS
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  password      String?   // Hash bcrypt - opcional para OAuth
+  image         String?
+  role          UserRole  @default(STUDENT)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relaciones
+  attendances   Attendance[]
+  progress      UserProgress[]
+  checklistItems UserChecklistItem[]
+  submissions   Submission[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN     // Profesor
+  STUDENT   // Estudiante
+}
+
+// ============================================
+// MODELOS DE SESIONES Y CONTENIDO
+// ============================================
+
+model Session {
+  id              String        @id @default(cuid())
+  sessionNumber   Int           @unique  // Número de sesión (1-27)
+  date            DateTime      // Fecha de la sesión
+  title           String        // Título de la sesión
+  subtitle        String?       // Subtítulo opcional
+  blockNumber     Int           // Bloque temático (1, 2 o 3)
+  blockTitle      String        // Título del bloque
+  isExamDay       Boolean       @default(false)  // Si es día de examen
+  examType        ExamType?     // Tipo de examen si aplica
+
+  // Contenido estructurado (JSON)
+  objectives      Json          // Array de objetivos
+  timing          Json          // Desglose temporal
+  dynamics        Json          // Dinámicas de aula
+
+  // Contenido adicional
+  grammarContent  Json?         // Contenido gramatical
+  vocabularyContent Json?       // Contenido de vocabulario
+  modeAContent    Json?         // Contenido Modo A (colaborativo)
+  modeBContent    Json?         // Contenido Modo B (analítico)
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relaciones
+  attendances     Attendance[]
+  tasks           Task[]
+  checklistItems  ChecklistItem[]
+  resources       Resource[]
+  progress        UserProgress[]
+
+  @@map("sessions")
+}
+
+enum ExamType {
+  PARTIAL   // Examen parcial
+  FINAL     // Examen final
+}
+
+// ============================================
+// MODELO DE TAREAS INTERACTIVAS
+// ============================================
+
+model Task {
+  id              String      @id @default(cuid())
+  sessionId       String
+  session         Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  title           String      // Título de la tarea
+  description     String?     // Descripción
+  type            TaskType    // Tipo de tarea interactiva
+  content         Json        // Contenido de la tarea (preguntas, opciones, etc.)
+  order           Int         // Orden dentro de la sesión
+
+  isModeBOnly     Boolean     @default(false)  // Solo visible en Modo B
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  submissions     Submission[]
+
+  @@map("tasks")
+}
+
+enum TaskType {
+  MULTIPLE_CHOICE     // Selección múltiple
+  FILL_BLANKS         // Rellenar huecos
+  DRAG_DROP           // Arrastrar y soltar
+  MATCHING            // Emparejar
+  ORDERING            // Ordenar elementos
+  FREE_TEXT           // Texto libre
+  AUDIO_RECORDING     // Grabación de audio
+  VIDEO_RECORDING     // Grabación de vídeo
+}
+
+// ============================================
+// MODELO DE ENTREGAS/SUBMISSIONS
+// ============================================
+
+model Submission {
+  id          String      @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  taskId      String
+  task        Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  content     Json        // Respuesta del estudiante
+  score       Float?      // Puntuación (si aplica)
+  feedback    String?     // Feedback del profesor
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@unique([userId, taskId])
+  @@map("submissions")
+}
+
+// ============================================
+// MODELO DE CHECKLIST DE AUTOEVALUACIÓN
+// ============================================
+
+model ChecklistItem {
+  id          String    @id @default(cuid())
+  sessionId   String
+  session     Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  text        String    // Texto del ítem
+  order       Int       // Orden
+
+  userItems   UserChecklistItem[]
+
+  @@map("checklist_items")
+}
+
+model UserChecklistItem {
+  id              String        @id @default(cuid())
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  checklistItemId String
+  checklistItem   ChecklistItem @relation(fields: [checklistItemId], references: [id], onDelete: Cascade)
+
+  isCompleted     Boolean       @default(false)
+  completedAt     DateTime?
+
+  @@unique([userId, checklistItemId])
+  @@map("user_checklist_items")
+}
+
+// ============================================
+// MODELO DE RECURSOS DESCARGABLES
+// ============================================
+
+model Resource {
+  id          String        @id @default(cuid())
+  sessionId   String
+  session     Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  title       String        // Título del recurso
+  type        ResourceType  // Tipo de recurso
+  url         String        // URL o path del archivo
+  order       Int           // Orden
+
+  createdAt   DateTime      @default(now())
+
+  @@map("resources")
+}
+
+enum ResourceType {
+  PDF
+  AUDIO
+  VIDEO
+  LINK
+  IMAGE
+}
+
+// ============================================
+// MODELO DE ASISTENCIA
+// ============================================
+
+model Attendance {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId   String
+  session     Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  registeredAt DateTime @default(now())  // Momento del registro
+  method      AttendanceMethod  // Método de registro
+
+  @@unique([userId, sessionId])
+  @@map("attendances")
+}
+
+enum AttendanceMethod {
+  QR_SCAN     // Escaneado de QR
+  MANUAL_CODE // Código introducido manualmente
+  ADMIN       // Registrado por el profesor
+}
+
+// ============================================
+// MODELO DE CÓDIGOS QR DINÁMICOS
+// ============================================
+
+model QRCode {
+  id          String    @id @default(cuid())
+  code        String    @unique  // Código único (6-8 caracteres)
+  sessionId   String    // Referencia a la sesión
+
+  expiresAt   DateTime  // Fecha de expiración
+  isActive    Boolean   @default(true)
+
+  createdAt   DateTime  @default(now())
+
+  @@map("qr_codes")
+}
+
+// ============================================
+// MODELO DE PROGRESO DEL USUARIO
+// ============================================
+
+model UserProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionId   String
+  session     Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  viewedAt    DateTime?        // Cuándo vio la sesión por primera vez
+  timeSpent   Int       @default(0)  // Tiempo en la sesión (segundos)
+  lastAccess  DateTime  @default(now())
+  modePreference String  @default("A")  // Preferencia de modo (A o B)
+
+  @@unique([userId, sessionId])
+  @@map("user_progress")
+}
+
+// ============================================
+// MODELO DE CONFIGURACIÓN GLOBAL
+// ============================================
+
+model Settings {
+  id              String    @id @default("global")
+  currentSession  Int       @default(1)  // Sesión actual del curso
+  courseStartDate DateTime  // Fecha de inicio del curso
+  courseEndDate   DateTime  // Fecha de fin del curso
+
+  updatedAt       DateTime  @updatedAt
+
+  @@map("settings")
+}
