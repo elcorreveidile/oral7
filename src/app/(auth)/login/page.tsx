@@ -57,8 +57,8 @@ function LoginForm() {
   const handleDemoLogin = async (role: "admin" | "student") => {
     setIsLoading(true)
     const credentials = role === "admin"
-      ? { email: "profesor@clm.ugr.es", password: "admin123" }
-      : { email: "estudiante@correo.ugr.es", password: "student123" }
+      ? { email: "benitezl@go.ugr.es", password: "admin123" }
+      : { email: "test.student1@ugr.es", password: "estudiante123" }
 
     try {
       const result = await signIn("credentials", {
