@@ -92,10 +92,6 @@ export async function POST(request: NextRequest) {
           objectives: [`Objetivo de la sesión ${sessionDef.number}`],
           timing: [],
           dynamics: [],
-          grammarContent: null,
-          vocabularyContent: null,
-          modeAContent: null,
-          modeBContent: null,
         },
       })
       sessions.push(session)
