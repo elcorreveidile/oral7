@@ -8,6 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Loader2, Database, CheckCircle, AlertCircle } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic'
+
 export default function AdminSeedPage() {
   const { data: session, status } = useSession()
   const router = useRouter()

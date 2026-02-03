@@ -17,6 +17,9 @@ interface SessionData {
   subtitle?: string
 }
 
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic'
+
 export default function AdminQRPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
