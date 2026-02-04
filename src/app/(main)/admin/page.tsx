@@ -64,7 +64,7 @@ export default function AdminDashboardPage() {
   const quickActions = [
     {
       title: "Generar QR",
-      description: "Crear código de asistencia",
+      description: "Generar código QR de clase",
       icon: QrCode,
       href: "/admin/qr",
       variant: "clm" as const,
@@ -111,7 +111,7 @@ export default function AdminDashboardPage() {
         <Button asChild size="lg" variant="clm">
           <Link href="/admin/qr">
             <QrCode className="mr-2 h-5 w-5" />
-            Generar código QR
+            Generar QR de clase
           </Link>
         </Button>
       </div>
@@ -133,7 +133,7 @@ export default function AdminDashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Asistencia media</CardTitle>
+            <CardTitle className="text-sm font-medium">Tasa de completitud</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -170,7 +170,7 @@ export default function AdminDashboardPage() {
               {stats.studentsAtRisk}
             </div>
             <p className="text-xs text-muted-foreground">
-              Estudiantes bajo 80% asistencia
+              Estudiantes que requieren atención
             </p>
           </CardContent>
         </Card>
