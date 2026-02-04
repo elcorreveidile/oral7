@@ -24,6 +24,8 @@ export default function AdminDashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [currentDate, setCurrentDate] = useState<Date | null>(null)
+  const [syncing, setSyncing] = useState(false)
+  const [syncMessage, setSyncMessage] = useState("")
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role !== "ADMIN") {
@@ -33,6 +35,28 @@ export default function AdminDashboardPage() {
     }
     setCurrentDate(new Date())
   }, [status, session, router])
+
+  const handleSyncSessions = async () => {
+    setSyncing(true)
+    setSyncMessage("")
+
+    try {
+      const response = await fetch("/api/admin/sync-sessions", {
+        method: "POST",
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setSyncMessage(data.message)
+      } else {
+        setSyncMessage("Error al sincronizar")
+      }
+    } catch (error) {
+      setSyncMessage("Error al sincronizar")
+    } finally {
+      setSyncing(false)
+    }
+  }
 
   if (status === "loading" || session?.user?.role !== "ADMIN") {
     return (
@@ -115,6 +139,30 @@ export default function AdminDashboardPage() {
           </Link>
         </Button>
       </div>
+
+      {/* Sync sessions banner */}
+      <Card className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800">
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold text-blue-900 dark:text-blue-100">Sincronizar sesiones</h3>
+              <p className="text-sm text-blue-700 dark:text-blue-300">
+                Actualiza la base de datos con las sesiones de sessions.ts
+              </p>
+              {syncMessage && (
+                <p className="text-sm mt-2 text-green-700 dark:text-green-300">{syncMessage}</p>
+              )}
+            </div>
+            <Button
+              onClick={handleSyncSessions}
+              disabled={syncing}
+              variant="clm"
+            >
+              {syncing ? "Sincronizando..." : "Sincronizar ahora"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Stats grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

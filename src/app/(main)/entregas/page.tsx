@@ -41,7 +41,7 @@ export default function EntregasPage() {
       })
 
     // Load submissions
-    fetch("/api/submissions")
+    fetch("/api/session-submissions")
       .then((res) => res.json())
       .then((data) => {
         if (data.submissions) {
@@ -64,12 +64,12 @@ export default function EntregasPage() {
 
   const handleSubmit = async (files: any[]) => {
     // Save submission
-    const taskId = `session-${selectedSession.sessionNumber}`
+    const sessionNumber = selectedSession.sessionNumber
 
-    const response = await fetch("/api/submissions", {
+    const response = await fetch("/api/session-submissions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ taskId, files }),
+      body: JSON.stringify({ sessionNumber, files }),
     })
 
     if (response.ok) {
