@@ -37,6 +37,7 @@ export function TaskSubmission({
 
   const handleSubmit = () => {
     if (files.length === 0) return
+    console.log("TaskSubmission handleSubmit:", files)
     onSubmit?.(files)
   }
 
