@@ -38,6 +38,24 @@ export async function POST(request: NextRequest) {
     // Create submission record with a synthetic ID
     const taskId = `session-${sessionNumber}`
 
+    // Ensure task exists (create a dummy task for file submissions)
+    const existingTask = await prisma.task.findUnique({
+      where: { id: taskId },
+    })
+
+    if (!existingTask) {
+      await prisma.task.create({
+        data: {
+          id: taskId,
+          sessionId: sessionRecord.id,
+          title: `Entrega de archivos - Sesión ${sessionNumber}`,
+          type: "DOCUMENT_UPLOAD",
+          content: {},
+          order: 999,
+        },
+      })
+    }
+
     // Create or update submission
     const submission = await prisma.submission.upsert({
       where: {
