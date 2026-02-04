@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { Upload, FileText, CheckCircle } from "lucide-react"
+import { Upload, FileText, CheckCircle, AlertCircle } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { TaskSubmission } from "@/components/upload/task-submission"
 import { formatDateSpanish } from "@/lib/utils"
+import { useToast } from "@/components/ui/use-toast"
 
 interface Submission {
   id: string
@@ -19,6 +20,7 @@ interface Submission {
 export default function EntregasPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const { toast } = useToast()
   const [sessions, setSessions] = useState<any[]>([])
   const [submissions, setSubmissions] = useState<Record<string, Submission>>({})
   const [selectedSession, setSelectedSession] = useState<any>(null)
@@ -63,23 +65,51 @@ export default function EntregasPage() {
   }
 
   const handleSubmit = async (files: any[]) => {
+    console.log("Submitting files:", files)
+
     // Save submission
     const sessionNumber = selectedSession.sessionNumber
 
-    const response = await fetch("/api/session-submissions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionNumber, files }),
-    })
+    try {
+      const response = await fetch("/api/session-submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionNumber, files }),
+      })
 
-    if (response.ok) {
-      setDialogOpen(false)
-      // Reload submissions
+      if (!response.ok) {
+        const error = await response.json()
+        console.error("Submit error:", error)
+        toast({
+          variant: "destructive",
+          title: "Error al guardar la entrega",
+          description: error.details || error.error || "Inténtalo de nuevo",
+        })
+        return
+      }
+
       const data = await response.json()
+      console.log("Submit success:", data)
+
+      setDialogOpen(false)
+
+      // Reload submissions
       setSubmissions((prev) => ({
         ...prev,
         [`session-${sessionNumber}`]: data.submission,
       }))
+
+      toast({
+        title: "Entrega guardada",
+        description: `${files.length} archivo(s) subido(s) correctamente`,
+      })
+    } catch (error) {
+      console.error("Submit error:", error)
+      toast({
+        variant: "destructive",
+        title: "Error al guardar la entrega",
+        description: error instanceof Error ? error.message : "Inténtalo de nuevo",
+      })
     }
   }
 
