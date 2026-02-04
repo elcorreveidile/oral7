@@ -181,6 +181,7 @@ model Resource {
   session     Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   title       String        // Título del recurso
+  description String?       // Descripción o instrucciones (opcional)
   type        ResourceType  // Tipo de recurso
   url         String        // URL o path del archivo
   order       Int           // Orden
