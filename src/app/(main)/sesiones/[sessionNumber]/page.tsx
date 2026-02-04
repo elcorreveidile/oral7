@@ -19,7 +19,9 @@ export default function SessionPage() {
     async function fetchSession() {
       try {
         setLoading(true)
-        const response = await fetch(`/api/sessions/${sessionNum}`)
+        const response = await fetch(`/api/sessions/${sessionNum}`, {
+          credentials: 'include',
+        })
 
         if (!response.ok) {
           throw new Error("Error al cargar la sesión")
