@@ -7,23 +7,33 @@ import { Calendar, BookOpen, GraduationCap } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
-// Course schedule data - Feb 3 to May 14, 2026 (Tue/Thu)
+// Course schedule data - Updated from sessions.ts (Feb 3 to May 14, 2026)
 const courseSchedule = [
-  { date: "2026-02-03", sessionNumber: 1, title: "Toma de contacto e interacción social", block: 1 },
-  { date: "2026-02-05", sessionNumber: 2, title: "Socialización y registro: tutear vs. usted", block: 1 },
-  { date: "2026-02-10", sessionNumber: 3, title: "Los bares como espacios de interacción", block: 1 },
-  { date: "2026-02-12", sessionNumber: 4, title: "El arte de la conversación informal", block: 1 },
-  { date: "2026-02-17", sessionNumber: 5, title: "Quedar con amigos: propuestas y negociación", block: 1 },
-  { date: "2026-02-19", sessionNumber: 6, title: "Contar anécdotas y experiencias", block: 2 },
-  { date: "2026-02-24", sessionNumber: 7, title: "Expresar opiniones y reaccionar", block: 2 },
-  { date: "2026-02-26", sessionNumber: 8, title: "El debate informal", block: 2 },
-  { date: "2026-03-03", sessionNumber: 9, title: "Hablar de actualidad y noticias", block: 2 },
-  { date: "2026-03-05", sessionNumber: 10, title: "La argumentación en contextos formales", block: 2 },
-  { date: "2026-03-10", sessionNumber: 11, title: "Presentaciones orales: estructura", block: 3 },
-  { date: "2026-03-12", sessionNumber: 12, title: "Presentaciones orales: recursos", block: 3 },
-  { date: "2026-03-17", sessionNumber: 13, title: "Repaso y preparación examen parcial", block: 3 },
-  { date: "2026-03-19", sessionNumber: 14, title: "Repaso y preparación examen parcial", block: 3 },
-  { date: "2026-03-24", sessionNumber: 15, title: "Repaso general", block: 3 },
+  { date: "2026-02-03", sessionNumber: 1, title: 'Presentación del curso y dinámicas de integración', block: 1 },
+  { date: "2026-02-05", sessionNumber: 2, title: 'Conectores de la argumentación oral', block: 1 },
+  { date: "2026-02-10", sessionNumber: 3, title: 'Expresar opiniones, actitudes y conocimientos', block: 1 },
+  { date: "2026-02-12", sessionNumber: 4, title: 'El registro formal', block: 1 },
+  { date: "2026-02-17", sessionNumber: 5, title: 'Acuerdo y desacuerdo', block: 1 },
+  { date: "2026-02-19", sessionNumber: 6, title: 'La contraargumentación', block: 1 },
+  { date: "2026-03-03", sessionNumber: 9, title: 'Análisis y feedback del debate', block: 1 },
+  { date: "2026-03-05", sessionNumber: 10, title: 'Narrar en el pasado', block: 2 },
+  { date: "2026-03-10", sessionNumber: 11, title: 'Indicadores temporales precisos', block: 2 },
+  { date: "2026-03-12", sessionNumber: 12, title: 'Relatar acontecimientos históricos', block: 2 },
+  { date: "2026-03-17", sessionNumber: 13, title: 'La hipótesis (Presente y Futuro)', block: 2 },
+  { date: "2026-03-19", sessionNumber: 14, title: 'La hipótesis (Pasado)', block: 2 },
+  { date: "2026-03-24", sessionNumber: 15, title: 'Preparación para el parcial', block: 2 },
+  { date: "2026-04-07", sessionNumber: 17, title: 'Bienvenida post-vacaciones', block: 2 },
+  { date: "2026-04-09", sessionNumber: 18, title: 'La entrevista', block: 2 },
+  { date: "2026-04-14", sessionNumber: 19, title: 'Estrategias de interacción', block: 2 },
+  { date: "2026-04-16", sessionNumber: 20, title: 'El estilo indirecto', block: 2 },
+  { date: "2026-04-21", sessionNumber: 21, title: 'Estrategias de influencia', block: 2 },
+  { date: "2026-04-23", sessionNumber: 22, title: 'Lenguaje persuasivo', block: 2 },
+  { date: "2026-04-28", sessionNumber: 23, title: 'La Conferencia (I)', block: 2 },
+  { date: "2026-04-30", sessionNumber: 24, title: 'La Conferencia (II)', block: 2 },
+  { date: "2026-05-05", sessionNumber: 25, title: 'Diferencias entre registro coloquial y formal', block: 3 },
+  { date: "2026-05-07", sessionNumber: 26, title: '"Los tacos"', block: 3 },
+  { date: "2026-05-12", sessionNumber: 27, title: 'Vocabulario abstracto', block: 3 },
+  { date: "2026-05-14", sessionNumber: 28, title: 'Última clase: Presentaciones finales', block: 3 },
 ]
 
 const importantDates = [
