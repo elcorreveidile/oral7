@@ -555,7 +555,21 @@ async function main() {
 
     const session = await prisma.session.upsert({
       where: { sessionNumber: sessionDef.number },
-      update: {},
+      update: {
+        // Actualizar sesiones existentes con el nuevo contenido
+        date: sessionDef.date,
+        title: sessionDef.title,
+        subtitle: sessionDef.subtitle,
+        blockNumber: sessionDef.block,
+        blockTitle: sessionDef.blockTitle,
+        objectives: sessionDef.objectives,
+        timing: sessionDef.timing,
+        dynamics: sessionDef.dynamics,
+        grammarContent,
+        vocabularyContent,
+        modeAContent,
+        modeBContent,
+      },
       create: {
         sessionNumber: sessionDef.number,
         date: sessionDef.date,
@@ -581,9 +595,15 @@ async function main() {
   // ============================================
   // 4. CREATE TASKS
   // ============================================
-  console.log('📝 Creating tasks...')
+  console.log('📝 Creating/updating tasks...')
 
-  // Crear algunas tareas de ejemplo
+  // Eliminar tareas existentes para las sesiones que vamos a actualizar
+  const sessionIds = sessions.map(s => s.id).filter(Boolean)
+  await prisma.task.deleteMany({
+    where: { sessionId: { in: sessionIds } },
+  })
+
+  // Crear tareas
   await prisma.task.createMany({
     data: [
       {
@@ -662,7 +682,14 @@ async function main() {
   // ============================================
   // 5. CREATE CHECKLIST ITEMS
   // ============================================
-  console.log('📝 Creating checklist items...')
+  console.log('📝 Creating/updating checklist items...')
+
+  // Eliminar checklist existentes para las sesiones que vamos a actualizar
+  for (const session of sessions.slice(0, 5)) {
+    await prisma.checklistItem.deleteMany({
+      where: { sessionId: session.id },
+    })
+  }
 
   // Checklist específico para Sesión 2
   if (sessions[1]) {
@@ -693,7 +720,14 @@ async function main() {
   // ============================================
   // 6. CREATE RESOURCES
   // ============================================
-  console.log('📝 Creating resources...')
+  console.log('📝 Creating/updating resources...')
+
+  // Eliminar recursos existentes para las sesiones que vamos a actualizar
+  for (const session of sessions.slice(0, 8)) {
+    await prisma.resource.deleteMany({
+      where: { sessionId: session.id },
+    })
+  }
 
   // Recursos específicos para Sesión 2
   if (sessions[1]) {
