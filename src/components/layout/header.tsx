@@ -13,6 +13,7 @@ import {
   QrCode,
   Settings,
   Sun,
+  Upload,
   User,
   Users,
   X,
@@ -37,6 +38,7 @@ const studentNavItems = [
   { href: "/dashboard", label: "Inicio", icon: Home },
   { href: "/sesiones", label: "Sesiones", icon: BookOpen },
   { href: "/calendario", label: "Calendario", icon: Calendar },
+  { href: "/entregas", label: "Entregas", icon: Upload },
   { href: "/asistencia", label: "Asistencia", icon: QrCode },
 ]
 
