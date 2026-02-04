@@ -1102,6 +1102,302 @@ export const sessionsData: SessionData[] = [
   },
 
   // ============================================
+  // SESIÓN 7: El debate formal
+  // ============================================
+  {
+    sessionNumber: 7,
+    id: `session-7`,
+    date: new Date('2026-02-24'),
+    title: 'El debate formal',
+    subtitle: 'Práctica completa de debate estructurado',
+    blockNumber: 1,
+    blockTitle: 'La Argumentación Formal',
+    isExamDay: false,
+    objectives: [
+      { id: 'obj-7-1', text: 'Participar en un debate formal estructurado' },
+      { id: 'obj-7-2', text: 'Aplicar todas las técnicas de argumentación aprendidas' },
+      { id: 'obj-7-3', text: 'Usar contraargumentaciones efectivas' },
+      { id: 'obj-7-4', text: 'Mantener la coherencia y estructura durante el debate' },
+      { id: 'obj-7-5', text: 'Evaluar y feedback de debates de compañeros', isModeB: true },
+    ],
+    timing: [
+      { id: 't7-1', duration: '10 min', activity: 'Preparación', description: 'Organización de grupos y temas' },
+      { id: 't7-2', duration: '15 min', activity: 'Planificación', description: 'Preparación de argumentos' },
+      { id: 't7-3', duration: '30 min', activity: 'Debate Grupo 1', description: 'Debate completo con moderador' },
+      { id: 't7-4', duration: '30 min', activity: 'Debate Grupo 2', description: 'Debate completo con moderador' },
+      { id: 't7-5', duration: '15 min', activity: 'Feedback', description: 'Análisis de lo aprendido' },
+    ],
+    dynamics: [
+      {
+        id: 'd7-1',
+        step: 1,
+        title: 'Preparación del debate',
+        instructions: [
+          'Forma grupos de 4 personas (2 PRO, 2 CONTRA)',
+          'Elige uno de estos temas:',
+          '· ¿Debe ser obligatoria la educación universitaria pública?',
+          '· ¿Estás a favor o en contra del teletrabajo permanente?',
+          '· ¿Deberían prohibirse las redes sociales en menores de 16 años?',
+          '· ¿Es ética la inteligencia artificial en educación?',
+          '10 minutos para preparar argumentos con tu equipo',
+        ],
+        groupType: 'small_group',
+      },
+      {
+        id: 'd7-2',
+        step: 2,
+        title: 'Estructura del debate',
+        instructions: [
+          'Cada grupo sigue esta estructura:',
+          '1. APERTURA PRO (2 min) - Presentación de argumentos principales',
+          '2. APERTURA CONTRA (2 min) - Presentación de argumentos principales',
+          '3. REFUTACIÓN PRO (3 min) - Contraargumentos a CONTRA',
+          '4. REFUTACIÓN CONTRA (3 min) - Contraargumentos a PRO',
+          '5. CLAUSURA PRO (1 min) - Resumen y cierre',
+          '6. CLAUSURA CONTRA (1 min) - Resumen y cierre',
+          'Un moderador (compañero) marca los tiempos',
+        ],
+        groupType: 'whole_class',
+      },
+      {
+        id: 'd7-3',
+        step: 3,
+        title: 'Rúbrica de evaluación',
+        instructions: [
+          'La audiencia evalúa:',
+          'ORGANIZACIÓN: ¿La argumentación sigue un orden lógico?',
+          'EVIDENCIAS: ¿Se proporcionan ejemplos concretos?',
+          'CONTRARGUMENTACIÓN: ¿Se responden los puntos del oponente?',
+          'RECURSOS LENGÜÍSTICOS: ¿Se usan conectores variados?',
+          'CLARIDAD: ¿Se entienden los puntos principales?',
+          'Cada aspecto se evalúa del 1 al 5',
+        ],
+        groupType: 'whole_class',
+        isModeB: true,
+      },
+    ],
+    grammarContent: {
+      title: 'Conectores de cierre y resumen',
+      explanation: 'Para cerrar un debate efectivamente, necesitas conectores que sinteticen tu posición y refuercen tus puntos principales.',
+      examples: [
+        { spanish: 'En conclusión, creo que la tecnología es una herramienta necesaria.' },
+        { spanish: 'Para terminar, quiero recalcar la importancia de la educación.' },
+        { spanish: 'En resumen, los beneficios superan los inconvenientes.' },
+        { spanish: 'Finalmente, diría que depende del contexto específico.' },
+        { spanish: 'Por todo lo expuesto, mantengo mi posición inicial.' },
+      ],
+      rules: [
+        'DE CIERRE: En conclusión / Para terminar / En resumen / Finalmente',
+        'DE REFUERZO: Por todo lo expuesto / En definitiva / En suma',
+        'DE RECAPITULACIÓN: En otras palabras / Dicho de otro modo / Es decir',
+        'DE ÉNFASIS: Lo más importante es / Recalco que / Insisto en que',
+      ],
+    },
+    vocabularyContent: {
+      title: 'Vocabulario de debate',
+      items: [
+        { term: 'Postura', definition: 'Posición o argumento principal que se defiende', example: 'Mi postura es que la tecnología ayuda', category: 'general' },
+        { term: 'Enfatizar', definition: 'Dar importancia o insistir en algo', example: 'Enfatizo que la educación es clave', category: 'acción' },
+        { term: 'Sintetizar', definition: 'Resumir o combinar ideas principales', example: 'Sintetizo los argumentos presentados', category: 'acción' },
+        { term: 'Recalcar', definition: 'Destacar o subrayar algo importante', example: 'Recalco la necesidad de acción', category: 'acción' },
+        { term: 'Contundente', definition: 'Que tiene fuerza y convence', example: 'Un argumento contundente', category: 'calidad' },
+        { term: 'Sostenible', definition: 'Que se puede mantener o defender', example: 'Una posición sostenible', category: 'calidad' },
+      ],
+      expressions: [
+        { expression: 'En definitiva', meaning: 'In short / To sum up', usage: 'Cierre de argumento' },
+        { expression: 'Dicho de otro modo', meaning: 'In other words', usage: 'Aclaración' },
+        { expression: 'Lo que quiero decir es', meaning: 'What I mean is', usage: 'Clarificación' },
+        { expression: 'En pocas palabras', meaning: 'In a nutshell', usage: 'Síntesis informal' },
+      ],
+    },
+    tasks: [
+      {
+        id: 'task-7-1',
+        title: 'Ordena el debate',
+        description: 'Ordena las fases del debate correctamente',
+        type: 'ORDERING',
+        content: {
+          instructions: 'Ordena estas fases del debate del 1 al 6:',
+          items: [
+            { id: 'i1', type: 'ordering-item', content: 'Clausura CONTRA (1 min)' },
+            { id: 'i2', type: 'ordering-item', content: 'Refutación PRO (3 min)' },
+            { id: 'i3', type: 'ordering-item', content: 'Apertura PRO (2 min)' },
+            { id: 'i4', type: 'ordering-item', content: 'Clausura PRO (1 min)' },
+            { id: 'i5', type: 'ordering-item', content: 'Refutación CONTRA (3 min)' },
+            { id: 'i6', type: 'ordering-item', content: 'Apertura CONTRA (2 min)' },
+          ],
+          correctAnswers: ['i3', 'i6', 'i2', 'i5', 'i1', 'i4'],
+          feedback: {
+            correct: '¡Correcto! El orden es: Apertura PRO → Apertura CONTRA → Refutación PRO → Refutación CONTRA → Clausura PRO → Clausura CONTRA',
+            incorrect: 'El orden correcto es: Apertura PRO → Apertura CONTRA → Refutación PRO → Refutación CONTRA → Clausura PRO → Clausura CONTRA',
+          },
+        },
+        order: 1,
+        isModeBOnly: false,
+      },
+    ],
+    checklistItems: [
+      { id: 'ck7-1', text: 'Participé activamente en el debate' },
+      { id: 'ck7-2', text: 'Usé conectores de contraargumentación' },
+      { id: 'ck7-3', text: 'Mantuve la coherencia en mi argumentación' },
+      { id: 'ck7-4', text: 'Respondí a los argumentos del oponente' },
+      { id: 'ck7-5', text: 'Cerré mi posición efectivamente' },
+    ],
+    resources: [
+      { id: 'r7-1', title: 'Rúbrica de debate', type: 'PDF', url: '/resources/rubrica-debate.pdf', order: 1 },
+    ],
+  },
+
+  // ============================================
+  // SESIÓN 8: Evaluación del debate
+  // ============================================
+  {
+    sessionNumber: 8,
+    id: `session-8`,
+    date: new Date('2026-02-26'),
+    title: 'Evaluación del debate',
+    subtitle: 'Análisis de fortalezas y áreas de mejora',
+    blockNumber: 1,
+    blockTitle: 'La Argumentación Formal',
+    isExamDay: false,
+    objectives: [
+      { id: 'obj-8-1', text: 'Analizar videos de debates propios' },
+      { id: 'obj-8-2', text: 'Identificar fortalezas y debilidades en la argumentación' },
+      { id: 'obj-8-3', text: 'Dar feedback constructivo a compañeros' },
+      { id: 'obj-8-4', text: 'Establecer metas de mejora' },
+      { id: 'obj-8-5', text: 'Reflexionar sobre el progreso del bloque', isModeB: true },
+    ],
+    timing: [
+      { id: 't8-1', duration: '15 min', activity: 'Introducción', description: 'Criterios de evaluación' },
+      { id: 't8-2', duration: '30 min', activity: 'Visionado de debates', description: 'Análisis con rúbrica' },
+      { id: 't8-3', duration: '20 min', activity: 'Feedback en parejas', description: 'Intercambio de observaciones' },
+      { id: 't8-4', duration: '20 min', activity: 'Reflexión individual', description: 'Metas de mejora' },
+      { id: 't8-5', duration: '15 min', activity: 'Cierre del bloque', description: 'Resumen de lo aprendido' },
+    ],
+    dynamics: [
+      {
+        id: 'd8-1',
+        step: 1,
+        title: 'Rúbrica de autoevaluación',
+        instructions: [
+          'Usa esta rúbrica para evaluar tu debate:',
+          'ARGUMENTOS (1-5): ¿Mis argumentos fueron claros y convincentes?',
+          'CONTRARGUMENTACIÓN (1-5): ¿Respondí efectivamente al oponente?',
+          'CONECTORES (1-5): ¿Usé conectores variados y apropiados?',
+          'FLUIDEZ (1-5): ¿Hablé con naturalidad y pocos errores?',
+          'VOCABULARIO (1-5): ¿Usé vocabulario preciso y variado?',
+          'Calcula tu puntuación total (máx. 25 puntos)',
+        ],
+        groupType: 'individual',
+      },
+      {
+        id: 'd8-2',
+        step: 2,
+        title: 'Feedback constructivo',
+        instructions: [
+          'En parejas, da feedback siguiendo este formato:',
+          '1. FORTALEZAS: Menciona 2 cosas que hizo bien tu compañero',
+          '2. MEJORAS: Sugiere 2 áreas específicas para mejorar',
+          '3. EJEMPLO: Da un ejemplo concreto de cada punto',
+          '4. META: Ayuda a establecer una meta específica',
+          'Ejemplo: "Usaste muy bien "sin embargo". Podrías variar más con "no obstante"."',
+        ],
+        groupType: 'pairs',
+      },
+      {
+        id: 'd8-3',
+        step: 3,
+        title: 'Metas de mejora',
+        instructions: [
+          'Basado en el feedback, establece 3 metas SMART:',
+          'ESPECÍFICA: ¿Qué vas a mejorar exactamente?',
+          'MEDIBLE: ¿Cómo sabrás que lo lograste?',
+          'ALCANZABLE: ¿Es realistic para ti?',
+          'RELEVANTE: ¿Te ayuda en tu comunicación?',
+          'TEMPORAL: ¿Para cuándo?',
+          'Ejemplo: "Usar 5 conectores nuevos en el próximo debate (antes del 15 de marzo)"',
+        ],
+        groupType: 'individual',
+      },
+      {
+        id: 'd8-4',
+        step: 4,
+        title: 'Cierre del Bloque 1',
+        instructions: [
+          'Reflexión sobre el Bloque 1 (La Argumentación Formal):',
+          '¿Qué técnicas de argumentación domino mejor ahora?',
+          '¿Cuál es mi conector favorito y por qué?',
+          '¿En qué situación de la vida real usaré estas habilidades?',
+          'Comparte 1 conclusión con la clase',
+        ],
+        groupType: 'whole_class',
+      },
+    ],
+    grammarContent: {
+      title: 'Expresiones para dar feedback',
+      explanation: 'Dar feedback constructivo es una habilidad importante. Aquí tienes expresiones útiles.',
+      examples: [
+        { spanish: 'Lo que más me gustó fue...' },
+        { spanish: 'Podrías mejorar...' },
+        { spanish: 'Te sugiero que...' },
+        { spanish: 'Sería útil si...' },
+        { spanish: 'Has progresado mucho en...' },
+      ],
+      rules: [
+        'FORTALEZAS: Lo que más me gustó fue / Destacaría / Fue excelente',
+        'SUGERENCIA SUAVE: Podrías considerar / Sería útil si / Tal vez podrías',
+        'SUGERENCIA DIRECTA: Te sugiero que / Recomiendo / Deberías intentar',
+        'REFUERZO POSITIVO: Has mejorado mucho en / Estás muy bueno en',
+      ],
+    },
+    vocabularyContent: {
+      title: 'Vocabulario de evaluación',
+      items: [
+        { term: 'Fortaleza', definition: 'Cualidad o punto fuerte', example: 'Tu fortaleza es la fluidez', category: 'evaluación' },
+        { term: 'Área de mejora', definition: 'Aspecto que necesita desarrollarse', example: 'Tu área de mejora es el vocabulario', category: 'evaluación' },
+        { term: 'Metas', definition: 'Objetivos específicos a alcanzar', example: 'Mis metas son usar más conectores', category: 'evaluación' },
+        { term: 'Específico', definition: 'Preciso y detallado', example: 'Un objetivo específico y claro', category: 'calidad' },
+        { term: 'Medible', definition: 'Que se puede cuantificar', example: 'Un progreso medible', category: 'calidad' },
+        { term: 'Realista', definition: 'Que se puede lograr', example: 'Una meta realista', category: 'calidad' },
+      ],
+      expressions: [
+        { expression: 'Con respecto a', meaning: 'Regarding / With respect to', usage: 'Feedback formal' },
+        { expression: 'En cuanto a', meaning: 'As for / As to', usage: 'Introducir tema' },
+        { expression: 'Por lo que se refiere a', meaning: 'As far as ... is concerned', usage: 'Muy formal' },
+        { expression: 'En relación con', meaning: 'In relation to', usage: 'Contexto' },
+      ],
+    },
+    tasks: [
+      {
+        id: 'task-8-1',
+        title: 'Autoevaluación',
+        description: 'Evalúa tu desempeño en el debate',
+        type: 'FREE_TEXT',
+        content: {
+          instructions: 'Responde estas preguntas de autoevaluación:',
+          items: [
+            { id: 'q1', type: 'free-text', content: '¿Cuál fue tu fortaleza principal en el debate?' },
+            { id: 'q2', type: 'free-text', content: '¿Qué área necesitas mejorar más?' },
+            { id: 'q3', type: 'free-text', content: 'Escribe una meta específica para el próximo bloque' },
+          ],
+        },
+        order: 1,
+        isModeBOnly: false,
+      },
+    ],
+    checklistItems: [
+      { id: 'ck8-1', text: 'Identifiqué mis fortalezas' },
+      { id: 'ck8-2', text: 'Reconocí mis áreas de mejora' },
+      { id: 'ck8-3', text: 'Di feedback constructivo a mi compañero' },
+      { id: 'ck8-4', text: 'Establecí metas específicas' },
+      { id: 'ck8-5', text: 'Reflexioné sobre mi progreso' },
+    ],
+    resources: [
+      { id: 'r8-1', title: 'Rúbrica de autoevaluación', type: 'PDF', url: '/resources/rubrica-autoevaluacion.pdf', order: 1 },
+    ],
+  },
+
+  // ============================================
   // MARZO - BLOQUE 1 (Cierre) & BLOQUE 2: La Conferencia y la Entrevista (I)
   // ============================================
 
@@ -2280,6 +2576,134 @@ export const sessionsData: SessionData[] = [
       { id: 'r15-2', title: 'Rúbrica de evaluación', type: 'PDF', url: '/resources/rubrica-evaluacion.pdf', order: 2 },
     ],
   },
+
+  // ============================================
+  // SESIÓN 16: Examen Parcial
+  // ============================================
+  {
+    sessionNumber: 16,
+    id: `session-16`,
+    date: new Date('2026-03-26'),
+    title: 'Examen Parcial',
+    subtitle: 'Evaluación oral individual',
+    blockNumber: 2,
+    blockTitle: 'La Narración y la Hipótesis',
+    isExamDay: true,
+    objectives: [
+      { id: 'obj-16-1', text: 'Demostrar competencia en narración del pasado' },
+      { id: 'obj-16-2', text: 'Usar correctamente tiempos del pasado' },
+      { id: 'obj-16-3', text: 'Expresar hipótesis (presente y pasado)' },
+      { id: 'obj-16-4', text: 'Mantener fluidez durante el monólogo' },
+      { id: 'obj-16-5', text: 'Interactuar efectivamente en la entrevista', isModeB: true },
+    ],
+    timing: [
+      { id: 't16-1', duration: '10 min', activity: 'Bienvenida', description: 'Explicación del formato' },
+      { id: 't16-2', duration: '5 min', activity: 'Preparación', description: 'Tiempo para organizar ideas' },
+      { id: 't16-3', duration: '15 min', activity: 'Monólogo', description: 'Presentación individual' },
+      { id: 't16-4', duration: '10 min', activity: 'Entrevista', description: 'Preguntas del profesor' },
+      { id: 't16-5', duration: '5 min', activity: 'Feedback', description: 'Comentarios breves' },
+    ],
+    dynamics: [
+      {
+        id: 'd16-1',
+        step: 1,
+        title: 'Formato del examen',
+        instructions: [
+          'El examen parcial consta de dos partes:',
+          'PARTE 1: MONÓLOGO (10-12 min)',
+          '· Tema: Un evento histórico que cambiaste tu perspectiva',
+          '· 2 minutos de preparación (con papel y bolígrafo)',
+          '· Debes incluir:',
+          '  - Narración en pasado (PS, PI, Pluscuamperfecto)',
+          '  - Al menos 3 hipótesis condicionales',
+          '  - Conectores temporales y lógicos',
+          'PARTE 2: ENTREVISTA (5-7 min)',
+          '· El profesor hace preguntas sobre tu monólogo',
+          '· Preguntas de hipótesis sobre temas variados',
+          '· Evaluación de interacción espontánea',
+        ],
+        groupType: 'whole_class',
+      },
+      {
+        id: 'd16-2',
+        step: 2,
+        title: 'Rúbrica de evaluación',
+        instructions: [
+          'GRAMÁTICA (25%): Uso correcto de tiempos pasados y condicionales',
+          'VOCABULARIO (25%): Precisión y variedad léxica',
+          'FLUIDEZ (25%): Naturalidad, ritmo, pausas apropiadas',
+          'INTERACCIÓN (25%): Respuesta a preguntas, clarificación',
+          'NOTA MÍNIMA PARA APROBAR: 60% (15/25 puntos)',
+          'NOTA DE SOBRESALIENTE: 85%+ (21/25 puntos)',
+        ],
+        groupType: 'whole_class',
+      },
+      {
+        id: 'd16-3',
+        step: 3,
+        title: 'Preguntas de entrevista',
+        instructions: [
+          'Ejemplos de posibles preguntas:',
+          '· ¿Qué habrías hecho de estar en su lugar?',
+          '· ¿Habría cambiado el resultado si...?',
+          '· Si hubieras podido cambiar algo, ¿qué sería?',
+          '· ¿Crees que fue la decisión correcta? ¿Por qué?',
+          '· ¿Qué habría pasado si...?',
+          'Debes responder usando hipótesis',
+        ],
+        groupType: 'pairs',
+        isModeB: true,
+      },
+    ],
+    grammarContent: {
+      title: 'Repaso: Pasados y Condicionales',
+      explanation: 'Para el examen, debes demostrar dominio de los tiempos del pasado y las estructuras de hipótesis.',
+      examples: [
+        { spanish: 'Cuando era niño, vivía en Madrid. (PS - hábito pasado)' },
+        { spanish: 'Ayer me enteré de la noticia por la radio. (PI - acción puntual)' },
+        { spanish: 'Cuando llegué, ya había terminado. (Pluscuamperfecto - anterior a otra acción)' },
+        { spanish: 'Si hubiera sabido, habría venido. (Cond. compuesto - hipótesis pasada)' },
+        { spanish: 'Si pudiera cambiar algo, lo haría. (Cond. simple - hipótesis presente)' },
+      ],
+      rules: [
+        'PRETÉRITO IMPERFECTO: Hábitos, descripciones, acciones en progreso',
+        'PRETÉRITO INDEFINIDO: Acciones puntuales, completadas',
+        'PLUSCUAMPERFECTO: Acción anterior a otra acción pasada',
+        'CONDICIONAL SIMPLE: Hipótesis en presente/futuro (Si + imperfecto subj)',
+        'CONDICIONAL COMPUESTO: Hipótesis en pasado (Si + pluscuamperfecto subj)',
+      ],
+    },
+    vocabularyContent: {
+      title: 'Vocabulario de examen',
+      items: [
+        { term: 'Perspectiva', definition: 'Punto de vista o manera de ver algo', example: 'Me cambió la perspectiva sobre la guerra', category: 'general' },
+        { term: 'Hitórico', definition: 'Importante o significativo en la historia', example: 'Un momento histórico', category: 'general' },
+        { term: 'Consecuencia', definition: 'Resultado o efecto de algo', example: 'Las consecuencias fueron graves', category: 'general' },
+        { term: 'Cambiar de opinión', definition: 'Modificar el punto de vista', example: 'Me hizo cambiar de opinión', category: 'acción' },
+        { term: 'Acontecimiento', definition: 'Suceso o evento', example: 'Los acontecimientos de aquel año', category: 'general' },
+        { term: 'Repercusión', definition: 'Efecto o consecuencia importante', example: 'Tuvo gran repercusión', category: 'general' },
+      ],
+      expressions: [
+        { expression: 'En retrospectiva', meaning: 'In retrospect / Looking back', usage: 'Reflexión' },
+        { expression: 'Con el beneficio de la experiencia', meaning: 'With hindsight / With the benefit of experience', usage: 'Reflexión después' },
+        { expression: 'A posteriori', meaning: 'In hindsight / After the fact', usage: 'Formal' },
+        { expression: 'En aquel entonces', meaning: 'At that time / Back then', usage: 'Pasado' },
+      ],
+    },
+    tasks: [],
+    checklistItems: [
+      { id: 'ck16-1', text: 'Practicé narración en pasado' },
+      { id: 'ck16-2', text: 'Preparé ejemplos de hipótesis' },
+      { id: 'ck16-3', text: 'Repasé conectores temporales' },
+      { id: 'ck16-4', text: 'Practicé condicionales compuestos' },
+      { id: 'ck16-5', text: 'Grabé monólogos de práctica' },
+    ],
+    resources: [
+      { id: 'r16-1', title: 'Rúbrica de examen parcial', type: 'PDF', url: '/resources/rubrica-parcial.pdf', order: 1 },
+      { id: 'r16-2', title: 'Guía de preparación', type: 'PDF', url: '/resources/guia-preparacion-parcial.pdf', order: 2 },
+    ],
+  },
+
 
   // ============================================
   // ABRIL - BLOQUE 2 (Continuación)
