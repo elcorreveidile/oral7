@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
           id: taskId,
           sessionId: sessionRecord.id,
           title: `Entrega de archivos - Sesión ${sessionNumber}`,
-          type: "DOCUMENT_UPLOAD",
+          type: "FREE_TEXT",
           content: {},
           order: 999,
         },
