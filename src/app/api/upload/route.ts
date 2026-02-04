@@ -85,9 +85,10 @@ export async function POST(request: NextRequest) {
     // URL encode the filename for the path
     const encodedPath = filename.split('/').map(encodeURIComponent).join('/')
 
-    const blobUrl = `https://${token}@blob.vercel-storage.com/${encodedPath}`
+    // Use Authorization header instead of URL credentials
+    const blobUrl = `https://blob.vercel-storage.com/${encodedPath}`
 
-    console.log("Uploading to:", blobUrl.replace(token, "TOKEN_REDACTED"))
+    console.log("Uploading to:", blobUrl)
 
     // Convert File to ArrayBuffer to avoid duplex issues
     const arrayBuffer = await file.arrayBuffer()
@@ -97,6 +98,7 @@ export async function POST(request: NextRequest) {
       method: 'PUT',
       body: buffer,
       headers: {
+        'authorization': `Bearer ${token}`,
         'x-api-version': '1',
         'Content-Type': file.type,
       },

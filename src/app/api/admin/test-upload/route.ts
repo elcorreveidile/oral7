@@ -25,14 +25,15 @@ export async function POST(request: NextRequest) {
     // Create a simple test file
     const testContent = "Test file content"
     const filename = `test-${Date.now()}.txt`
-    const blobUrl = `https://${token}@blob.vercel-storage.com/${filename}`
+    const blobUrl = `https://blob.vercel-storage.com/${filename}`
 
-    console.log("Test upload to:", blobUrl.replace(token, "TOKEN"))
+    console.log("Test upload to:", blobUrl)
 
     const response = await fetch(blobUrl, {
       method: 'PUT',
       body: testContent,
       headers: {
+        'authorization': `Bearer ${token}`,
         'Content-Type': 'text/plain',
       },
     })
