@@ -50,52 +50,11 @@ export async function GET(
       )
     }
 
-    // Get user's progress for this session
-    const userProgress = await prisma.userProgress.findUnique({
-      where: {
-        userId_sessionId: {
-          userId: session.user.id,
-          sessionId: sessionData.id,
-        },
-      },
-    })
-
-    // Get user's checklist items
-    const userChecklistItems = await prisma.userChecklistItem.findMany({
-      where: {
-        userId: session.user.id,
-        checklistItem: {
-          sessionId: sessionData.id,
-        },
-      },
-    })
-
-    // Record view
-    if (!userProgress) {
-      await prisma.userProgress.create({
-        data: {
-          userId: session.user.id,
-          sessionId: sessionData.id,
-          viewedAt: new Date(),
-        },
-      })
-    } else {
-      await prisma.userProgress.update({
-        where: {
-          id: userProgress.id,
-        },
-        data: {
-          lastAccess: new Date(),
-        },
-      })
-    }
-
+    // Return session data (progress tracking disabled temporarily)
     return NextResponse.json({
       session: sessionData,
-      progress: userProgress,
-      completedChecklist: userChecklistItems
-        .filter((item) => item.isCompleted)
-        .map((item) => item.checklistItemId),
+      progress: null,
+      completedChecklist: [],
     })
   } catch (error) {
     console.error("Error fetching session:", error)
