@@ -138,9 +138,9 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Completa con SER o ESTAR según el contexto:',
           items: [
-            { id: 'q1', type: 'fill-blank', content: { sentence: 'Yo ___ de Italia, pero ahora ___ viviendo en Granada.', blank: 'ser/estar' } },
-            { id: 'q2', type: 'fill-blank', content: { sentence: 'María ___ estudiante de ingeniería y ___ haciendo sus prácticas.', blank: 'ser/estar' } },
-            { id: 'q3', type: 'fill-blank', content: { sentence: 'Nosotros ___ interesados en la cultura española.', blank: 'ser/estar' } },
+            { id: 'q1', type: 'fill-blank', content: { text: 'Yo ___ de Italia, pero ahora ___ viviendo en Granada.', blank: 'ser/estar' } },
+            { id: 'q2', type: 'fill-blank', content: { text: 'María ___ estudiante de ingeniería y ___ haciendo sus prácticas.', blank: 'ser/estar' } },
+            { id: 'q3', type: 'fill-blank', content: { text: 'Nosotros ___ interesados en la cultura española.', blank: 'ser/estar' } },
           ],
           correctAnswers: { q1: ['soy', 'estoy'], q2: ['es', 'está'], q3: ['somos'] },
           feedback: {
@@ -1073,10 +1073,10 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Completa con el conector de contraargumentación más apropiado:',
           items: [
-            { id: 'q1', type: 'fill-blank', content: { sentence: 'Es cierto que el plan es caro. ________, es necesario.', blank: 'sin embargo/no obstante' } },
-            { id: 'q2', type: 'fill-blank', content: { sentence: '______ es verdad que llueve mucho, me gusta este clima.', blank: 'aunque/si bien' } },
-            { id: 'q3', type: 'fill-blank', content: { sentence: 'A ______ de las dificultades, seguiremos adelante.', blank: 'pesar' } },
-            { id: 'q4', type: 'fill-blank', content: { sentence: 'Tiene su razón. ________, mantengo mi postura.', blank: 'con todo/no obstante' } },
+            { id: 'q1', type: 'fill-blank', content: { text: 'Es cierto que el plan es caro. ________, es necesario.', blank: 'sin embargo/no obstante' } },
+            { id: 'q2', type: 'fill-blank', content: { text: '______ es verdad que llueve mucho, me gusta este clima.', blank: 'aunque/si bien' } },
+            { id: 'q3', type: 'fill-blank', content: { text: 'A ______ de las dificultades, seguiremos adelante.', blank: 'pesar' } },
+            { id: 'q4', type: 'fill-blank', content: { text: 'Tiene su razón. ________, mantengo mi postura.', blank: 'con todo/no obstante' } },
           ],
           correctAnswers: { q1: ['sin embargo', 'no obstante'], q2: ['aunque', 'si bien'], q3: 'pesar', q4: ['con todo', 'no obstante'] },
           feedback: {
@@ -1730,10 +1730,10 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Completa con el pasado correcto:',
           items: [
-            { id: 'q1', type: 'fill-blank', content: { sentence: 'Ayer ______ (ir) al cine y ______ (ver) una película.', blank: 'fui/vi' } },
-            { id: 'q2', type: 'fill-blank', content: { sentence: 'Mientras ______ (caminar) por la calle, ______ (encontrar) a un amigo.', blank: 'caminaba/encontré' } },
-            { id: 'q3', type: 'fill-blank', content: { sentence: 'Esta mañana ______ (desayunar) con mi familia.', blank: 'he desayunado' } },
-            { id: 'q4', type: 'fill-blank', content: { sentence: 'Antes de ______ (venir) aquí, ______ (vivir) en China.', blank: 'venir/viví' } },
+            { id: 'q1', type: 'fill-blank', content: { text: 'Ayer ______ (ir) al cine y ______ (ver) una película.', blank: 'fui/vi' } },
+            { id: 'q2', type: 'fill-blank', content: { text: 'Mientras ______ (caminar) por la calle, ______ (encontrar) a un amigo.', blank: 'caminaba/encontré' } },
+            { id: 'q3', type: 'fill-blank', content: { text: 'Esta mañana ______ (desayunar) con mi familia.', blank: 'he desayunado' } },
+            { id: 'q4', type: 'fill-blank', content: { text: 'Antes de ______ (venir) aquí, ______ (vivir) en China.', blank: 'venir/viví' } },
           ],
           correctAnswers: { q1: ['fui', 'vi'], q2: ['caminaba', 'encontré'], q3: 'he desayunado', q4: ['venir', 'viví'] },
           feedback: {
@@ -1898,10 +1898,10 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Completa con el modo correcto:',
           items: [
-            { id: 'q1', type: 'fill-blank', content: { sentence: 'Antes de que ______ (venir) mañana, llámame.', blank: 'vengas' } },
-            { id: 'q2', type: 'fill-blank', content: { sentence: 'Después de que ______ (terminar) el trabajo, salí.', blank: 'terminara/terminé' } },
-            { id: 'q3', type: 'fill-blank', content: { sentence: 'En cuanto ______ (llegar) Ana, avísame.', blank: 'llegue' } },
-            { id: 'q4', type: 'fill-blank', content: { sentence: 'Mientras ______ (estudiar) yo, él dormía.', blank: 'estudiaba' } },
+            { id: 'q1', type: 'fill-blank', content: { text: 'Antes de que ______ (venir) mañana, llámame.', blank: 'vengas' } },
+            { id: 'q2', type: 'fill-blank', content: { text: 'Después de que ______ (terminar) el trabajo, salí.', blank: 'terminara/terminé' } },
+            { id: 'q3', type: 'fill-blank', content: { text: 'En cuanto ______ (llegar) Ana, avísame.', blank: 'llegue' } },
+            { id: 'q4', type: 'fill-blank', content: { text: 'Mientras ______ (estudiar) yo, él dormía.', blank: 'estudiaba' } },
           ],
           correctAnswers: { q1: 'vengas', q2: ['terminara', 'terminé'], q3: 'llegue', q4: 'estudiaba' },
           feedback: {
@@ -2210,10 +2210,10 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Completa con la forma correcta:',
           items: [
-            { id: 'q1', type: 'fill-blank', content: { sentence: 'Si ______ (tener) más dinero, ______ (comprar) una casa.', blank: 'tuviera/tuviese / compraría' } },
-            { id: 'q2', type: 'fill-blank', content: { sentence: 'Si ______ (llover) mañana, no ______ (salir).', blank: 'llueve / saldré' } },
-            { id: 'q3', type: 'fill-blank', content: { sentence: 'Si ______ (ser) rico, ______ (viajar) por el mundo.', blank: 'fuera/fuese / viajaría' } },
-            { id: 'q4', type: 'fill-blank', content: { sentence: 'Si ______ (estudiar) más, ______ (aprobar).', blank: 'estudias / aprobarás' } },
+            { id: 'q1', type: 'fill-blank', content: { text: 'Si ______ (tener) más dinero, ______ (comprar) una casa.', blank: 'tuviera/tuviese / compraría' } },
+            { id: 'q2', type: 'fill-blank', content: { text: 'Si ______ (llover) mañana, no ______ (salir).', blank: 'llueve / saldré' } },
+            { id: 'q3', type: 'fill-blank', content: { text: 'Si ______ (ser) rico, ______ (viajar) por el mundo.', blank: 'fuera/fuese / viajaría' } },
+            { id: 'q4', type: 'fill-blank', content: { text: 'Si ______ (estudiar) más, ______ (aprobar).', blank: 'estudias / aprobarás' } },
           ],
           correctAnswers: { q1: ['tuviera', 'tuviese'], q2: ['llueve', 'saldré'], q3: ['fuera', 'fuese', 'viajaría'], q4: ['estudias', 'aprobarás'] },
           feedback: {
@@ -2371,9 +2371,9 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Completa con pluscuamperfecto subjuntivo y condicional compuesto:',
           items: [
-            { id: 'q1', type: 'fill-blank', content: { sentence: 'Si ______ (saber) la verdad, te ______ (haber) dicho.', blank: 'hubiera/hubiese sabido / habría habrías' } },
-            { id: 'q2', type: 'fill-blank', content: { sentence: 'Si no ______ ( Haber) llovido, ______ ( Haber) salido.', blank: 'hubiera/hubiese / habríamos' } },
-            { id: 'q3', type: 'fill-blank', content: { sentence: 'Si me ______ ( Haber) escuchado, no ______ ( Haber) tenido problemas.', blank: 'hubieran/hubiesen / habría' } },
+            { id: 'q1', type: 'fill-blank', content: { text: 'Si ______ (saber) la verdad, te ______ (haber) dicho.', blank: 'hubiera/hubiese sabido / habría habrías' } },
+            { id: 'q2', type: 'fill-blank', content: { text: 'Si no ______ ( Haber) llovido, ______ ( Haber) salido.', blank: 'hubiera/hubiese / habríamos' } },
+            { id: 'q3', type: 'fill-blank', content: { text: 'Si me ______ ( Haber) escuchado, no ______ ( Haber) tenido problemas.', blank: 'hubieran/hubiesen / habría' } },
           ],
           correctAnswers: { q1: ['hubiera sabido', 'hubiese sabido'], q2: ['hubiera', 'hubiese', 'habríamos'], q3: ['hubieran', 'hubiesen', 'habría'] },
           feedback: {
@@ -3295,9 +3295,9 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Convierte a estilo indirecto:',
           items: [
-            { id: 'q1', type: 'fill-blank', content: { sentence: '"Soy español" → Dijo que ______ español.', blank: 'era' } },
-            { id: 'q2', type: 'fill-blank', content: { sentence: '"Vengo mañana" → Dijo que ______ al día siguiente.', blank: 'iría/iba a ir' } },
-            { id: 'q3', type: 'fill-blank', content: { sentence: '"Ayer estuve aquí" → Dijo que ______ el día anterior ______.', blank: 'había estado / allí' } },
+            { id: 'q1', type: 'fill-blank', content: { text: '"Soy español" → Dijo que ______ español.', blank: 'era' } },
+            { id: 'q2', type: 'fill-blank', content: { text: '"Vengo mañana" → Dijo que ______ al día siguiente.', blank: 'iría/iba a ir' } },
+            { id: 'q3', type: 'fill-blank', content: { text: '"Ayer estuve aquí" → Dijo que ______ el día anterior ______.', blank: 'había estado / allí' } },
           ],
           correctAnswers: { q1: 'era', q2: ['iría', 'iba a ir'], q3: ['había estado', 'allí'] },
           feedback: {
@@ -4355,9 +4355,9 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Reemplaza con precisión:',
           items: [
-            { id: 'q1', type: 'fill-blank', content: { sentence: '"Es importante" → "Es ______"', blank: 'crucial/fundamental/vital' } },
-            { id: 'q2', type: 'fill-blank', content: { sentence: '"Me gusta" → "Lo ______"', blank: 'disfruto/valoro/aprecio' } },
-            { id: 'q3', type: 'fill-blank', content: { sentence: '"Es malo" → "Es ______"', blank: 'perjudicial/dañoso/desafortunado' } },
+            { id: 'q1', type: 'fill-blank', content: { text: '"Es importante" → "Es ______"', blank: 'crucial/fundamental/vital' } },
+            { id: 'q2', type: 'fill-blank', content: { text: '"Me gusta" → "Lo ______"', blank: 'disfruto/valoro/aprecio' } },
+            { id: 'q3', type: 'fill-blank', content: { text: '"Es malo" → "Es ______"', blank: 'perjudicial/dañoso/desafortunado' } },
           ],
           correctAnswers: { q1: ['crucial', 'fundamental', 'vital'], q2: ['disfruto', 'valoro', 'aprecio'], q3: ['perjudicial', 'dañoso', 'desafortunado'] },
         },
