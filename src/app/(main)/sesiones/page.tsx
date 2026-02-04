@@ -9,92 +9,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { formatDateSpanish, formatDateShort, isDateToday, isSessionPast } from "@/lib/utils"
+import { getAllSessions } from "@/data/sessions"
 
-// Demo session data - using ISO strings to avoid hydration issues
-const demoSessions = [
-  {
-    id: "1",
-    sessionNumber: 1,
-    date: "2026-02-03" as unknown as Date,
-    title: "Toma de contacto e interacción social",
-    blockNumber: 1,
-    blockTitle: "La argumentación formal",
-    isExamDay: false,
-  },
-  {
-    id: "2",
-    sessionNumber: 2,
-    date: "2026-02-05" as unknown as Date,
-    title: "Socialización y registro: tutear vs. usted",
-    blockNumber: 1,
-    blockTitle: "La argumentación formal",
-    isExamDay: false,
-  },
-  {
-    id: "3",
-    sessionNumber: 3,
-    date: "2026-02-10" as unknown as Date,
-    title: "Los bares como espacios de interacción",
-    blockNumber: 1,
-    blockTitle: "La argumentación formal",
-    isExamDay: false,
-  },
-  {
-    id: "4",
-    sessionNumber: 4,
-    date: "2026-02-12" as unknown as Date,
-    title: "Recursos de intensificación en español",
-    blockNumber: 1,
-    blockTitle: "La argumentación formal",
-    isExamDay: false,
-  },
-  {
-    id: "5",
-    sessionNumber: 5,
-    date: "2026-02-17" as unknown as Date,
-    title: "Recursos de atenuación: suavizar el mensaje",
-    blockNumber: 1,
-    blockTitle: "La argumentación formal",
-    isExamDay: false,
-  },
-  {
-    id: "6",
-    sessionNumber: 6,
-    date: "2026-02-19" as unknown as Date,
-    title: "Conectores para organizar el discurso",
-    blockNumber: 1,
-    blockTitle: "La argumentación formal",
-    isExamDay: false,
-  },
-  {
-    id: "7",
-    sessionNumber: 7,
-    date: "2026-02-24" as unknown as Date,
-    title: "El humor en español: chistes y estereotipos",
-    blockNumber: 1,
-    blockTitle: "La argumentación formal",
-    isExamDay: false,
-  },
-  {
-    id: "8",
-    sessionNumber: 8,
-    date: "2026-02-26" as unknown as Date,
-    title: "Explicar y analizar el humor",
-    blockNumber: 1,
-    blockTitle: "La argumentación formal",
-    isExamDay: false,
-  },
-  {
-    id: "exam-partial",
-    sessionNumber: 15,
-    date: "2026-03-26" as unknown as Date,
-    title: "Examen parcial",
-    blockNumber: 2,
-    blockTitle: "La conferencia y la entrevista",
-    isExamDay: true,
-    examType: "PARTIAL",
-  },
-]
+// Obtener todas las sesiones del archivo de datos
+const allSessions = getAllSessions()
 
 export default function SesionesPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -110,7 +28,7 @@ export default function SesionesPage() {
     return null
   }
 
-  const filteredSessions = demoSessions.filter((session) => {
+  const filteredSessions = allSessions.filter((session) => {
     const matchesSearch =
       session.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       session.sessionNumber.toString().includes(searchQuery)
