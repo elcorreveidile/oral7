@@ -65,7 +65,6 @@ export default function AdminQRPage() {
 
       {/* QR Generator */}
       <QRGenerator
-        sessionId={currentSession.id}
         sessionNumber={currentSession.sessionNumber}
         onCodeGenerated={() => {
           // Could refresh attendance count here

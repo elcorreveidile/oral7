@@ -14,19 +14,31 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { code, sessionId, expiresAt } = await request.json()
+    const { code, sessionNumber, expiresAt } = await request.json()
 
-    if (!code || !sessionId || !expiresAt) {
+    if (!code || !sessionNumber || !expiresAt) {
       return NextResponse.json(
         { error: "Faltan datos requeridos" },
         { status: 400 }
       )
     }
 
+    // Find the session by sessionNumber to get the real DB ID
+    const dbSession = await prisma.session.findUnique({
+      where: { sessionNumber },
+    })
+
+    if (!dbSession) {
+      return NextResponse.json(
+        { error: "Sesión no encontrada" },
+        { status: 404 }
+      )
+    }
+
     // Deactivate any previous active codes for this session
     await prisma.qRCode.updateMany({
       where: {
-        sessionId,
+        sessionId: dbSession.id,
         isActive: true,
       },
       data: {
@@ -38,7 +50,7 @@ export async function POST(request: NextRequest) {
     const qrCode = await prisma.qRCode.create({
       data: {
         code,
-        sessionId,
+        sessionId: dbSession.id,
         expiresAt: new Date(expiresAt),
         isActive: true,
       },
