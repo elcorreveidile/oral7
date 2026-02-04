@@ -16,6 +16,8 @@ export async function POST(request: NextRequest) {
 
     const { sessionNumber, files } = await request.json()
 
+    console.log("Session submission request:", { sessionNumber, filesCount: files?.length })
+
     if (!sessionNumber || !files || !Array.isArray(files) || files.length === 0) {
       return NextResponse.json(
         { error: "Datos inválidos" },
@@ -29,11 +31,14 @@ export async function POST(request: NextRequest) {
     })
 
     if (!sessionRecord) {
+      console.error("Session not found:", sessionNumber)
       return NextResponse.json(
         { error: "Sesión no encontrada" },
         { status: 404 }
       )
     }
+
+    console.log("Session found:", sessionRecord.id)
 
     // Create submission record with a synthetic ID
     const taskId = `session-${sessionNumber}`
@@ -44,6 +49,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (!existingTask) {
+      console.log("Creating dummy task:", taskId)
       await prisma.task.create({
         data: {
           id: taskId,
@@ -55,6 +61,8 @@ export async function POST(request: NextRequest) {
         },
       })
     }
+
+    console.log("Creating submission for user:", session.user.id)
 
     // Create or update submission
     const submission = await prisma.submission.upsert({
@@ -74,6 +82,8 @@ export async function POST(request: NextRequest) {
       },
     })
 
+    console.log("Submission created:", submission.id)
+
     return NextResponse.json({
       success: true,
       submission,
@@ -81,7 +91,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error saving submission:", error)
     return NextResponse.json(
-      { error: "Error al guardar la entrega" },
+      {
+        error: "Error al guardar la entrega",
+        details: error instanceof Error ? error.message : "Unknown error"
+      },
       { status: 500 }
     )
   }
