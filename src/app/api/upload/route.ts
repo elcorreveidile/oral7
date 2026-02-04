@@ -89,15 +89,17 @@ export async function POST(request: NextRequest) {
 
     console.log("Uploading to:", blobUrl.replace(token, "TOKEN_REDACTED"))
 
+    // Convert File to ArrayBuffer to avoid duplex issues
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+
     const blobResponse = await fetch(blobUrl, {
       method: 'PUT',
-      body: file,
+      body: buffer,
       headers: {
         'x-api-version': '1',
         'Content-Type': file.type,
       },
-      // @ts-ignore - duplex option is required for Node 18+
-      duplex: 'half',
     })
 
     console.log("Blob response status:", blobResponse.status)
