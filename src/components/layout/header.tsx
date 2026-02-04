@@ -44,7 +44,6 @@ const adminNavItems = [
   { href: "/admin", label: "Panel", icon: Home },
   { href: "/admin/sesiones", label: "Sesiones", icon: BookOpen },
   { href: "/admin/estudiantes", label: "Estudiantes", icon: Users },
-  { href: "/admin/asistencia", label: "Asistencia", icon: QrCode },
   { href: "/admin/qr", label: "Generar QR", icon: QrCode },
 ]
 
