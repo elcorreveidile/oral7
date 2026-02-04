@@ -6,7 +6,7 @@ async function main() {
   console.log('🔄 Syncing sessions from sessions.ts to database...')
 
   // Import sessions dynamically
-  const { sessionsData } = await import('../src/data/sessions.ts')
+  const { sessionsData } = await import('../src/data/sessions.js')
 
   console.log(`📚 Found ${sessionsData.length} sessions in sessions.ts`)
 
