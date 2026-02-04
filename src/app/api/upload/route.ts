@@ -54,25 +54,33 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Convert file to base64 for storage
-    // NOTE: In production, you should use a cloud storage service like Vercel Blob,
-    // AWS S3, or Cloudinary. This base64 approach is for demonstration only.
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-    const base64 = buffer.toString("base64")
-    const dataUrl = `data:${file.type};base64,${base64}`
-
     // Generate unique filename
     const timestamp = Date.now()
     const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_")
     const filename = `${session.user.id}/${taskId}/${timestamp}-${originalName}`
 
-    // Return the data URL
-    // In production, this would be the URL returned by your cloud storage service
+    // Upload to Vercel Blob using REST API
+    const blobUrl = `https://${process.env.BLOB_READ_WRITE_TOKEN}@blob.vercel-storage.com/${filename}`
+
+    const blobResponse = await fetch(blobUrl, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'x-api-version': '1',
+        'Content-Type': file.type,
+      },
+    })
+
+    if (!blobResponse.ok) {
+      throw new Error('Failed to upload to Vercel Blob')
+    }
+
+    const blobData = await blobResponse.json()
+
     return NextResponse.json({
       success: true,
       file: {
-        url: dataUrl,
+        url: blobData.url,
         name: file.name,
         type: file.type,
         size: file.size,
