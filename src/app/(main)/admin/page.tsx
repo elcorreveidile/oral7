@@ -28,6 +28,8 @@ export default function AdminDashboardPage() {
   const [syncMessage, setSyncMessage] = useState("")
   const [checkingBlob, setCheckingBlob] = useState(false)
   const [blobMessage, setBlobMessage] = useState("")
+  const [testingUpload, setTestingUpload] = useState(false)
+  const [uploadTestMessage, setUploadTestMessage] = useState("")
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role !== "ADMIN") {
@@ -79,6 +81,26 @@ export default function AdminDashboardPage() {
       setBlobMessage("❌ Error al verificar Blob storage")
     } finally {
       setCheckingBlob(false)
+    }
+  }
+
+  const handleTestUpload = async () => {
+    setTestingUpload(true)
+    setUploadTestMessage("")
+
+    try {
+      const response = await fetch("/api/admin/test-upload", {
+        method: "POST",
+      })
+
+      const data = await response.json()
+      setUploadTestMessage(data.success
+        ? `✅ ${data.message} - ${data.url}`
+        : `❌ ${data.error}`)
+    } catch (error) {
+      setUploadTestMessage("❌ Error al hacer prueba de subida")
+    } finally {
+      setTestingUpload(false)
     }
   }
 
@@ -212,6 +234,34 @@ export default function AdminDashboardPage() {
             {blobMessage && (
               <p className={`text-sm ${blobMessage.startsWith("✅") ? "text-green-700 dark:text-green-300" : "text-red-700 dark:text-red-300"}`}>
                 {blobMessage}
+              </p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Test upload banner */}
+      <Card className="bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-800">
+        <CardContent className="pt-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-orange-900 dark:text-orange-100">Probar subida de archivos</h3>
+                <p className="text-sm text-orange-700 dark:text-orange-300">
+                  Sube un archivo de prueba para verificar que funciona correctamente
+                </p>
+              </div>
+              <Button
+                onClick={handleTestUpload}
+                disabled={testingUpload}
+                variant="outline"
+              >
+                {testingUpload ? "Probando..." : "Probar"}
+              </Button>
+            </div>
+            {uploadTestMessage && (
+              <p className={`text-sm break-all ${uploadTestMessage.startsWith("✅") ? "text-green-700 dark:text-green-300" : "text-red-700 dark:text-red-300"}`}>
+                {uploadTestMessage}
               </p>
             )}
           </div>
