@@ -117,8 +117,10 @@ export function FileUpload({
       setProgress(100)
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || "Error al subir el archivo")
+        const error = await response.json().catch(() => ({ error: "Error desconocido", details: response.statusText }))
+        console.error("Upload error response:", error)
+        const errorMessage = error.details ? `${error.error}: ${error.details}` : error.error
+        throw new Error(errorMessage || "Error al subir el archivo")
       }
 
       const data = await response.json()
