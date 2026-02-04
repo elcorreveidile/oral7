@@ -24,12 +24,20 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    console.log("Upload request:", {
+      fileName: file.name,
+      fileType: file.type,
+      fileSize: file.size,
+      taskId,
+    })
+
     // Validate file type
     const allowedTypes = [
       "audio/mp3",
       "audio/wav",
       "audio/mpeg",
       "audio/webm",
+      "audio/ogg",
       "video/mp4",
       "video/webm",
       "video/quicktime",
@@ -39,8 +47,9 @@ export async function POST(request: NextRequest) {
     ]
 
     if (!allowedTypes.includes(file.type)) {
+      console.log("File type not allowed:", file.type)
       return NextResponse.json(
-        { error: "Tipo de archivo no permitido" },
+        { error: `Tipo de archivo no permitido: ${file.type}` },
         { status: 400 }
       )
     }
@@ -60,7 +69,25 @@ export async function POST(request: NextRequest) {
     const filename = `${session.user.id}/${taskId}/${timestamp}-${originalName}`
 
     // Upload to Vercel Blob using REST API
-    const blobUrl = `https://${process.env.BLOB_READ_WRITE_TOKEN}@blob.vercel-storage.com/${filename}`
+    const token = process.env.BLOB_READ_WRITE_TOKEN
+
+    if (!token) {
+      console.error("BLOB_READ_WRITE_TOKEN is not set in environment")
+      return NextResponse.json(
+        {
+          error: "Blob storage no configurado",
+          details: "Contacta al administrador para configurar BLOB_READ_WRITE_TOKEN"
+        },
+        { status: 500 }
+      )
+    }
+
+    // URL encode the filename for the path
+    const encodedPath = filename.split('/').map(encodeURIComponent).join('/')
+
+    const blobUrl = `https://${token}@blob.vercel-storage.com/${encodedPath}`
+
+    console.log("Uploading to:", blobUrl.replace(token, "TOKEN_REDACTED"))
 
     const blobResponse = await fetch(blobUrl, {
       method: 'PUT',
@@ -69,13 +96,26 @@ export async function POST(request: NextRequest) {
         'x-api-version': '1',
         'Content-Type': file.type,
       },
+      // @ts-ignore - duplex option is required for Node 18+
+      duplex: 'half',
     })
 
+    console.log("Blob response status:", blobResponse.status)
+
     if (!blobResponse.ok) {
-      throw new Error('Failed to upload to Vercel Blob')
+      const errorText = await blobResponse.text()
+      console.error("Blob upload failed:", blobResponse.status, errorText)
+      return NextResponse.json(
+        {
+          error: "Error al subir a Vercel Blob",
+          details: `Status: ${blobResponse.status}, Error: ${errorText}`
+        },
+        { status: 500 }
+      )
     }
 
     const blobData = await blobResponse.json()
+    console.log("Upload successful:", blobData.url)
 
     return NextResponse.json({
       success: true,

@@ -26,6 +26,8 @@ export default function AdminDashboardPage() {
   const [currentDate, setCurrentDate] = useState<Date | null>(null)
   const [syncing, setSyncing] = useState(false)
   const [syncMessage, setSyncMessage] = useState("")
+  const [checkingBlob, setCheckingBlob] = useState(false)
+  const [blobMessage, setBlobMessage] = useState("")
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role !== "ADMIN") {
@@ -55,6 +57,28 @@ export default function AdminDashboardPage() {
       setSyncMessage("Error al sincronizar")
     } finally {
       setSyncing(false)
+    }
+  }
+
+  const handleCheckBlob = async () => {
+    setCheckingBlob(true)
+    setBlobMessage("")
+
+    try {
+      const response = await fetch("/api/admin/check-blob")
+
+      if (response.ok) {
+        const data = await response.json()
+        setBlobMessage(data.configured
+          ? `✅ ${data.message}`
+          : `❌ ${data.message}`)
+      } else {
+        setBlobMessage("❌ Error al verificar Blob storage")
+      }
+    } catch (error) {
+      setBlobMessage("❌ Error al verificar Blob storage")
+    } finally {
+      setCheckingBlob(false)
     }
   }
 
@@ -143,23 +167,53 @@ export default function AdminDashboardPage() {
       {/* Sync sessions banner */}
       <Card className="bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800">
         <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-semibold text-blue-900 dark:text-blue-100">Sincronizar sesiones</h3>
-              <p className="text-sm text-blue-700 dark:text-blue-300">
-                Actualiza la base de datos con las sesiones de sessions.ts
-              </p>
-              {syncMessage && (
-                <p className="text-sm mt-2 text-green-700 dark:text-green-300">{syncMessage}</p>
-              )}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-blue-900 dark:text-blue-100">Sincronizar sesiones</h3>
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  Actualiza la base de datos con las sesiones de sessions.ts
+                </p>
+              </div>
+              <Button
+                onClick={handleSyncSessions}
+                disabled={syncing}
+                variant="clm"
+              >
+                {syncing ? "Sincronizando..." : "Sincronizar ahora"}
+              </Button>
             </div>
-            <Button
-              onClick={handleSyncSessions}
-              disabled={syncing}
-              variant="clm"
-            >
-              {syncing ? "Sincronizando..." : "Sincronizar ahora"}
-            </Button>
+            {syncMessage && (
+              <p className="text-sm text-green-700 dark:text-green-300">{syncMessage}</p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Blob storage check banner */}
+      <Card className="bg-purple-50 dark:bg-purple-950/30 border-purple-200 dark:border-purple-800">
+        <CardContent className="pt-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-purple-900 dark:text-purple-100">Verificar Blob Storage</h3>
+                <p className="text-sm text-purple-700 dark:text-purple-300">
+                  Verifica que Vercel Blob Storage está configurado correctamente
+                </p>
+              </div>
+              <Button
+                onClick={handleCheckBlob}
+                disabled={checkingBlob}
+                variant="outline"
+              >
+                {checkingBlob ? "Verificando..." : "Verificar"}
+              </Button>
+            </div>
+            {blobMessage && (
+              <p className={`text-sm ${blobMessage.startsWith("✅") ? "text-green-700 dark:text-green-300" : "text-red-700 dark:text-red-300"}`}>
+                {blobMessage}
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
