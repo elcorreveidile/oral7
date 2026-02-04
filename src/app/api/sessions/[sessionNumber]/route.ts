@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma"
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ sessionNumber: string }> }
+  { params }: { params: { sessionNumber: string } }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -17,7 +17,7 @@ export async function GET(
       )
     }
 
-    const { sessionNumber } = await params
+    const { sessionNumber } = params
     const sessionNum = parseInt(sessionNumber)
 
     const sessionData = await prisma.session.findUnique({
@@ -67,7 +67,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ sessionNumber: string }> }
+  { params }: { params: { sessionNumber: string } }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -79,7 +79,7 @@ export async function PUT(
       )
     }
 
-    const { sessionNumber } = await params
+    const { sessionNumber } = params
     const sessionNum = parseInt(sessionNumber)
     const data = await request.json()
 
