@@ -13,6 +13,7 @@ export const sessionsData: SessionData[] = [
 
   {
     sessionNumber: 1,
+    id: `session-1`,
     date: new Date('2026-02-03'),
     title: 'Presentación del curso y dinámicas de integración',
     subtitle: 'Grupo Mixto',
@@ -169,6 +170,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 2,
+    id: `session-2`,
     date: new Date('2026-02-05'),
     title: 'Conectores de la argumentación oral',
     subtitle: 'Estructura y cohesión',
@@ -378,6 +380,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 3,
+    id: `session-3`,
     date: new Date('2026-02-10'),
     title: 'Expresar opiniones, actitudes y conocimientos',
     subtitle: 'Precisión en la expresión del pensamiento',
@@ -514,14 +517,14 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Ordena estas expresiones del 1 (más dudoso) al 6 (más seguro):',
           items: [
-            { id: 'i1', text: 'Quizá sea así' },
-            { id: 'i2', text: 'Es probable que sea así' },
-            { id: 'i3', text: 'Posiblemente sea así' },
-            { id: 'i4', text: 'Seguramente es así' },
-            { id: 'i5', text: 'Sin duda es así' },
-            { id: 'i6', text: 'Tal vez sea así' },
+            { id: 'i1', content: 'Quizá sea así' },
+            { id: 'i2', content: 'Es probable que sea así' },
+            { id: 'i3', content: 'Posiblemente sea así' },
+            { id: 'i4', content: 'Seguramente es así' },
+            { id: 'i5', content: 'Sin duda es así' },
+            { id: 'i6', content: 'Tal vez sea así' },
           ],
-          correctOrder: ['i6', 'i3', 'i1', 'i2', 'i4', 'i5'],
+          correctAnswers: ['i6', 'i3', 'i1', 'i2', 'i4', 'i5'],
           feedback: {
             correct: '¡Perfecto! Has ordenado correctamente los grados de certeza.',
             incorrect: 'El orden correcto es: Tal vez → Posiblemente → Quizá → Es probable → Seguramente → Sin duda',
@@ -549,6 +552,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 4,
+    id: `session-4`,
     date: new Date('2026-02-12'),
     title: 'El registro formal',
     subtitle: 'Adaptación al público y contexto',
@@ -755,6 +759,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 5,
+    id: `session-5`,
     date: new Date('2026-02-17'),
     title: 'Acuerdo y desacuerdo',
     subtitle: 'Expresiones rotundas, matizadas y suavizadas',
@@ -891,13 +896,13 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Ordena del 1 (más suave) al 5 (más fuerte):',
           items: [
-            { id: 'i1', text: 'Totalmente en desacuerdo' },
-            { id: 'i2', text: 'Me permito disentir' },
-            { id: 'i3', text: 'Entiendo tu punto de vista, pero...' },
-            { id: 'i4', text: 'Lo veo de otra forma' },
-            { id: 'i5', text: 'En parte estoy de acuerdo' },
+            { id: 'i1', content: 'Totalmente en desacuerdo' },
+            { id: 'i2', content: 'Me permito disentir' },
+            { id: 'i3', content: 'Entiendo tu punto de vista, pero...' },
+            { id: 'i4', content: 'Lo veo de otra forma' },
+            { id: 'i5', content: 'En parte estoy de acuerdo' },
           ],
-          correctOrder: ['i5', 'i3', 'i4', 'i2', 'i1'],
+          correctAnswers: ['i5', 'i3', 'i4', 'i2', 'i1'],
           feedback: {
             correct: '¡Perfecto! Has ordenado correctamente los grados de desacuerdo.',
             incorrect: 'El orden correcto es: En parte → Entiendo pero → Lo veo de otra forma → Me permito disentir → Totalmente en desacuerdo',
@@ -925,6 +930,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 6,
+    id: `session-6`,
     date: new Date('2026-02-19'),
     title: 'La contraargumentación',
     subtitle: 'Razonamientos exhaustivos y defensa de ideas',
@@ -1104,6 +1110,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 9,
+    id: `session-9`,
     date: new Date('2026-03-03'),
     title: 'Análisis y feedback del debate',
     subtitle: 'Errores comunes y mejoras',
@@ -1292,6 +1299,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 10,
+    id: `session-10`,
     date: new Date('2026-03-05'),
     title: 'Narrar en el pasado',
     subtitle: 'Relato de anécdotas e informaciones',
@@ -1459,6 +1467,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 11,
+    id: `session-11`,
     date: new Date('2026-03-10'),
     title: 'Indicadores temporales precisos',
     subtitle: 'Antes de, cuando, en cuanto...',
@@ -1626,6 +1635,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 12,
+    id: `session-12`,
     date: new Date('2026-03-12'),
     title: 'Relatar acontecimientos históricos',
     subtitle: 'Narraciones complejas',
@@ -1641,7 +1651,7 @@ export const sessionsData: SessionData[] = [
     ],
     timing: [
       { id: 't12-1', duration: '15 min', activity: 'Introducción a la narración histórica', description: 'Estructura y vocabulario' },
-      { id: 't12-2', duration: '20 min', activity: 'Vocabulario histórico', definition: 'Términos clave' },
+      { id: 't12-2', duration: '20 min', activity: 'Vocabulario histórico', description: 'Términos clave' },
       { id: 't12-3', duration: '25 min', activity: 'Práctica de narración', description: 'Relatar eventos históricos' },
       { id: 't12-4', duration: '20 min', activity: 'Narración compleja', description: 'Múltiples personajes y eventos' },
       { id: 't12-5', duration: '10 min', activity: 'Análisis', description: 'Coherencia y vocabulario' },
@@ -1748,10 +1758,10 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Relata un evento histórico usando:',
           items: [
-            { id: 'q1', text: 'Usa al menos 5 términos históricos del vocabulario' },
-            { id: 'q2', text: 'Incluye fechas y personajes' },
-            { id: 'q3', text: 'Usa conectores temporales variados' },
-            { id: 'q4', text: 'Usa pretéritos correctamente (PS/PI/pluscuam)' },
+            { id: 'q1', content: 'Usa al menos 5 términos históricos del vocabulario' },
+            { id: 'q2', content: 'Incluye fechas y personajes' },
+            { id: 'q3', content: 'Usa conectores temporales variados' },
+            { id: 'q4', content: 'Usa pretéritos correctamente (PS/PI/pluscuam)' },
           ],
         },
         order: 1,
@@ -1776,6 +1786,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 13,
+    id: `session-13`,
     date: new Date('2026-03-17'),
     title: 'La hipótesis (Presente y Futuro)',
     subtitle: 'Si tuviera tiempo, me cogería...',
@@ -1936,6 +1947,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 14,
+    id: `session-14`,
     date: new Date('2026-03-19'),
     title: 'La hipótesis (Pasado)',
     subtitle: 'Si hubiera tenido esa oportunidad, habría...',
@@ -2095,6 +2107,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 15,
+    id: `session-15`,
     date: new Date('2026-03-24'),
     title: 'Preparación para el parcial',
     subtitle: 'Simulacros de interacción oral',
@@ -2224,6 +2237,7 @@ export const sessionsData: SessionData[] = [
     grammarContent: {
       title: 'Repaso integral del curso',
       explanation: 'El examen evalúa todas las competencias trabajadas en el curso.',
+      examples: [],
     },
     vocabularyContent: {
       title: 'Vocabulario de examen',
@@ -2244,10 +2258,10 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Responde honestamente:',
           items: [
-            { id: 'q1', text: '¿Qué fortalezas tengo para el examen?' },
-            { id: 'q2', text: '¿Qué áreas necesito mejorar?' },
-            { id: 'q3', text: '¿Qué estrategias usaré durante el examen?' },
-            { id: 'q4', text: '¿Cómo me prepararé esta semana?' },
+            { id: 'q1', content: '¿Qué fortalezas tengo para el examen?' },
+            { id: 'q2', content: '¿Qué áreas necesito mejorar?' },
+            { id: 'q3', content: '¿Qué estrategias usaré durante el examen?' },
+            { id: 'q4', content: '¿Cómo me prepararé esta semana?' },
           ],
         },
         order: 1,
@@ -2278,6 +2292,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 17,
+    id: `session-17`,
     date: new Date('2026-04-07'),
     title: 'Bienvenida post-vacaciones',
     subtitle: 'Puesta al día social y lingüística',
@@ -2389,9 +2404,9 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Responde:',
           items: [
-            { id: 'q1', text: '¿Qué he mejorado desde febrero?' },
-            { id: 'q2', text: '¿Qué necesito practicar más?' },
-            { id: 'q3', text: '¿Qué metas tengo para mayo?' },
+            { id: 'q1', content: '¿Qué he mejorado desde febrero?' },
+            { id: 'q2', content: '¿Qué necesito practicar más?' },
+            { id: 'q3', content: '¿Qué metas tengo para mayo?' },
           ],
         },
         order: 1,
@@ -2413,6 +2428,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 18,
+    id: `session-18`,
     date: new Date('2026-04-09'),
     title: 'La entrevista',
     subtitle: 'Estructura y tipos (Entrevistas de trabajo, a expertos)',
@@ -2543,9 +2559,9 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Convierte estas preguntas cerradas en abiertas:',
           items: [
-            { id: 'q1', text: '¿Te gusta trabajar en equipo?' },
-            { id: 'q2', text: '¿Tienes experiencia?' },
-            { id: 'q3', text: '¿Eres responsable?' },
+            { id: 'q1', content: '¿Te gusta trabajar en equipo?' },
+            { id: 'q2', content: '¿Tienes experiencia?' },
+            { id: 'q3', content: '¿Eres responsable?' },
           ],
         },
         order: 1,
@@ -2570,6 +2586,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 19,
+    id: `session-19`,
     date: new Date('2026-04-14'),
     title: 'Estrategias de interacción',
     subtitle: 'Preguntas abiertas y seguir el hilo',
@@ -2696,9 +2713,9 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Convierte estas preguntas cerradas en abiertas:',
           items: [
-            { id: 'q1', text: '¿Te gusta la tecnología?' },
-            { id: 'q2', text: '¿Es importante el idioma?' },
-            { id: 'q3', text: '¿Has viajado mucho?' },
+            { id: 'q1', content: '¿Te gusta la tecnología?' },
+            { id: 'q2', content: '¿Es importante el idioma?' },
+            { id: 'q3', content: '¿Has viajado mucho?' },
           ],
         },
         order: 1,
@@ -2722,6 +2739,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 20,
+    id: `session-20`,
     date: new Date('2026-04-16'),
     title: 'El estilo indirecto',
     subtitle: 'Transmitir mensajes y opiniones de otros',
@@ -2884,6 +2902,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 21,
+    id: `session-21`,
     date: new Date('2026-04-21'),
     title: 'Estrategias de influencia',
     subtitle: 'Aconsejar, sugerir y advertir',
@@ -3013,9 +3032,9 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Da un consejo apropiado para cada situación:',
           items: [
-            { id: 'q1', text: 'Un amigo quiere mejorar su español' },
-            { id: 'q2', text: 'Alguien no tiene tiempo para estudiar' },
-            { id: 'q3', text: 'Un estudiante está estresado' },
+            { id: 'q1', content: 'Un amigo quiere mejorar su español' },
+            { id: 'q2', content: 'Alguien no tiene tiempo para estudiar' },
+            { id: 'q3', content: 'Un estudiante está estresado' },
           ],
         },
         order: 1,
@@ -3039,6 +3058,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 22,
+    id: `session-22`,
     date: new Date('2026-04-23'),
     title: 'Lenguaje persuasivo',
     subtitle: 'Insistir en una petición y gestionar conflictos',
@@ -3166,8 +3186,8 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Escribe un mensaje persuasivo para:',
           items: [
-            { id: 'q1', text: 'Pedir ayuda a un compañero para un proyecto' },
-            { id: 'q2', text: 'Convencer a tu grupo de tu idea' },
+            { id: 'q1', content: 'Pedir ayuda a un compañero para un proyecto' },
+            { id: 'q2', content: 'Convencer a tu grupo de tu idea' },
           ],
         },
         order: 1,
@@ -3191,6 +3211,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 23,
+    id: `session-23`,
     date: new Date('2026-04-28'),
     title: 'La Conferencia (I)',
     subtitle: 'Apertura, captar atención y presentar la idea central',
@@ -3316,10 +3337,10 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Crea una apertura de 2 minutos:',
           items: [
-            { id: 'q1', text: 'Gancho (30 seg)' },
-            { id: 'q2', text: 'Conexión (30 seg)' },
-            { id: 'q3', text: 'Idea central (30 seg)' },
-            { id: 'q4', text: 'Roadmap (30 seg)' },
+            { id: 'q1', content: 'Gancho (30 seg)' },
+            { id: 'q2', content: 'Conexión (30 seg)' },
+            { id: 'q3', content: 'Idea central (30 seg)' },
+            { id: 'q4', content: 'Roadmap (30 seg)' },
           ],
         },
         order: 1,
@@ -3344,6 +3365,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 24,
+    id: `session-24`,
     date: new Date('2026-04-30'),
     title: 'La Conferencia (II)',
     subtitle: 'Desarrollo, énfasis en detalles y cierre efectivo',
@@ -3457,9 +3479,9 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Estructura completa:',
           items: [
-            { id: 'q1', text: 'Apertura (1 min)' },
-            { id: 'q2', text: 'Desarrollo (3 min)' },
-            { id: 'q3', text: 'Cierre (1 min)' },
+            { id: 'q1', content: 'Apertura (1 min)' },
+            { id: 'q2', content: 'Desarrollo (3 min)' },
+            { id: 'q3', content: 'Cierre (1 min)' },
           ],
         },
         order: 1,
@@ -3487,6 +3509,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 25,
+    id: `session-25`,
     date: new Date('2026-05-05'),
     title: 'Diferencias entre registro coloquial y formal',
     subtitle: 'Análisis de situaciones',
@@ -3502,7 +3525,7 @@ export const sessionsData: SessionData[] = [
     ],
     timing: [
       { id: 't25-1', duration: '15 min', activity: 'Introducción a registros', description: 'Espectro de formalidad' },
-      { id: 't25-2', duration: '20 min', activity: 'Coloquialismos del español', definition: 'Expresiones comunes' },
+      { id: 't25-2', duration: '20 min', activity: 'Coloquialismos del español', description: 'Expresiones comunes' },
       { id: 't25-3', duration: '25 min', activity: 'Análisis de situaciones', description: '¿Qué registro es apropiado?' },
       { id: 't25-4', duration: '20 min', activity: 'Role-play: Registros variados', description: 'Práctica' },
       { id: 't25-5', duration: '10 min', activity: 'Variantes geográficas', description: 'España vs América' },
@@ -3645,6 +3668,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 26,
+    id: `session-26`,
     date: new Date('2026-05-07'),
     title: '"Los tacos"',
     subtitle: 'Pragmática del lenguaje vulgar y su uso social',
@@ -3740,6 +3764,7 @@ export const sessionsData: SessionData[] = [
     grammarContent: {
       title: 'Pragmática del lenguaje vulgar',
       explanation: 'El lenguaje vulgar tiene funciones sociales específicas: expresar enfado, crear intimidad, rebelarse, enfatizar.',
+      examples: [],
       notes: [
         'Esta sesión trata el tema desde una perspectiva académica y cultural',
         'El objetivo es entender la pragmática, no ofender',
@@ -3765,10 +3790,10 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Responde (no es obligatorio compartir):',
           items: [
-            { id: 'q1', text: '¿Qué tacos conozco del español?' },
-            { id: 'q2', text: '¿Cuándo los he escuchado?' },
-            { id: 'q3', text: '¿Los usaría? ¿Por qué sí/no?' },
-            { id: 'q4', text: '¿Qué diferencias hay con mi lengua materna?' },
+            { id: 'q1', content: '¿Qué tacos conozco del español?' },
+            { id: 'q2', content: '¿Cuándo los he escuchado?' },
+            { id: 'q3', content: '¿Los usaría? ¿Por qué sí/no?' },
+            { id: 'q4', content: '¿Qué diferencias hay con mi lengua materna?' },
           ],
         },
         order: 1,
@@ -3792,6 +3817,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 27,
+    id: `session-27`,
     date: new Date('2026-05-12'),
     title: 'Vocabulario abstracto',
     subtitle: 'Expresar sentimientos e intereses con precisión',
@@ -3932,6 +3958,7 @@ export const sessionsData: SessionData[] = [
   // ============================================
   {
     sessionNumber: 28,
+    id: `session-28`,
     date: new Date('2026-05-14'),
     title: 'Última clase: Presentaciones finales',
     subtitle: 'Proyectos y despedida',
@@ -4027,6 +4054,7 @@ export const sessionsData: SessionData[] = [
     grammarContent: {
       title: 'Repaso integral',
       explanation: 'Integración de todas las competencias trabajadas en el curso.',
+      examples: [],
     },
     vocabularyContent: {
       title: 'Vocabulario de cierre',
@@ -4045,10 +4073,10 @@ export const sessionsData: SessionData[] = [
         content: {
           instructions: 'Responde:',
           items: [
-            { id: 'q1', text: '¿Qué mejoraste más?' },
-            { id: 'q2', text: '¿Qué fue lo más difícil?' },
-            { id: 'q3', text: '¿Qué logro te enorgullece?' },
-            { id: 'q4', text: '¿Qué te llevarás del curso?' },
+            { id: 'q1', content: '¿Qué mejoraste más?' },
+            { id: 'q2', content: '¿Qué fue lo más difícil?' },
+            { id: 'q3', content: '¿Qué logro te enorgullece?' },
+            { id: 'q4', content: '¿Qué te llevarás del curso?' },
           ],
         },
         order: 1,
@@ -4065,3 +4093,15 @@ export const sessionsData: SessionData[] = [
     resources: [],
   },
 ]
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+export function getSessionData(sessionNumber: number): SessionData | null {
+  return sessionsData.find(s => s.sessionNumber === sessionNumber) || null
+}
+
+export function getAllSessions(): SessionData[] {
+  return sessionsData
+}
