@@ -116,6 +116,7 @@ enum TaskType {
   FREE_TEXT           // Texto libre
   AUDIO_RECORDING     // Grabación de audio
   VIDEO_RECORDING     // Grabación de vídeo
+  DOCUMENT_UPLOAD     // Subida de documentos
 }
 
 // ============================================
