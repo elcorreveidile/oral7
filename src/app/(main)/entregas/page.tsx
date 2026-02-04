@@ -78,7 +78,7 @@ export default function EntregasPage() {
       const data = await response.json()
       setSubmissions((prev) => ({
         ...prev,
-        [taskId]: data.submission,
+        [`session-${sessionNumber}`]: data.submission,
       }))
     }
   }
