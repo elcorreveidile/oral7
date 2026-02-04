@@ -203,103 +203,46 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* Today's class and recent activity */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Today's attendance */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Asistencia de hoy</CardTitle>
-              {hasStarted ? (
-                <Badge variant="success">
-                  {stats.todayAttendance}/{stats.totalStudents}
-                </Badge>
-              ) : (
-                <Badge variant="outline">Sin iniciar</Badge>
-              )}
-            </div>
-            <CardDescription>
-              {hasStarted
-                ? `Sesión ${stats.currentSession} - Registros de asistencia`
-                : "El curso comienza el 3 de febrero"
-              }
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {hasStarted ? (
-              <>
-                <div className="space-y-2">
-                  <Progress
-                    value={(stats.todayAttendance / stats.totalStudents) * 100}
-                    className="h-4"
-                  />
-                  <p className="text-sm text-muted-foreground">
-                    {stats.totalStudents - stats.todayAttendance} estudiantes sin registrar
-                  </p>
-                </div>
-                <Button asChild className="w-full mt-4" variant="outline">
-                  <Link href="/admin/asistencia">
-                    Ver detalle
-                  </Link>
-                </Button>
-              </>
-            ) : (
-              <div className="text-center py-4">
-                <p className="text-muted-foreground">
-                  Mañana comienza la primera sesión
-                </p>
-                <Button asChild className="mt-4" variant="clm">
-                  <Link href="/admin/qr">
-                    <QrCode className="mr-2 h-4 w-4" />
-                    Preparar QR para mañana
-                  </Link>
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Recent activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Actividad reciente</CardTitle>
-            <CardDescription>
-              Últimas acciones de los estudiantes
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {recentActivity.length > 0 ? (
-              <div className="space-y-4">
-                {recentActivity.map((activity, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                      <CheckCircle2 className="h-5 w-5 text-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate">{activity.student}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {activity.action} · Sesión {activity.session}
-                      </p>
-                    </div>
-                    <span className="text-xs text-muted-foreground">
-                      {activity.time}
-                    </span>
+      {/* Recent activity - Takes full width since attendance is removed */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Actividad reciente</CardTitle>
+          <CardDescription>
+            Últimas acciones de los estudiantes
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {recentActivity.length > 0 ? (
+            <div className="space-y-4">
+              {recentActivity.map((activity, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50"
+                >
+                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <CheckCircle2 className="h-5 w-5 text-primary" />
                   </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                <p>Sin actividad todavía</p>
-                <p className="text-sm">La actividad aparecerá aquí cuando comience el curso</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium truncate">{activity.student}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {activity.action} · Sesión {activity.session}
+                    </p>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {activity.time}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
+              <p>Sin actividad todavía</p>
+              <p className="text-sm">La actividad aparecerá aquí cuando comience el curso</p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Calendar preview */}
       <Card>
