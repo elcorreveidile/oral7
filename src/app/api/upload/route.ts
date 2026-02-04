@@ -63,10 +63,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generate unique filename
+    // Generate unique filename (simplified, without slashes)
     const timestamp = Date.now()
     const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_")
-    const filename = `${session.user.id}/${taskId}/${timestamp}-${originalName}`
+    const filename = `${timestamp}-${originalName}`
 
     // Upload to Vercel Blob using REST API
     const token = process.env.BLOB_READ_WRITE_TOKEN
@@ -82,11 +82,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // URL encode the filename for the path
-    const encodedPath = filename.split('/').map(encodeURIComponent).join('/')
-
     // Use Authorization header instead of URL credentials
-    const blobUrl = `https://blob.vercel-storage.com/${encodedPath}`
+    const blobUrl = `https://blob.vercel-storage.com/${filename}`
 
     console.log("Uploading to:", blobUrl)
 
