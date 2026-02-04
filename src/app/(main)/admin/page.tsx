@@ -30,6 +30,8 @@ export default function AdminDashboardPage() {
   const [blobMessage, setBlobMessage] = useState("")
   const [testingUpload, setTestingUpload] = useState(false)
   const [uploadTestMessage, setUploadTestMessage] = useState("")
+  const [migrating, setMigrating] = useState(false)
+  const [migrateMessage, setMigrateMessage] = useState("")
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role !== "ADMIN") {
@@ -101,6 +103,26 @@ export default function AdminDashboardPage() {
       setUploadTestMessage("❌ Error al hacer prueba de subida")
     } finally {
       setTestingUpload(false)
+    }
+  }
+
+  const handleMigrate = async () => {
+    setMigrating(true)
+    setMigrateMessage("")
+
+    try {
+      const response = await fetch("/api/admin/migrate-tasktype", {
+        method: "POST",
+      })
+
+      const data = await response.json()
+      setMigrateMessage(data.success
+        ? `✅ ${data.message}`
+        : `❌ ${data.error}`)
+    } catch (error) {
+      setMigrateMessage("❌ Error al ejecutar migración")
+    } finally {
+      setMigrating(false)
     }
   }
 
@@ -262,6 +284,34 @@ export default function AdminDashboardPage() {
             {uploadTestMessage && (
               <p className={`text-sm break-all ${uploadTestMessage.startsWith("✅") ? "text-green-700 dark:text-green-300" : "text-red-700 dark:text-red-300"}`}>
                 {uploadTestMessage}
+              </p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Migrate database banner */}
+      <Card className="bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800">
+        <CardContent className="pt-6">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-red-900 dark:text-red-100">Migrar base de datos</h3>
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  Añade DOCUMENT_UPLOAD al enum TaskType (necesario para guardar entregas)
+                </p>
+              </div>
+              <Button
+                onClick={handleMigrate}
+                disabled={migrating}
+                variant="destructive"
+              >
+                {migrating ? "Migrando..." : "Migrar"}
+              </Button>
+            </div>
+            {migrateMessage && (
+              <p className={`text-sm ${migrateMessage.startsWith("✅") ? "text-green-700 dark:text-green-300" : "text-red-700 dark:text-red-300"}`}>
+                {migrateMessage}
               </p>
             )}
           </div>
