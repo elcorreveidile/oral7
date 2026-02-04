@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
           sessionNumber,
           sessionTitle: sessionData?.title,
           sessionDate: sessionData?.date,
-          files: sub.content.files || [],
+          files: (sub.content as any)?.files || [],
           createdAt: sub.createdAt,
         }
       })
