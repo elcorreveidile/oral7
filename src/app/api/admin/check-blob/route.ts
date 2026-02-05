@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
 
-    if (!session || session.user.role !== "ADMIN") {
+    if (!session || !session.user || session.user.role !== "ADMIN") {
       return NextResponse.json(
         { error: "No autorizado" },
         { status: 401 }
@@ -37,12 +37,15 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error("Error checking blob:", error)
+    // Better error logging to prevent "n" output
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    console.error("Error checking blob:", errorMessage)
+
     return NextResponse.json(
       {
         configured: false,
         message: "Error al verificar la conexión",
-        error: error instanceof Error ? error.message : "Unknown error"
+        error: errorMessage
       },
       { status: 500 }
     )
