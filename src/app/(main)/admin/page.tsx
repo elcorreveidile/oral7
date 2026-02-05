@@ -20,6 +20,14 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { getGreeting, formatDateSpanish } from "@/lib/utils"
 
+interface StatsData {
+  totalStudents: number
+  averageAttendance: number
+  currentSession: number
+  totalSessions: number
+  studentsAtRisk: number
+}
+
 export default function AdminDashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
@@ -32,6 +40,8 @@ export default function AdminDashboardPage() {
   const [uploadTestMessage, setUploadTestMessage] = useState("")
   const [migrating, setMigrating] = useState(false)
   const [migrateMessage, setMigrateMessage] = useState("")
+  const [stats, setStats] = useState<StatsData | null>(null)
+  const [loadingStats, setLoadingStats] = useState(true)
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role !== "ADMIN") {
@@ -40,7 +50,26 @@ export default function AdminDashboardPage() {
       router.push("/login")
     }
     setCurrentDate(new Date())
+
+    // Load stats if authenticated as admin
+    if (status === "authenticated" && session?.user?.role === "ADMIN") {
+      loadStats()
+    }
   }, [status, session, router])
+
+  const loadStats = async () => {
+    try {
+      const response = await fetch("/api/admin/stats")
+      if (response.ok) {
+        const data = await response.json()
+        setStats(data)
+      }
+    } catch (error) {
+      console.error("Error loading stats:", error)
+    } finally {
+      setLoadingStats(false)
+    }
+  }
 
   const handleSyncSessions = async () => {
     setSyncing(true)
@@ -141,17 +170,6 @@ export default function AdminDashboardPage() {
   // Check if course has started (Feb 3, 2026)
   const courseStartDate = new Date("2026-02-03T00:00:00")
   const hasStarted = currentDate >= courseStartDate
-
-  // Stats - will be fetched from API in production
-  // Initial state - course starts Feb 3, 2026
-  const stats = {
-    totalStudents: 15,
-    averageAttendance: hasStarted ? 0 : 0,
-    currentSession: hasStarted ? 1 : 0,
-    totalSessions: 27,
-    studentsAtRisk: 0,
-    todayAttendance: 0,
-  }
 
   const quickActions = [
     {
@@ -326,9 +344,17 @@ export default function AdminDashboardPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">--</div>
+            <div className="text-2xl font-bold">
+              {loadingStats ? (
+                <div className="animate-pulse">--</div>
+              ) : (
+                stats?.totalStudents ?? "--"
+              )}
+            </div>
             <p className="text-xs text-muted-foreground">
-              Pendiente de matriculación
+              {stats && stats.totalStudents > 0
+                ? "Estudiantes registrados"
+                : "Pendiente de matriculación"}
             </p>
           </CardContent>
         </Card>
@@ -340,9 +366,15 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {hasStarted ? `${stats.averageAttendance}%` : "--"}
+              {loadingStats ? (
+                <div className="animate-pulse">--</div>
+              ) : hasStarted ? (
+                `${stats?.averageAttendance ?? 0}%`
+              ) : (
+                "--"
+              )}
             </div>
-            <Progress value={stats.averageAttendance} className="mt-2" />
+            <Progress value={stats?.averageAttendance ?? 0} className="mt-2" />
           </CardContent>
         </Card>
 
@@ -353,23 +385,31 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats.currentSession}/{stats.totalSessions}
+              {loadingStats ? (
+                <div className="animate-pulse">--</div>
+              ) : (
+                `${stats?.currentSession ?? 1}/${stats?.totalSessions ?? 27}`
+              )}
             </div>
             <Progress
-              value={(stats.currentSession / stats.totalSessions) * 100}
+              value={stats ? ((stats.currentSession / stats.totalSessions) * 100) : 0}
               className="mt-2"
             />
           </CardContent>
         </Card>
 
-        <Card className={stats.studentsAtRisk > 0 ? "border-red-200 dark:border-red-800" : ""}>
+        <Card className={(stats?.studentsAtRisk ?? 0) > 0 ? "border-red-200 dark:border-red-800" : ""}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">En riesgo</CardTitle>
-            <AlertCircle className={`h-4 w-4 ${stats.studentsAtRisk > 0 ? "text-red-500" : "text-muted-foreground"}`} />
+            <AlertCircle className={`h-4 w-4 ${(stats?.studentsAtRisk ?? 0) > 0 ? "text-red-500" : "text-muted-foreground"}`} />
           </CardHeader>
           <CardContent>
-            <div className={`text-2xl font-bold ${stats.studentsAtRisk > 0 ? "text-red-500" : ""}`}>
-              {stats.studentsAtRisk}
+            <div className={`text-2xl font-bold ${(stats?.studentsAtRisk ?? 0) > 0 ? "text-red-500" : ""}`}>
+              {loadingStats ? (
+                <div className="animate-pulse">--</div>
+              ) : (
+                stats?.studentsAtRisk ?? 0
+              )}
             </div>
             <p className="text-xs text-muted-foreground">
               Estudiantes que requieren atención
