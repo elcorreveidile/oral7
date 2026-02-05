@@ -39,9 +39,8 @@ export function GrammarSection({ grammar }: GrammarSectionProps) {
       </div>
 
       <div className="p-4 md:p-6 space-y-4">
-        <CopyableBlock title={grammar.title} content={fullContent} />
-
         <div className="prose prose-sm dark:prose-invert max-w-none">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{grammar.title}</h3>
           <p className="text-gray-700 dark:text-gray-300">{grammar.explanation}</p>
         </div>
 
