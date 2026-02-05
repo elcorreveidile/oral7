@@ -45,6 +45,12 @@ export async function GET(request: NextRequest) {
     const enrichedSubmissions = await Promise.all(
       submissions.map(async (sub) => {
         const sessionNumber = parseInt(sub.taskId.replace("session-", ""))
+
+        // Skip if sessionNumber is invalid
+        if (isNaN(sessionNumber)) {
+          return null
+        }
+
         const sessionData = await prisma.session.findUnique({
           where: { sessionNumber },
           select: {
@@ -68,7 +74,10 @@ export async function GET(request: NextRequest) {
       })
     )
 
-    return NextResponse.json({ submissions: enrichedSubmissions })
+    // Filter out null values
+    const validSubmissions = enrichedSubmissions.filter((sub): sub is any => sub !== null)
+
+    return NextResponse.json({ submissions: validSubmissions })
   } catch (error) {
     console.error("Error fetching submissions:", error)
     return NextResponse.json(
