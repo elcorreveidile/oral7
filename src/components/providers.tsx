@@ -37,7 +37,7 @@ function PedagogicalModeProvider({ children }: { children: ReactNode }) {
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
-    <SessionProvider>
+    <SessionProvider refetchInterval={5 * 60} refetchOnWindowFocus={true}>
       <ThemeProvider
         attribute="class"
         defaultTheme="light"
