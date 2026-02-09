@@ -627,9 +627,40 @@ async function main() {
   // ============================================
   // 6. CREATE RESOURCES
   // ============================================
-  console.log('📝 Creating resources...')
+  console.log('📝 Creating/updating resources...')
+
+  // Eliminar recursos existentes para las sesiones que vamos a actualizar
+  for (const session of sessions.slice(0, 8)) {
+    await prisma.resource.deleteMany({
+      where: { sessionId: session.id },
+    })
+  }
+
+  // Recursos específicos para Sesión 2
+  if (sessions[1]) {
+    await prisma.resource.createMany({
+      data: [
+        {
+          sessionId: sessions[1].id,
+          title: 'Póster: conectores por función',
+          type: 'PDF',
+          url: '/resources/conectores-tabla.pdf',
+          order: 1,
+        },
+        {
+          sessionId: sessions[1].id,
+          title: 'Vocabulario de la argumentación',
+          type: 'PDF',
+          url: '/resources/ejercicios-conectores.pdf',
+          order: 2,
+          description: 'Lista de verbos/adjetivos/expresiones útiles para argumentar (C1).',
+        },
+      ],
+    })
+  }
 
   for (const session of sessions.slice(0, 8)) {
+    if (session.sessionNumber === 2) continue // Ya tiene recursos específicos
     await prisma.resource.createMany({
       data: [
         {
