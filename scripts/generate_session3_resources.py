@@ -349,11 +349,11 @@ def build_role_cards_pdf(out_path: str) -> None:
 
 def main() -> int:
     ensure_out_dir()
-    build_opinion_formulas_pdf(os.path.join(OUT_DIR, "session-3.pdf"))
-    build_role_cards_pdf(os.path.join(OUT_DIR, "vocab-3.pdf"))
+    # These filenames are referenced by Session 3 resources in `src/data/sessions.ts`.
+    build_opinion_formulas_pdf(os.path.join(OUT_DIR, "fichas-opinion-certeza.pdf"))
+    build_role_cards_pdf(os.path.join(OUT_DIR, "subjuntivo-duda.pdf"))
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
