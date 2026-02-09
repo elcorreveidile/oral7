@@ -18,31 +18,21 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { getGreeting, formatDateSpanish } from "@/lib/utils"
+import { getAllSessions } from "@/data/sessions"
 
-// Mock data for demonstration - using ISO strings to avoid hydration issues
-const mockCurrentSession = {
-  id: "session-1",
-  sessionNumber: 1,
-  title: "Toma de contacto e interacción social",
-  date: "2026-02-03" as unknown as Date, // Feb 3, 2026 - will be parsed by formatDateSpanish
-  blockNumber: 1,
-  blockTitle: "La argumentación formal",
+const allSessions = getAllSessions()
+
+function startOfDay(d: Date) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate())
 }
 
-const mockUpcomingSessions = [
-  {
-    id: "session-2",
-    sessionNumber: 2,
-    title: "Socialización y registro: tutear vs. usted",
-    date: "2026-02-05" as unknown as Date,
-  },
-  {
-    id: "session-3",
-    sessionNumber: 3,
-    title: "Los bares como espacios de interacción",
-    date: "2026-02-10" as unknown as Date,
-  },
-]
+function isSameDay(a: Date, b: Date) {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  )
+}
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
@@ -89,6 +79,20 @@ export default function DashboardPage() {
     totalSessions: 27,
     checklistProgress: 0,
   }
+
+  const sessionsSorted = [...allSessions].sort((a, b) => a.date.getTime() - b.date.getTime())
+  const today = startOfDay(currentDate)
+  const currentOrNext =
+    sessionsSorted.find((s) => startOfDay(s.date).getTime() >= today.getTime()) ||
+    sessionsSorted[sessionsSorted.length - 1]
+  const isTodaySession = currentOrNext ? isSameDay(currentOrNext.date, currentDate) : false
+  const currentIndex = currentOrNext
+    ? sessionsSorted.findIndex((s) => s.sessionNumber === currentOrNext.sessionNumber)
+    : -1
+  const upcomingSessions =
+    currentIndex >= 0
+      ? sessionsSorted.slice(currentIndex + 1, currentIndex + 3)
+      : sessionsSorted.slice(0, 2)
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -190,49 +194,53 @@ export default function DashboardPage() {
           </Button>
         </div>
 
-        <Card className="session-card today border-primary">
+        {currentOrNext && (
+          <Card className={`session-card border-primary ${isTodaySession ? "today" : "future"}`}>
           <CardHeader>
             <div className="flex items-start justify-between">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <Badge variant="clm">Sesión {mockCurrentSession.sessionNumber}</Badge>
-                  {hasStarted ? (
+                  <Badge variant="clm">Sesión {currentOrNext.sessionNumber}</Badge>
+                  {!hasStarted ? (
+                    <Badge variant="outline">Próximamente</Badge>
+                  ) : isTodaySession ? (
                     <Badge variant="success">Hoy</Badge>
                   ) : (
-                    <Badge variant="outline">Mañana comienza el curso</Badge>
+                    <Badge variant="outline">Próxima</Badge>
                   )}
                 </div>
                 <CardTitle className="text-xl">
-                  {mockCurrentSession.title}
+                  {currentOrNext.title}
                 </CardTitle>
                 <CardDescription>
-                  Bloque {mockCurrentSession.blockNumber}: {mockCurrentSession.blockTitle}
+                  Bloque {currentOrNext.blockNumber}: {currentOrNext.blockTitle}
                 </CardDescription>
               </div>
               <div className="text-right text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
-                  <span>{formatDateSpanish(mockCurrentSession.date)}</span>
+                  <span>{formatDateSpanish(currentOrNext.date)}</span>
                 </div>
               </div>
             </div>
           </CardHeader>
           <CardContent>
             <Button asChild className="w-full sm:w-auto">
-              <Link href={`/sesiones/${mockCurrentSession.sessionNumber}`}>
+              <Link href={`/sesiones/${currentOrNext.sessionNumber}`}>
                 <BookOpen className="mr-2 h-4 w-4" />
                 Ver contenidos
               </Link>
             </Button>
           </CardContent>
-        </Card>
+          </Card>
+        )}
       </section>
 
       {/* Upcoming sessions */}
       <section>
         <h2 className="text-xl font-semibold mb-4">Próximas sesiones</h2>
         <div className="grid gap-4 md:grid-cols-2">
-          {mockUpcomingSessions.map((session) => (
+          {upcomingSessions.map((session) => (
             <Card key={session.id} className="session-card future">
               <CardHeader>
                 <div className="flex items-start justify-between">
