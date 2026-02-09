@@ -10,6 +10,7 @@ import {
   QrCode,
   BarChart3,
   Calendar,
+  Settings,
   CheckCircle2,
   AlertCircle,
   TrendingUp,
@@ -138,12 +139,20 @@ export default function AdminDashboardPage() {
             {formatDateSpanish(currentDate)} · Panel de control
           </p>
         </div>
-        <Button asChild size="lg" variant="clm">
-          <Link href="/admin/qr">
-            <QrCode className="mr-2 h-5 w-5" />
-            Generar código QR
-          </Link>
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button asChild size="lg" variant="outline">
+            <Link href="/admin/mantenimiento">
+              <Settings className="mr-2 h-5 w-5" />
+              Mantenimiento
+            </Link>
+          </Button>
+          <Button asChild size="lg" variant="clm">
+            <Link href="/admin/qr">
+              <QrCode className="mr-2 h-5 w-5" />
+              Generar código QR
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Stats grid */}
