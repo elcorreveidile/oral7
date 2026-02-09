@@ -52,8 +52,13 @@ export function ResourcesSection({ resources }: ResourcesSectionProps) {
                 <Icon className="h-5 w-5" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium truncate">{resource.title}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="font-medium leading-snug break-words">{resource.title}</p>
+                {resource.description && (
+                  <p className="text-xs text-muted-foreground mt-1 break-words">
+                    {resource.description}
+                  </p>
+                )}
+                <p className="text-xs text-muted-foreground mt-1">
                   {resourceLabels[resource.type]}
                 </p>
               </div>

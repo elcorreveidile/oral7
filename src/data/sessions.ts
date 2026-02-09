@@ -370,8 +370,8 @@ export const sessionsData: SessionData[] = [
       { id: 'ck2-5', text: 'Puedo argumentar con cohesión y coherencia' },
     ],
     resources: [
-      { id: 'r2-1', title: 'Póster: conectores por función', type: 'PDF', url: '/resources/conectores-tabla.pdf', order: 1 },
-      { id: 'r2-2', title: 'Vocabulario de la argumentación', type: 'PDF', url: '/resources/ejercicios-conectores.pdf', order: 2 },
+      { id: 'r2-1', title: 'Póster: conectores por función', description: 'Clasificación visual de conectores (estructuradores, orden, adición, contraste, causa, consecuencia, conclusión, etc.).', type: 'PDF', url: '/resources/conectores-tabla.pdf', order: 1 },
+      { id: 'r2-2', title: 'Vocabulario de la argumentación', description: 'Verbos, adjetivos y expresiones útiles para argumentar en registro formal (C1).', type: 'PDF', url: '/resources/ejercicios-conectores.pdf', order: 2 },
     ],
   },
 
@@ -542,8 +542,8 @@ export const sessionsData: SessionData[] = [
       { id: 'ck3-5', text: 'Sé atribuir opiniones a otras personas' },
     ],
     resources: [
-      { id: 'r3-1', title: 'Fichas de opinión y certeza', type: 'PDF', url: '/resources/fichas-opinion-certeza.pdf', order: 1 },
-      { id: 'r3-2', title: 'Subjuntivo con expresiones de duda', type: 'PDF', url: '/resources/subjuntivo-duda.pdf', order: 2 },
+      { id: 'r3-1', title: 'Fórmulas para dar opinión (C1)', description: 'Plantillas para expresar opinión y matizar el grado de certeza (posiblemente, quizá, no cabe duda, etc.).', type: 'PDF', url: '/resources/fichas-opinion-certeza.pdf', order: 1 },
+      { id: 'r3-2', title: 'Tarjetas de rol: ética de la IA', description: 'Roles + frases guía para un debate de 15 minutos sobre la inteligencia artificial.', type: 'PDF', url: '/resources/subjuntivo-duda.pdf', order: 2 },
     ],
   },
 

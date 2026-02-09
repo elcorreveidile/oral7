@@ -162,6 +162,7 @@ export interface TaskData {
 export interface ResourceData {
   id: string
   title: string
+  description?: string
   type: ResourceType
   url: string
   order: number
