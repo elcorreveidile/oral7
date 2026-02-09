@@ -34,7 +34,8 @@ export function ResourcesSection({ resources }: ResourcesSectionProps) {
         <h2 className="text-lg font-semibold">Recursos descargables</h2>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      {/* In the session sidebar this panel can be narrow; only split into 2 columns on md+ */}
+      <div className="grid gap-3 md:grid-cols-2">
         {resources.map((resource) => {
           const Icon = resourceIcons[resource.type] || FileText
           const isExternal = resource.type === "LINK"
@@ -52,9 +53,9 @@ export function ResourcesSection({ resources }: ResourcesSectionProps) {
                 <Icon className="h-5 w-5" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium leading-snug break-words">{resource.title}</p>
+                <p className="font-medium truncate">{resource.title}</p>
                 {resource.description && (
-                  <p className="text-xs text-muted-foreground mt-1 break-words">
+                  <p className="text-xs text-muted-foreground mt-1 truncate">
                     {resource.description}
                   </p>
                 )}
