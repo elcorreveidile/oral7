@@ -735,25 +735,18 @@ async function main() {
       data: [
         {
           sessionId: sessions[1].id,
-          title: 'Conectores argumentales C1',
+          title: 'Póster: conectores por función',
           type: 'PDF',
-          url: '/resources/conectores-argumentales-c1.pdf',
+          url: '/resources/conectores-tabla.pdf',
           order: 1,
         },
         {
           sessionId: sessions[1].id,
-          title: 'Artículo: El impacto de las redes sociales',
+          title: 'Vocabulario de la argumentación',
           type: 'PDF',
-          url: '/resources/articulo-redes-sociales.pdf',
+          url: '/resources/ejercicios-conectores.pdf',
           order: 2,
-          description: 'Tarea para casa: Identifica 5 conectores nuevos y explica por qué se usan.',
-        },
-        {
-          sessionId: sessions[1].id,
-          title: 'Plantilla de argumentación',
-          type: 'PDF',
-          url: '/resources/plantilla-argumentacion.pdf',
-          order: 3,
+          description: 'Lista de verbos/adjetivos/expresiones útiles para argumentar (C1).',
         },
       ],
     })

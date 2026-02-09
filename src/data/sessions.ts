@@ -370,8 +370,8 @@ export const sessionsData: SessionData[] = [
       { id: 'ck2-5', text: 'Puedo argumentar con cohesión y coherencia' },
     ],
     resources: [
-      { id: 'r2-1', title: 'Tabla de conectores discursivos', type: 'PDF', url: '/resources/conectores-tabla.pdf', order: 1 },
-      { id: 'r2-2', title: 'Ejercicios de conectores', type: 'PDF', url: '/resources/ejercicios-conectores.pdf', order: 2 },
+      { id: 'r2-1', title: 'Póster: conectores por función', type: 'PDF', url: '/resources/conectores-tabla.pdf', order: 1 },
+      { id: 'r2-2', title: 'Vocabulario de la argumentación', type: 'PDF', url: '/resources/ejercicios-conectores.pdf', order: 2 },
     ],
   },
 
