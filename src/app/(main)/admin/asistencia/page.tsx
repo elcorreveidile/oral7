@@ -80,6 +80,11 @@ export default function AdminAttendanceOverviewPage() {
     return [...sessions].sort((a, b) => a.sessionNumber - b.sessionNumber)
   }, [sessions])
 
+  const todayStart = useMemo(() => {
+    const now = new Date()
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  }, [])
+
   if (status === "loading" || session?.user?.role !== "ADMIN") {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
@@ -144,7 +149,17 @@ export default function AdminAttendanceOverviewPage() {
               ) : (
                 rows.map((s) => {
                   const count = s._count?.attendances ?? 0
-                  const pct = totalStudents > 0 ? Math.round((count / totalStudents) * 100) : 0
+                  const sessionDate = new Date(s.date)
+                  const sessionStart = new Date(
+                    sessionDate.getFullYear(),
+                    sessionDate.getMonth(),
+                    sessionDate.getDate()
+                  )
+                  const isCompleted = sessionStart < todayStart
+
+                  const pct =
+                    isCompleted && totalStudents > 0 ? Math.round((count / totalStudents) * 100) : null
+
                   return (
                     <TableRow key={s.id}>
                       <TableCell className="font-medium">
@@ -152,6 +167,11 @@ export default function AdminAttendanceOverviewPage() {
                           <Badge variant={s.isExamDay ? "granada" : "clm"}>
                             {s.isExamDay ? "Examen" : `Sesión ${s.sessionNumber}`}
                           </Badge>
+                          {!isCompleted && (
+                            <Badge variant="outline" className="text-muted-foreground">
+                              Pendiente
+                            </Badge>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell className="whitespace-nowrap">
@@ -168,9 +188,11 @@ export default function AdminAttendanceOverviewPage() {
                       </TableCell>
                       <TableCell className="text-center min-w-[160px]">
                         <div className="flex items-center gap-2 justify-center">
-                          <span className="text-xs text-muted-foreground w-10 text-right">{pct}%</span>
+                          <span className="text-xs text-muted-foreground w-10 text-right">
+                            {pct === null ? "--" : `${pct}%`}
+                          </span>
                           <div className="w-24">
-                            <Progress value={pct} />
+                            <Progress value={pct ?? 0} />
                           </div>
                         </div>
                       </TableCell>
@@ -190,4 +212,3 @@ export default function AdminAttendanceOverviewPage() {
     </div>
   )
 }
-
