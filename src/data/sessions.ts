@@ -142,7 +142,7 @@ export const sessionsData: SessionData[] = [
             { id: 'q2', type: 'fill-blank', content: { text: 'María ___ estudiante de ingeniería y ___ haciendo sus prácticas.', blank: 'ser/estar' } },
             { id: 'q3', type: 'fill-blank', content: { text: 'Nosotros ___ interesados en la cultura española.', blank: 'ser/estar' } },
           ],
-          correctAnswers: { q1: ['soy', 'estoy'], q2: ['es', 'está'], q3: ['somos'] },
+          correctAnswers: { q1: ['soy', 'estoy'], q2: ['es', 'está'], q3: ['estamos'] },
           feedback: {
             correct: '¡Excelente! Has identificado correctamente los usos de ser y estar.',
             incorrect: 'Recuerda: SER para origen/profesión, ESTAR para ubicación/acciones en progreso.',
