@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import prisma from "@/lib/prisma"
-import { rateLimit, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit"
+import { rateLimit, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit-redis"
 
 // GET - Obtener items completados por el usuario para una sesión
 export async function GET(request: NextRequest) {
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
 
     // Apply rate limiting based on user ID
     const userId = session.user.id
-    const rateLimitResult = rateLimit(`checklist:${userId}`, RateLimitConfig.standard)
+    const rateLimitResult = await rateLimit(`checklist:${userId}`, RateLimitConfig.standard)
 
     if (!rateLimitResult.success) {
       return rateLimitResponse(rateLimitResult.resetTime)

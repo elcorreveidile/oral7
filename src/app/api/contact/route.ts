@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { Resend } from "resend"
-import { getClientIp, rateLimit, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit"
+import { getClientIp, rateLimit, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit-redis"
 
 // Only initialize Resend if API key is available
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
@@ -8,7 +8,7 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 export async function POST(req: Request) {
   // Apply rate limiting based on IP address
   const ip = getClientIp(req)
-  const rateLimitResult = rateLimit(ip, RateLimitConfig.contact)
+  const rateLimitResult = await rateLimit(ip, RateLimitConfig.contact)
 
   if (!rateLimitResult.success) {
     return rateLimitResponse(rateLimitResult.resetTime)

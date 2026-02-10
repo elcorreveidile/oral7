@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server"
 import { hash } from "bcryptjs"
 import { prisma } from "@/lib/prisma"
-import { rateLimit, getClientIp, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit"
+import { rateLimit, getClientIp, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit-redis"
 
 export async function POST(req: Request) {
   // Apply rate limiting based on IP address
   const ip = getClientIp(req)
-  const rateLimitResult = rateLimit(ip, RateLimitConfig.auth)
+  const rateLimitResult = await rateLimit(ip, RateLimitConfig.auth)
 
   if (!rateLimitResult.success) {
     return rateLimitResponse(rateLimitResult.resetTime)
