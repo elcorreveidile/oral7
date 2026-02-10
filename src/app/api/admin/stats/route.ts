@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { Prisma } from "@prisma/client"
 import prisma from "@/lib/prisma"
 
 const CANCELLED_SUBTITLE_FRAGMENT = "cancelad"
@@ -34,12 +35,12 @@ export async function GET(request: NextRequest) {
     const courseStartDate = settings?.courseStartDate || new Date("2026-02-03")
     const now = new Date()
 
-    const completedSessionsWhere = {
+    const completedSessionsWhere: Prisma.SessionWhereInput = {
       date: { lt: now },
-      OR: [
-        { subtitle: null },
-        { subtitle: { not: { contains: CANCELLED_SUBTITLE_FRAGMENT, mode: "insensitive" as const } } },
-      ],
+      // Exclude cancelled sessions (subtitle contains "cancelad*"), but keep null subtitles.
+      NOT: {
+        subtitle: { contains: CANCELLED_SUBTITLE_FRAGMENT, mode: Prisma.QueryMode.insensitive },
+      },
     }
 
     // Only calculate risk if course has started
