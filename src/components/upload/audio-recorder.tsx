@@ -27,6 +27,66 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
 
   const { toast } = useToast()
 
+  // Check if microphone is available
+  const [micAvailable, setMicAvailable] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    const checkMicAvailability = async () => {
+      try {
+        // Check if mediaDevices API exists
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          setMicAvailable(false)
+          return
+        }
+
+        // Try to get permission status
+        const devices = await navigator.mediaDevices.enumerateDevices()
+        const hasMic = devices.some((device) => device.kind === "audioinput")
+
+        if (!hasMic) {
+          setMicAvailable(false)
+          toast({
+            variant: "destructive",
+            title: "Micrófono no detectado",
+            description: "No se ha detectado un micrófono en tu dispositivo",
+          })
+          return
+        }
+
+        setMicAvailable(true)
+      } catch (error) {
+        setMicAvailable(false)
+        toast({
+          variant: "destructive",
+          title: "Micrófono no disponible",
+          description: "No se puede acceder al micrófono. Verifica los permisos.",
+        })
+      }
+    }
+
+    checkMicAvailability()
+  }, [toast])
+
+  // Detect supported MIME type for audio recording
+  const getSupportedMimeType = () => {
+    const types = [
+      "audio/webm;codecs=opus",
+      "audio/webm",
+      "audio/mp4",
+      "audio/mpeg",
+      "audio/ogg",
+    ]
+
+    for (const type of types) {
+      if (MediaRecorder.isTypeSupported(type)) {
+        return type
+      }
+    }
+
+    // Fallback to browser default
+    return ""
+  }
+
   useEffect(() => {
     return () => {
       if (intervalRef.current) {
@@ -42,9 +102,10 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
 
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: "audio/webm",
-      })
+      const mimeType = getSupportedMimeType()
+      const options = mimeType ? { mimeType } : undefined
+
+      const mediaRecorder = new MediaRecorder(stream, options)
 
       mediaRecorderRef.current = mediaRecorder
       audioChunksRef.current = []
@@ -56,7 +117,9 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
       }
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" })
+        const audioBlob = new Blob(audioChunksRef.current, {
+          type: mimeType || "audio/webm",
+        })
         const url = URL.createObjectURL(audioBlob)
         setAudioUrl(url)
 
@@ -133,6 +196,15 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
     <Card>
       <CardContent className="p-6">
         <div className="space-y-4">
+          {/* Device not available warning */}
+          {micAvailable === false && (
+            <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+              <p className="text-sm text-amber-800 dark:text-amber-200">
+                ⚠️ No se detecta un micrófono. Verifica que tu dispositivo tenga un micrófono conectado y que hayas dado los permisos necesarios.
+              </p>
+            </div>
+          )}
+
           {/* Recording Controls */}
           {!audioUrl ? (
             <div className="text-center space-y-4">
@@ -142,7 +214,7 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
                   onClick={isRecording ? stopRecording : startRecording}
                   variant={isRecording ? "destructive" : "default"}
                   className="h-16 w-16 rounded-full"
-                  disabled={disabled || uploading}
+                  disabled={disabled || uploading || micAvailable === false}
                 >
                   {uploading ? (
                     <Loader2 className="h-8 w-8 animate-spin" />

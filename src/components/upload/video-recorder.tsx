@@ -30,6 +30,85 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300, disabled
 
   const { toast } = useToast()
 
+  // Check if camera and microphone are available
+  const [cameraAvailable, setCameraAvailable] = useState<boolean | null>(null)
+  const [micAvailable, setMicAvailable] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    const checkDevicesAvailability = async () => {
+      try {
+        // Check if mediaDevices API exists
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          setCameraAvailable(false)
+          setMicAvailable(false)
+          toast({
+            variant: "destructive",
+            title: "Dispositivos no disponibles",
+            description: "Tu navegador no soporta acceso a cámara y micrófono",
+          })
+          return
+        }
+
+        // Try to get permission status
+        const devices = await navigator.mediaDevices.enumerateDevices()
+        const hasCamera = devices.some((device) => device.kind === "videoinput")
+        const hasMic = devices.some((device) => device.kind === "audioinput")
+
+        if (!hasCamera) {
+          setCameraAvailable(false)
+          toast({
+            variant: "destructive",
+            title: "Cámara no detectada",
+            description: "No se ha detectado una cámara en tu dispositivo",
+          })
+        } else {
+          setCameraAvailable(true)
+        }
+
+        if (!hasMic) {
+          setMicAvailable(false)
+          toast({
+            variant: "destructive",
+            title: "Micrófono no detectado",
+            description: "No se ha detectado un micrófono en tu dispositivo",
+          })
+        } else {
+          setMicAvailable(true)
+        }
+      } catch (error) {
+        setCameraAvailable(false)
+        setMicAvailable(false)
+        toast({
+          variant: "destructive",
+          title: "Dispositivos no disponibles",
+          description: "No se puede acceder a la cámara y micrófono. Verifica los permisos.",
+        })
+      }
+    }
+
+    checkDevicesAvailability()
+  }, [toast])
+
+  // Detect supported MIME type for video recording
+  const getSupportedMimeType = () => {
+    const types = [
+      "video/webm;codecs=vp9,opus",
+      "video/webm;codecs=vp8,opus",
+      "video/webm",
+      "video/mp4",
+      "video/quicktime",
+    ]
+
+    for (const type of types) {
+      if (MediaRecorder.isTypeSupported(type)) {
+        return type
+      }
+    }
+
+    // Fallback to browser default
+    return ""
+  }
+
   useEffect(() => {
     return () => {
       if (intervalRef.current) {
@@ -70,9 +149,10 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300, disabled
     if (!streamRef.current) return
 
     try {
-      const mediaRecorder = new MediaRecorder(streamRef.current, {
-        mimeType: "video/webm",
-      })
+      const mimeType = getSupportedMimeType()
+      const options = mimeType ? { mimeType } : undefined
+
+      const mediaRecorder = new MediaRecorder(streamRef.current, options)
 
       mediaRecorderRef.current = mediaRecorder
       videoChunksRef.current = []
@@ -84,7 +164,9 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300, disabled
       }
 
       mediaRecorder.onstop = () => {
-        const videoBlob = new Blob(videoChunksRef.current, { type: "video/webm" })
+        const videoBlob = new Blob(videoChunksRef.current, {
+          type: mimeType || "video/webm",
+        })
         const url = URL.createObjectURL(videoBlob)
         setVideoUrl(url)
         setStreamActive(false)
@@ -169,6 +251,20 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300, disabled
     <Card>
       <CardContent className="p-6">
         <div className="space-y-4">
+          {/* Device not available warning */}
+          {(cameraAvailable === false || micAvailable === false) && (
+            <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+              <p className="text-sm text-amber-800 dark:text-amber-200">
+                ⚠️ {cameraAvailable === false && micAvailable === false
+                  ? "No se detectan cámara ni micrófono."
+                  : cameraAvailable === false
+                  ? "No se detecta una cámara."
+                  : "No se detecta un micrófono."}
+                Verifica que tu dispositivo tenga los dispositivos conectados y que hayas dado los permisos necesarios.
+              </p>
+            </div>
+          )}
+
           {/* Video Preview/Recording */}
           <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
             {videoUrl ? (
@@ -219,7 +315,7 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300, disabled
                     size="lg"
                     onClick={startCamera}
                     className="w-full max-w-xs"
-                    disabled={disabled || uploading}
+                    disabled={disabled || uploading || cameraAvailable === false || micAvailable === false}
                   >
                     {uploading ? (
                       <>
@@ -241,7 +337,7 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300, disabled
                     onClick={isRecording ? stopRecording : startRecording}
                     variant={isRecording ? "destructive" : "default"}
                     className="w-full max-w-xs"
-                    disabled={disabled || uploading}
+                    disabled={disabled || uploading || cameraAvailable === false || micAvailable === false}
                   >
                     {uploading ? (
                       <>
