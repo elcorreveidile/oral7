@@ -10,9 +10,10 @@ import { useToast } from "@/components/ui/use-toast"
 interface VideoRecorderProps {
   onRecordingComplete?: (videoBlob: Blob, videoUrl: string) => void
   maxDuration?: number // in seconds
+  disabled?: boolean // Disable recording while uploading
 }
 
-export function VideoRecorder({ onRecordingComplete, maxDuration = 300 }: VideoRecorderProps) {
+export function VideoRecorder({ onRecordingComplete, maxDuration = 300, disabled = false }: VideoRecorderProps) {
   const [isRecording, setIsRecording] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [videoUrl, setVideoUrl] = useState<string | null>(null)
@@ -218,9 +219,19 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300 }: VideoR
                     size="lg"
                     onClick={startCamera}
                     className="w-full max-w-xs"
+                    disabled={disabled || uploading}
                   >
-                    <Camera className="mr-2 h-5 w-5" />
-                    Activar cámara
+                    {uploading ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Subiendo...
+                      </>
+                    ) : (
+                      <>
+                        <Camera className="mr-2 h-5 w-5" />
+                        Activar cámara
+                      </>
+                    )}
                   </Button>
                 </div>
               ) : (
@@ -230,8 +241,14 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300 }: VideoR
                     onClick={isRecording ? stopRecording : startRecording}
                     variant={isRecording ? "destructive" : "default"}
                     className="w-full max-w-xs"
+                    disabled={disabled || uploading}
                   >
-                    {isRecording ? (
+                    {uploading ? (
+                      <>
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Subiendo...
+                      </>
+                    ) : isRecording ? (
                       <>
                         <Square className="mr-2 h-5 w-5" />
                         Detener grabación
