@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { formatDateSpanish } from "@/lib/utils"
 
 type DetailResponse = {
+  meta?: { state: "COMPLETED" | "TODAY" | "UPCOMING" }
   session: {
     id: string
     sessionNumber: number
@@ -75,6 +76,7 @@ export default function AdminAttendanceDetailPage() {
 
   const present = useMemo(() => data?.present || [], [data])
   const absent = useMemo(() => data?.absent || [], [data])
+  const state = data?.meta?.state
 
   if (status === "loading" || session?.user?.role !== "ADMIN") {
     return (
@@ -122,22 +124,32 @@ export default function AdminAttendanceDetailPage() {
                   <Badge variant={data.session.isExamDay ? "granada" : "clm"}>
                     {data.session.isExamDay ? "Examen" : `Sesión ${data.session.sessionNumber}`}
                   </Badge>
+                  {state && state !== "COMPLETED" && (
+                    <Badge variant="outline" className="text-muted-foreground">
+                      Pendiente
+                    </Badge>
+                  )}
                 </div>
                 <CardTitle className="truncate">{data.session.title}</CardTitle>
                 <CardDescription className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   {formatDateSpanish(new Date(data.session.date))}
                 </CardDescription>
+                {state && state !== "COMPLETED" && (
+                  <p className="text-sm text-muted-foreground">
+                    Nota: los ausentes solo se calculan cuando la sesión ya se ha impartido.
+                  </p>
+                )}
               </div>
               <div className="text-right text-sm text-muted-foreground">
                 <div className="flex items-center justify-end gap-2">
                   <Users className="h-4 w-4" />
                   <span>
-                    {data.totals.present}/{data.totals.totalStudents} presentes
+                    {data.totals.present}/{data.totals.totalStudents} {state === "COMPLETED" ? "presentes" : "registrados"}
                   </span>
                 </div>
                 <div>
-                  {data.totals.absent} ausentes
+                  {state === "COMPLETED" ? `${data.totals.absent} ausentes` : "Ausentes: --"}
                 </div>
               </div>
             </div>
@@ -205,6 +217,12 @@ export default function AdminAttendanceDetailPage() {
                   <TableRow>
                     <TableCell colSpan={2} className="text-muted-foreground">Cargando...</TableCell>
                   </TableRow>
+                ) : state && state !== "COMPLETED" ? (
+                  <TableRow>
+                    <TableCell colSpan={2} className="text-muted-foreground">
+                      Pendiente (se calculará tras impartir la sesión).
+                    </TableCell>
+                  </TableRow>
                 ) : absent.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={2} className="text-muted-foreground">Nadie (perfecto).</TableCell>
@@ -225,4 +243,3 @@ export default function AdminAttendanceDetailPage() {
     </div>
   )
 }
-

@@ -45,6 +45,15 @@ export async function GET(
       return NextResponse.json({ error: "Sesión no encontrada" }, { status: 404 })
     }
 
+    // We only compute "absent" for sessions that have already been taught (strictly before today),
+    // to avoid showing everyone as absent for future sessions.
+    const now = new Date()
+    const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    const sessionDate = new Date(dbSession.date)
+    const sessionStart = new Date(sessionDate.getFullYear(), sessionDate.getMonth(), sessionDate.getDate())
+    const isCompleted = sessionStart < todayStart
+    const state = isCompleted ? "COMPLETED" : sessionStart.getTime() === todayStart.getTime() ? "TODAY" : "UPCOMING"
+
     const students = await prisma.user.findMany({
       where: { role: "STUDENT" },
       select: { id: true, name: true, email: true },
@@ -58,9 +67,10 @@ export async function GET(
       method: a.method,
       user: a.user,
     }))
-    const absent = students.filter((s) => !presentIds.has(s.id))
+    const absent = isCompleted ? students.filter((s) => !presentIds.has(s.id)) : []
 
     return NextResponse.json({
+      meta: { state },
       session: {
         id: dbSession.id,
         sessionNumber: dbSession.sessionNumber,
@@ -82,4 +92,3 @@ export async function GET(
     return NextResponse.json({ error: "Error al obtener la asistencia", message }, { status: 500 })
   }
 }
-
