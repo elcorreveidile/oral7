@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import prisma from "@/lib/prisma"
+import { rateLimit, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit"
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,6 +13,14 @@ export async function POST(request: NextRequest) {
         { error: "No autorizado" },
         { status: 401 }
       )
+    }
+
+    // Apply rate limiting based on user ID
+    const userId = session.user.id
+    const rateLimitResult = rateLimit(`submission:${userId}`, RateLimitConfig.submission)
+
+    if (!rateLimitResult.success) {
+      return rateLimitResponse(rateLimitResult.resetTime)
     }
 
     const { taskId, files } = await request.json()
@@ -53,10 +62,17 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       submission,
     })
+
+    return addRateLimitHeaders(
+      response,
+      RateLimitConfig.submission.limit,
+      rateLimitResult.remaining,
+      rateLimitResult.resetTime
+    )
   } catch (error) {
 
     return NextResponse.json(

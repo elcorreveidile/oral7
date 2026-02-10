@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth"
 import { writeFile, mkdir } from "fs/promises"
 import { join } from "path"
 import { existsSync } from "fs"
+import { rateLimit, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit"
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,6 +15,14 @@ export async function POST(request: NextRequest) {
         { error: "No autorizado" },
         { status: 401 }
       )
+    }
+
+    // Apply rate limiting based on user ID
+    const userId = session.user.id
+    const rateLimitResult = rateLimit(`upload:${userId}`, RateLimitConfig.upload)
+
+    if (!rateLimitResult.success) {
+      return rateLimitResponse(rateLimitResult.resetTime)
     }
 
     const formData = await request.formData()
@@ -87,7 +96,7 @@ export async function POST(request: NextRequest) {
         await writeFile(localPath, buffer)
 
 
-        return NextResponse.json({
+        const response = NextResponse.json({
           success: true,
           file: {
             url: `/uploads/${filename}`,
@@ -97,6 +106,13 @@ export async function POST(request: NextRequest) {
             filename,
           },
         })
+
+        return addRateLimitHeaders(
+          response,
+          RateLimitConfig.upload.limit,
+          rateLimitResult.remaining,
+          rateLimitResult.resetTime
+        )
       }
 
       // In production without token, return error
@@ -145,8 +161,7 @@ export async function POST(request: NextRequest) {
 
     const blobData = await blobResponse.json()
 
-
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       file: {
         url: blobData.url,
@@ -156,6 +171,13 @@ export async function POST(request: NextRequest) {
         filename,
       },
     })
+
+    return addRateLimitHeaders(
+      response,
+      RateLimitConfig.upload.limit,
+      rateLimitResult.remaining,
+      rateLimitResult.resetTime
+    )
   } catch (error) {
 
     return NextResponse.json(

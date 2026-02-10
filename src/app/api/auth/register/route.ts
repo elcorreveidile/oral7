@@ -1,8 +1,17 @@
 import { NextResponse } from "next/server"
 import { hash } from "bcryptjs"
 import { prisma } from "@/lib/prisma"
+import { rateLimit, getClientIp, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit"
 
 export async function POST(req: Request) {
+  // Apply rate limiting based on IP address
+  const ip = getClientIp(req)
+  const rateLimitResult = rateLimit(ip, RateLimitConfig.auth)
+
+  if (!rateLimitResult.success) {
+    return rateLimitResponse(rateLimitResult.resetTime)
+  }
+
   try {
     const { name, email, password, inviteCode } = await req.json()
 
@@ -55,7 +64,7 @@ export async function POST(req: Request) {
       },
     })
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         message: "Usuario creado exitosamente",
         user: {
@@ -65,6 +74,14 @@ export async function POST(req: Request) {
         },
       },
       { status: 201 }
+    )
+
+    // Add rate limit headers
+    return addRateLimitHeaders(
+      response,
+      RateLimitConfig.auth.limit,
+      rateLimitResult.remaining,
+      rateLimitResult.resetTime
     )
   } catch (error) {
 
