@@ -65,7 +65,6 @@ export default function EntregasPage() {
   }
 
   const handleSubmit = async (files: any[]) => {
-    console.log("Submitting files:", files)
 
     // Save submission
     const sessionNumber = selectedSession.sessionNumber
@@ -79,7 +78,7 @@ export default function EntregasPage() {
 
       if (!response.ok) {
         const error = await response.json()
-        console.error("Submit error:", error)
+
         toast({
           variant: "destructive",
           title: "Error al guardar la entrega",
@@ -89,7 +88,6 @@ export default function EntregasPage() {
       }
 
       const data = await response.json()
-      console.log("Submit success:", data)
 
       setDialogOpen(false)
 
@@ -104,7 +102,7 @@ export default function EntregasPage() {
         description: `${files.length} archivo(s) subido(s) correctamente`,
       })
     } catch (error) {
-      console.error("Submit error:", error)
+
       toast({
         variant: "destructive",
         title: "Error al guardar la entrega",

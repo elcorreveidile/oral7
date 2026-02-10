@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { writeFile, mkdir } from "fs/promises"
+import { join } from "path"
+import { existsSync } from "fs"
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,13 +27,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log("Upload request:", {
-      fileName: file.name,
-      fileType: file.type,
-      fileSize: file.size,
-      taskId,
-    })
-
     // Validate file type
     const allowedTypes = [
       "audio/mp3",
@@ -47,7 +43,7 @@ export async function POST(request: NextRequest) {
     ]
 
     if (!allowedTypes.includes(file.type)) {
-      console.log("File type not allowed:", file.type)
+
       return NextResponse.json(
         { error: `Tipo de archivo no permitido: ${file.type}` },
         { status: 400 }
@@ -70,9 +66,41 @@ export async function POST(request: NextRequest) {
 
     // Upload to Vercel Blob using REST API
     const token = process.env.BLOB_READ_WRITE_TOKEN
+    const isDev = process.env.NODE_ENV === "development"
 
     if (!token) {
-      console.error("BLOB_READ_WRITE_TOKEN is not set in environment")
+      // Fallback: Save locally in development
+      if (isDev) {
+
+
+        // Create uploads directory if it doesn't exist
+        const uploadsDir = join(process.cwd(), "public", "uploads")
+        if (!existsSync(uploadsDir)) {
+          await mkdir(uploadsDir, { recursive: true })
+        }
+
+        // Convert File to Buffer and save locally
+        const arrayBuffer = await file.arrayBuffer()
+        const buffer = Buffer.from(arrayBuffer)
+        const localPath = join(uploadsDir, filename)
+
+        await writeFile(localPath, buffer)
+
+
+        return NextResponse.json({
+          success: true,
+          file: {
+            url: `/uploads/${filename}`,
+            name: file.name,
+            type: file.type,
+            size: file.size,
+            filename,
+          },
+        })
+      }
+
+      // In production without token, return error
+
       return NextResponse.json(
         {
           error: "Blob storage no configurado",
@@ -85,7 +113,7 @@ export async function POST(request: NextRequest) {
     // Use Authorization header instead of URL credentials
     const blobUrl = `https://blob.vercel-storage.com/${filename}`
 
-    console.log("Uploading to:", blobUrl)
+
 
     // Convert File to ArrayBuffer to avoid duplex issues
     const arrayBuffer = await file.arrayBuffer()
@@ -101,11 +129,11 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    console.log("Blob response status:", blobResponse.status)
+
 
     if (!blobResponse.ok) {
       const errorText = await blobResponse.text()
-      console.error("Blob upload failed:", blobResponse.status, errorText)
+
       return NextResponse.json(
         {
           error: "Error al subir a Vercel Blob",
@@ -116,7 +144,7 @@ export async function POST(request: NextRequest) {
     }
 
     const blobData = await blobResponse.json()
-    console.log("Upload successful:", blobData.url)
+
 
     return NextResponse.json({
       success: true,
@@ -129,7 +157,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error("Error uploading file:", error)
+
     return NextResponse.json(
       { error: "Error al subir el archivo" },
       { status: 500 }

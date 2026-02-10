@@ -29,7 +29,7 @@ export default function SessionPage() {
         })
         if (!res.ok) {
           const text = await res.text().catch(() => "")
-          console.warn("Progress tracking failed:", res.status, text)
+
         }
       } catch {
         // Non-blocking; progress tracking should never break the session view.

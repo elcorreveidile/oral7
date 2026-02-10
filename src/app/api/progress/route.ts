@@ -3,6 +3,67 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import prisma from "@/lib/prisma"
 
+// GET - Fetch student progress statistics for the dashboard
+export async function GET(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+
+    if (!session) {
+      return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+    }
+    if (session.user.role !== "STUDENT") {
+      return NextResponse.json({ error: "Solo estudiantes" }, { status: 403 })
+    }
+
+    // Get all sessions count
+    const totalSessions = await prisma.session.count()
+
+    // Get user's attendance records
+    const attendances = await prisma.attendance.count({
+      where: { userId: session.user.id },
+    })
+
+    // Get user's progress records (sessions viewed)
+    const progressRecords = await prisma.userProgress.findMany({
+      where: { userId: session.user.id },
+      select: { sessionId: true, viewedAt: true },
+    })
+
+    // Get completed checklist items count
+    const completedChecklists = await prisma.userChecklistItem.count({
+      where: {
+        userId: session.user.id,
+        isCompleted: true,
+      },
+    })
+
+    // Calculate sessions completed (viewed)
+    const sessionsCompleted = progressRecords.length
+
+    // Calculate attendance rate
+    const attendanceRate = totalSessions > 0
+      ? Math.round((attendances / totalSessions) * 100)
+      : 0
+
+    // Calculate total checklist items for percentage
+    const totalChecklistItems = await prisma.checklistItem.count()
+    const checklistProgress = totalChecklistItems > 0
+      ? Math.round((completedChecklists / totalChecklistItems) * 100)
+      : 0
+
+    return NextResponse.json({
+      attendanceRate,
+      sessionsCompleted,
+      totalSessions,
+      checklistProgress,
+    })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+
+    return NextResponse.json({ error: "Error al obtener estadísticas", message }, { status: 500 })
+  }
+}
+
 // Track that a student visited a session and (optionally) how long they spent on it.
 // This powers `/admin/estudiantes` progress counts (UserProgress records).
 export async function POST(request: NextRequest) {
@@ -109,7 +170,7 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    console.error("Error updating progress:", message)
+
     return NextResponse.json({ error: "Error al guardar el progreso", message }, { status: 500 })
   }
 }

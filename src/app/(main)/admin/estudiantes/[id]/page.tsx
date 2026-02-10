@@ -102,7 +102,7 @@ export default function StudentDetailPage({
         setStudent(data)
       }
     } catch (error) {
-      console.error("Error fetching student detail:", error)
+
     } finally {
       setLoading(false)
     }

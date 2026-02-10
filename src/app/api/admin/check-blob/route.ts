@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     // Better error logging to prevent "n" output
     const errorMessage = error instanceof Error ? error.message : String(error)
-    console.error("Error checking blob:", errorMessage)
+
 
     return NextResponse.json(
       {

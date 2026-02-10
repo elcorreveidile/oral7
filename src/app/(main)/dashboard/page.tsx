@@ -34,10 +34,24 @@ function isSameDay(a: Date, b: Date) {
   )
 }
 
+interface StudentStats {
+  attendanceRate: number
+  sessionsCompleted: number
+  totalSessions: number
+  checklistProgress: number
+}
+
 export default function DashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [currentDate, setCurrentDate] = useState<Date | null>(null)
+  const [stats, setStats] = useState<StudentStats>({
+    attendanceRate: 0,
+    sessionsCompleted: 0,
+    totalSessions: 27,
+    checklistProgress: 0,
+  })
+  const [statsLoading, setStatsLoading] = useState(true)
 
   useEffect(() => {
     setCurrentDate(new Date())
@@ -47,6 +61,21 @@ export default function DashboardPage() {
       router.push("/admin")
     }
   }, [status, session, router])
+
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.role === "STUDENT") {
+      fetch("/api/progress")
+        .then((res) => res.json())
+        .then((data) => {
+          setStats(data)
+          setStatsLoading(false)
+        })
+        .catch((error) => {
+
+          setStatsLoading(false)
+        })
+    }
+  }, [status, session])
 
   if (status === "loading") {
     return (
@@ -68,17 +97,9 @@ export default function DashboardPage() {
     return "Buenas noches"
   }
 
-  // Stats - will be fetched from API in production
-  // For now, show initial state (course starts Feb 3, 2026)
+  // Course dates
   const courseStartDate = new Date("2026-02-03T00:00:00")
   const hasStarted = currentDate >= courseStartDate
-
-  const stats = {
-    attendanceRate: 0,
-    sessionsCompleted: 0,
-    totalSessions: 27,
-    checklistProgress: 0,
-  }
 
   const sessionsSorted = [...allSessions].sort((a, b) => a.date.getTime() - b.date.getTime())
   const today = startOfDay(currentDate)

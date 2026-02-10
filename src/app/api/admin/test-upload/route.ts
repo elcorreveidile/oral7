@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     const filename = `test-${Date.now()}.txt`
     const blobUrl = `https://blob.vercel-storage.com/${filename}`
 
-    console.log("Test upload to:", blobUrl)
+
 
     const response = await fetch(blobUrl, {
       method: 'PUT',
@@ -38,12 +38,12 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    console.log("Response status:", response.status)
-    console.log("Response headers:", Object.fromEntries(response.headers.entries()))
+
+
 
     if (!response.ok) {
       const errorText = await response.text()
-      console.error("Error response:", errorText)
+
       return NextResponse.json({
         success: false,
         error: `Error ${response.status}: ${errorText}`,
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error("Test upload error:", error)
+
     return NextResponse.json(
       {
         success: false,

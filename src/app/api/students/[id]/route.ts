@@ -83,7 +83,7 @@ export async function GET(
 
     return NextResponse.json(student)
   } catch (error) {
-    console.error('Error fetching student:', error)
+
     return NextResponse.json({ error: 'Error fetching student' }, { status: 500 })
   }
 }
@@ -148,7 +148,7 @@ export async function PUT(
 
     return NextResponse.json(updatedStudent)
   } catch (error) {
-    console.error('Error updating student:', error)
+
     return NextResponse.json({ error: 'Error updating student' }, { status: 500 })
   }
 }
@@ -181,7 +181,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Estudiante eliminado correctamente' })
   } catch (error) {
-    console.error('Error deleting student:', error)
+
     return NextResponse.json({ error: 'Error deleting student' }, { status: 500 })
   }
 }

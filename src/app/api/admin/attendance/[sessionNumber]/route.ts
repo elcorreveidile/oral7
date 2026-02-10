@@ -101,7 +101,7 @@ export async function GET(
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    console.error("Error fetching attendance detail:", message)
+
     return NextResponse.json({ error: "Error al obtener la asistencia", message }, { status: 500 })
   }
 }
@@ -177,7 +177,7 @@ export async function PUT(
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    console.error("Error updating attendance:", message)
+
     return NextResponse.json({ error: "Error al actualizar la asistencia", message }, { status: 500 })
   }
 }

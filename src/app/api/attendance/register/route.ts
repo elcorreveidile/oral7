@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error("Error registering attendance:", error)
+
     return NextResponse.json(
       { error: "Error al registrar la asistencia. Inténtalo de nuevo." },
       { status: 500 }
