@@ -20,11 +20,17 @@ export default function SessionPage() {
 
     const send = async (secondsSpent: number) => {
       try {
-        await fetch("/api/progress", {
+        const res = await fetch("/api/progress", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ sessionNumber: sessionNum, secondsSpent }),
+          // Allows the browser to try sending while navigating away.
+          keepalive: true,
         })
+        if (!res.ok) {
+          const text = await res.text().catch(() => "")
+          console.warn("Progress tracking failed:", res.status, text)
+        }
       } catch {
         // Non-blocking; progress tracking should never break the session view.
       }

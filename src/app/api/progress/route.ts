@@ -32,7 +32,41 @@ export async function POST(request: NextRequest) {
       where: { sessionNumber },
       select: { id: true },
     })
-    if (!dbSession) {
+    const ensuredSession =
+      dbSession ??
+      (await (async () => {
+        // If sessions weren't seeded/synced yet, bootstrap the single session from the static data.
+        const { sessionsData } = await import("@/data/sessions")
+        const s = sessionsData.find((x) => x.sessionNumber === sessionNumber)
+        if (!s) return null
+
+        const created = await prisma.session.upsert({
+          where: { sessionNumber },
+          update: {},
+          create: {
+            sessionNumber: s.sessionNumber,
+            date: s.date,
+            title: s.title,
+            subtitle: s.subtitle,
+            blockNumber: s.blockNumber,
+            blockTitle: s.blockTitle,
+            isExamDay: s.isExamDay,
+            examType: (s as any).examType,
+            objectives: s.objectives as any,
+            timing: s.timing as any,
+            dynamics: s.dynamics as any,
+            grammarContent: s.grammarContent as any,
+            vocabularyContent: s.vocabularyContent as any,
+            modeAContent: s.modeAContent as any,
+            modeBContent: s.modeBContent as any,
+          },
+          select: { id: true },
+        })
+
+        return created
+      })())
+
+    if (!ensuredSession) {
       return NextResponse.json({ error: "Sesión no encontrada" }, { status: 404 })
     }
 
@@ -42,7 +76,7 @@ export async function POST(request: NextRequest) {
       where: {
         userId_sessionId: {
           userId: session.user.id,
-          sessionId: dbSession.id,
+          sessionId: ensuredSession.id,
         },
       },
       select: { id: true, viewedAt: true },
@@ -61,7 +95,7 @@ export async function POST(request: NextRequest) {
       : await prisma.userProgress.create({
           data: {
             userId: session.user.id,
-            sessionId: dbSession.id,
+            sessionId: ensuredSession.id,
             viewedAt: now,
             lastAccess: now,
             timeSpent: secondsToAdd,
@@ -79,4 +113,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Error al guardar el progreso", message }, { status: 500 })
   }
 }
-
