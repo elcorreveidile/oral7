@@ -50,11 +50,37 @@ export async function GET(
       )
     }
 
-    // Return session data (progress tracking disabled temporarily)
+    // Progress tracking (Student only)
+    const isStudent = session.user.role === "STUDENT"
+    const progress = isStudent
+      ? await prisma.userProgress.findUnique({
+          where: {
+            userId_sessionId: {
+              userId: session.user.id,
+              sessionId: sessionData.id,
+            },
+          },
+          select: { viewedAt: true, timeSpent: true, lastAccess: true },
+        })
+      : null
+
+    const completedChecklist = isStudent
+      ? await prisma.userChecklistItem
+          .findMany({
+            where: {
+              userId: session.user.id,
+              isCompleted: true,
+              checklistItem: { sessionId: sessionData.id },
+            },
+            select: { checklistItemId: true },
+          })
+          .then((rows) => rows.map((r) => r.checklistItemId))
+      : []
+
     return NextResponse.json({
       session: sessionData,
-      progress: null,
-      completedChecklist: [],
+      progress,
+      completedChecklist,
     })
   } catch (error) {
     console.error("Error fetching session:", error)
