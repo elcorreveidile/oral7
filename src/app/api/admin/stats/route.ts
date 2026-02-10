@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import prisma from "@/lib/prisma"
 
+const CANCELLED_SUBTITLE_FRAGMENT = "cancelad"
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
@@ -32,16 +34,20 @@ export async function GET(request: NextRequest) {
     const courseStartDate = settings?.courseStartDate || new Date("2026-02-03")
     const now = new Date()
 
+    const completedSessionsWhere = {
+      date: { lt: now },
+      OR: [
+        { subtitle: null },
+        { subtitle: { not: { contains: CANCELLED_SUBTITLE_FRAGMENT, mode: "insensitive" as const } } },
+      ],
+    }
+
     // Only calculate risk if course has started
     let studentsAtRisk = 0
     if (now >= courseStartDate) {
       // Get completed sessions (sessions before today)
       const completedSessions = await prisma.session.count({
-        where: {
-          date: {
-            lt: now
-          }
-        }
+        where: completedSessionsWhere,
       })
 
       if (completedSessions > 0) {
@@ -51,7 +57,11 @@ export async function GET(request: NextRequest) {
             role: "STUDENT"
           },
           include: {
-            attendances: true
+            attendances: {
+              where: {
+                session: completedSessionsWhere,
+              },
+            },
           }
         })
 
@@ -64,13 +74,13 @@ export async function GET(request: NextRequest) {
 
     // Calculate average attendance rate
     let averageAttendance = 0
-    const totalAttendances = await prisma.attendance.count()
-    const totalCompletedSessions = await prisma.session.count({
+    const totalAttendances = await prisma.attendance.count({
       where: {
-        date: {
-          lt: now
-        }
-      }
+        session: completedSessionsWhere,
+      },
+    })
+    const totalCompletedSessions = await prisma.session.count({
+      where: completedSessionsWhere,
     })
 
     if (totalStudents > 0 && totalCompletedSessions > 0) {
