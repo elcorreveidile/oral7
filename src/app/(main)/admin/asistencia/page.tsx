@@ -17,6 +17,7 @@ type SessionRow = {
   sessionNumber: number
   date: string
   title: string
+  subtitle?: string | null
   isExamDay: boolean
   _count?: { attendances: number }
 }
@@ -58,6 +59,7 @@ export default function AdminAttendanceOverviewPage() {
         sessionNumber: s.sessionNumber,
         date: s.date,
         title: s.title,
+        subtitle: s.subtitle ?? null,
         isExamDay: !!s.isExamDay,
         _count: s._count,
       })))
@@ -155,7 +157,8 @@ export default function AdminAttendanceOverviewPage() {
                     sessionDate.getMonth(),
                     sessionDate.getDate()
                   )
-                  const isCompleted = sessionStart < todayStart
+                  const isCancelled = (s.subtitle || "").toLowerCase().includes("cancelad")
+                  const isCompleted = sessionStart < todayStart && !isCancelled
 
                   const pct =
                     isCompleted && totalStudents > 0 ? Math.round((count / totalStudents) * 100) : null
@@ -167,7 +170,11 @@ export default function AdminAttendanceOverviewPage() {
                           <Badge variant={s.isExamDay ? "granada" : "clm"}>
                             {s.isExamDay ? "Examen" : `Sesión ${s.sessionNumber}`}
                           </Badge>
-                          {!isCompleted && (
+                          {isCancelled ? (
+                            <Badge variant="outline" className="text-muted-foreground">
+                              Cancelada
+                            </Badge>
+                          ) : !isCompleted && (
                             <Badge variant="outline" className="text-muted-foreground">
                               Pendiente
                             </Badge>
@@ -184,7 +191,7 @@ export default function AdminAttendanceOverviewPage() {
                         <span className="line-clamp-1">{s.title}</span>
                       </TableCell>
                       <TableCell className="text-center">
-                        {count}/{totalStudents || "--"}
+                        {isCancelled ? "--" : `${count}/${totalStudents || "--"}`}
                       </TableCell>
                       <TableCell className="text-center min-w-[160px]">
                         <div className="flex items-center gap-2 justify-center">
