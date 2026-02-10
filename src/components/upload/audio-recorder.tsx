@@ -10,9 +10,10 @@ import { useToast } from "@/components/ui/use-toast"
 interface AudioRecorderProps {
   onRecordingComplete?: (audioBlob: Blob, audioUrl: string) => void
   maxDuration?: number // in seconds
+  disabled?: boolean // Disable recording while uploading
 }
 
-export function AudioRecorder({ onRecordingComplete, maxDuration = 300 }: AudioRecorderProps) {
+export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled = false }: AudioRecorderProps) {
   const [isRecording, setIsRecording] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
@@ -141,8 +142,11 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300 }: AudioR
                   onClick={isRecording ? stopRecording : startRecording}
                   variant={isRecording ? "destructive" : "default"}
                   className="h-16 w-16 rounded-full"
+                  disabled={disabled || uploading}
                 >
-                  {isRecording ? (
+                  {uploading ? (
+                    <Loader2 className="h-8 w-8 animate-spin" />
+                  ) : isRecording ? (
                     <Square className="h-8 w-8" />
                   ) : (
                     <Mic className="h-8 w-8" />

@@ -20,6 +20,7 @@ interface FileUploadProps {
   accept?: string
   maxSize?: number // in MB
   types?: ("audio" | "video" | "document")[]
+  disabled?: boolean // Disable upload while uploading
 }
 
 export function FileUpload({
@@ -28,6 +29,7 @@ export function FileUpload({
   accept,
   maxSize = 50,
   types = ["audio", "video", "document"],
+  disabled = false,
 }: FileUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -189,12 +191,12 @@ export function FileUpload({
               type="file"
               accept={getAcceptedTypes()}
               onChange={handleFileSelect}
-              disabled={uploading}
+              disabled={uploading || disabled}
               className="hidden"
             />
             <Button
               onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
+              disabled={uploading || disabled}
               className="w-full max-w-xs"
             >
               {uploading ? (

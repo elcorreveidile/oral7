@@ -310,7 +310,7 @@ export function TaskInteractive({ task, onSubmit }: TaskInteractiveProps) {
               task.type === "ORDERING"
                 ? false
                 : task.type === "FILL_BLANKS"
-                  ? Object.keys(selectedAnswers).every((k) => !normalizeText(selectedAnswers[k]))
+                  ? Object.keys(selectedAnswers).some((k) => !normalizeText(selectedAnswers[k]))
                   : Object.keys(selectedAnswers).length === 0
             }
           >

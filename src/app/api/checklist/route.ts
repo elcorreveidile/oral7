@@ -3,6 +3,56 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import prisma from "@/lib/prisma"
 
+// GET - Obtener items completados por el usuario para una sesión
+export async function GET(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+
+    if (!session) {
+      return NextResponse.json(
+        { error: "No autorizado" },
+        { status: 401 }
+      )
+    }
+
+    const { searchParams } = new URL(request.url)
+    const sessionId = searchParams.get("sessionId")
+
+    if (!sessionId) {
+      return NextResponse.json(
+        { error: "sessionId es requerido" },
+        { status: 400 }
+      )
+    }
+
+    // Get completed items for this user and session
+    const userChecklistItems = await prisma.userChecklistItem.findMany({
+      where: {
+        userId: session.user.id,
+        checklistItem: {
+          sessionId,
+        },
+        isCompleted: true,
+      },
+      select: {
+        checklistItemId: true,
+      },
+    })
+
+    const completedItems = userChecklistItems.map((item) => item.checklistItemId)
+
+    return NextResponse.json({
+      completedItems,
+    })
+  } catch (error) {
+
+    return NextResponse.json(
+      { error: "Error al cargar el progreso" },
+      { status: 500 }
+    )
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
