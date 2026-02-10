@@ -121,6 +121,7 @@ export default function AdminStudentsPage() {
   }, [searchQuery, students])
 
   const fetchStudents = async () => {
+    setLoading(true)
     try {
       const response = await fetch("/api/students")
       if (response.ok) {
@@ -134,6 +135,21 @@ export default function AdminStudentsPage() {
       setLoading(false)
     }
   }
+
+  // Keep counts reasonably fresh (e.g. progress updates while an admin is viewing this page).
+  useEffect(() => {
+    if (status !== "authenticated" || session?.user?.role !== "ADMIN") return
+
+    const onFocus = () => fetchStudents()
+    window.addEventListener("focus", onFocus)
+    const interval = window.setInterval(fetchStudents, 60_000)
+
+    return () => {
+      window.removeEventListener("focus", onFocus)
+      window.clearInterval(interval)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, session?.user?.role])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -461,12 +477,26 @@ export default function AdminStudentsPage() {
       {/* Students table */}
       <Card>
         <CardHeader>
-          <CardTitle>Lista de Estudiantes</CardTitle>
-          <CardDescription>
-            {filteredStudents.length === students.length
-              ? "Todos los estudiantes"
-              : `${filteredStudents.length} de ${students.length} estudiantes`}
-          </CardDescription>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <CardTitle>Lista de Estudiantes</CardTitle>
+              <CardDescription>
+                {filteredStudents.length === students.length
+                  ? "Todos los estudiantes"
+                  : `${filteredStudents.length} de ${students.length} estudiantes`}
+              </CardDescription>
+            </div>
+            <Button variant="outline" onClick={fetchStudents} disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Actualizando...
+                </>
+              ) : (
+                "Actualizar"
+              )}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {loading ? (
