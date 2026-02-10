@@ -56,7 +56,7 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300 }: VideoR
       }
       setStreamActive(true)
     } catch (error) {
-      console.error("Error accessing camera:", error)
+
       toast({
         variant: "destructive",
         title: "Error de acceso a la cámara",
@@ -113,7 +113,7 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300 }: VideoR
         })
       }, 1000)
     } catch (error) {
-      console.error("Error starting recording:", error)
+
       toast({
         variant: "destructive",
         title: "Error al iniciar la grabación",

@@ -37,7 +37,6 @@ export function TaskSubmission({
 
   const handleSubmit = () => {
     if (files.length === 0) return
-    console.log("TaskSubmission handleSubmit:", files)
     onSubmit?.(files)
   }
 
@@ -149,7 +148,7 @@ export function TaskSubmission({
       const data = await response.json()
       handleFileUploaded(data.file)
     } catch (error) {
-      console.error("Error uploading file:", error)
+
     }
   }
 }

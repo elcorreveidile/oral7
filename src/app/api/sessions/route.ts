@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
       sessions: processedSessions,
     })
   } catch (error) {
-    console.error("Error fetching sessions:", error)
+
     return NextResponse.json(
       { error: "Error al obtener las sesiones" },
       { status: 500 }
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
       session: newSession,
     })
   } catch (error) {
-    console.error("Error creating session:", error)
+
     return NextResponse.json(
       { error: "Error al crear la sesión" },
       { status: 500 }

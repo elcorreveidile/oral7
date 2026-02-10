@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       message: `✅ Sync complete! Created: ${created}, Updated: ${updated}, Total: ${sessionsData.length}`
     })
   } catch (error) {
-    console.error("Error syncing sessions:", error)
+
     return NextResponse.json(
       { error: "Error al sincronizar las sesiones" },
       { status: 500 }

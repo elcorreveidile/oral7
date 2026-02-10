@@ -46,13 +46,13 @@ export async function POST(req: Request) {
       error = result.error
     } else {
       // Resend not configured - log the message and return success
-      console.log("Contact form submission (Resend not configured):", { name, email, subject, message })
+
       data = { id: "dev-mode" }
       error = null
     }
 
     if (error) {
-      console.error("Resend error:", error)
+
       return NextResponse.json(
         { error: "Error al enviar el mensaje" },
         { status: 500 }
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
       { status: 200 }
     )
   } catch (error) {
-    console.error("Contact form error:", error)
+
     return NextResponse.json(
       { error: "Error interno del servidor" },
       { status: 500 }

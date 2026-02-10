@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
       submission,
     })
   } catch (error) {
-    console.error("Error saving submission:", error)
+
     return NextResponse.json(
       { error: "Error al guardar la entrega" },
       { status: 500 }
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ submission })
   } catch (error) {
-    console.error("Error fetching submission:", error)
+
     return NextResponse.json(
       { error: "Error al obtener la entrega" },
       { status: 500 }

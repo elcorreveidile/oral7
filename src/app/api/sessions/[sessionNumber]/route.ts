@@ -83,7 +83,7 @@ export async function GET(
       completedChecklist,
     })
   } catch (error) {
-    console.error("Error fetching session:", error)
+
     return NextResponse.json(
       { error: "Error al obtener la sesión" },
       { status: 500 }
@@ -133,7 +133,7 @@ export async function PUT(
       session: updatedSession,
     })
   } catch (error) {
-    console.error("Error updating session:", error)
+
     return NextResponse.json(
       { error: "Error al actualizar la sesión" },
       { status: 500 }

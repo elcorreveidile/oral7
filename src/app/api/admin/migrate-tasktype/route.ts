@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error("Migration error:", error)
+
     return NextResponse.json(
       {
         success: false,

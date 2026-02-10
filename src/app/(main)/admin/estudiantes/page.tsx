@@ -130,7 +130,7 @@ export default function AdminStudentsPage() {
         setFilteredStudents(data)
       }
     } catch (error) {
-      console.error("Error fetching students:", error)
+
     } finally {
       setLoading(false)
     }
@@ -279,7 +279,7 @@ export default function AdminStudentsPage() {
         fetchStudents()
       }
     } catch (error) {
-      console.error("Error deleting student:", error)
+
     }
   }
 
@@ -307,6 +307,8 @@ export default function AdminStudentsPage() {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+    // Clean up to prevent memory leak
+    URL.revokeObjectURL(url)
   }
 
   if (status === "loading" || session?.user?.role !== "ADMIN") {

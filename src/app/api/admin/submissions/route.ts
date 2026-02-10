@@ -41,9 +41,34 @@ export async function GET(request: NextRequest) {
       },
     })
 
-    // Enrich with session details
-    const enrichedSubmissions = await Promise.all(
-      submissions.map(async (sub) => {
+    // Extract unique sessionNumbers from all submissions (avoid N+1 query)
+    const uniqueSessionNumbers = new Set(
+      submissions
+        .map((sub) => parseInt(sub.taskId.replace("session-", "")))
+        .filter((num) => !isNaN(num))
+    )
+    const sessionNumbers = Array.from(uniqueSessionNumbers)
+
+    // Fetch all sessions in a single query
+    const sessions = await prisma.session.findMany({
+      where: {
+        sessionNumber: { in: sessionNumbers },
+      },
+      select: {
+        sessionNumber: true,
+        title: true,
+        date: true,
+      },
+    })
+
+    // Create a map for O(1) lookup
+    const sessionMap = new Map(
+      sessions.map((s) => [s.sessionNumber, s])
+    )
+
+    // Enrich submissions with session data from map
+    const enrichedSubmissions = submissions
+      .map((sub) => {
         const sessionNumber = parseInt(sub.taskId.replace("session-", ""))
 
         // Skip if sessionNumber is invalid
@@ -51,14 +76,7 @@ export async function GET(request: NextRequest) {
           return null
         }
 
-        const sessionData = await prisma.session.findUnique({
-          where: { sessionNumber },
-          select: {
-            sessionNumber: true,
-            title: true,
-            date: true,
-          },
-        })
+        const sessionData = sessionMap.get(sessionNumber)
 
         return {
           id: sub.id,
@@ -72,14 +90,11 @@ export async function GET(request: NextRequest) {
           createdAt: sub.createdAt,
         }
       })
-    )
+      .filter((sub): sub is any => sub !== null)
 
-    // Filter out null values
-    const validSubmissions = enrichedSubmissions.filter((sub): sub is any => sub !== null)
-
-    return NextResponse.json({ submissions: validSubmissions })
+    return NextResponse.json({ submissions: enrichedSubmissions })
   } catch (error) {
-    console.error("Error fetching submissions:", error)
+
     return NextResponse.json(
       { error: "Error al obtener las entregas" },
       { status: 500 }

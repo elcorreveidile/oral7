@@ -65,111 +65,116 @@ export async function GET(req: Request) {
         },
       }
 
-      // Actualizar la sesión 2
-      const updatedSession = await prisma.session.update({
-        where: { sessionNumber: 2 },
-        data: session2Data,
-      })
+      // Ejecutar todas las operaciones en una transacción para asegurar atomicidad
+      const result = await prisma.$transaction(async (tx) => {
+        // Actualizar la sesión 2
+        const updatedSession = await tx.session.update({
+          where: { sessionNumber: 2 },
+          data: session2Data,
+        })
 
-      // Actualizar checklist items
-      await prisma.checklistItem.deleteMany({
-        where: { sessionId: updatedSession.id },
-      })
-      await prisma.checklistItem.createMany({
-        data: [
-          { sessionId: updatedSession.id, text: 'He usado conectores de contraste correctamente', order: 1 },
-          { sessionId: updatedSession.id, text: 'He mantenido un registro coherente durante mi intervención', order: 2 },
-          { sessionId: updatedSession.id, text: 'He reaccionado a las intervenciones de mis compañeros', order: 3 },
-        ],
-      })
+        // Actualizar checklist items
+        await tx.checklistItem.deleteMany({
+          where: { sessionId: updatedSession.id },
+        })
+        await tx.checklistItem.createMany({
+          data: [
+            { sessionId: updatedSession.id, text: 'He usado conectores de contraste correctamente', order: 1 },
+            { sessionId: updatedSession.id, text: 'He mantenido un registro coherente durante mi intervención', order: 2 },
+            { sessionId: updatedSession.id, text: 'He reaccionado a las intervenciones de mis compañeros', order: 3 },
+          ],
+        })
 
-      // Actualizar recursos
-      await prisma.resource.deleteMany({
-        where: { sessionId: updatedSession.id },
-      })
-      await prisma.resource.createMany({
-        data: [
-          {
-            sessionId: updatedSession.id,
-            title: 'Conectores argumentales C1',
-            type: 'PDF',
-            url: '/resources/conectores-argumentales-c1.pdf',
-            order: 1,
-          },
-          {
-            sessionId: updatedSession.id,
-            title: 'Artículo: El impacto de las redes sociales',
-            type: 'PDF',
-            url: '/resources/articulo-redes-sociales.pdf',
-            order: 2,
-          },
-          {
-            sessionId: updatedSession.id,
-            title: 'Plantilla de argumentación',
-            type: 'PDF',
-            url: '/resources/plantilla-argumentacion.pdf',
-            order: 3,
-          },
-        ],
-      })
-
-      // Actualizar tareas
-      await prisma.task.deleteMany({
-        where: { sessionId: updatedSession.id },
-      })
-      await prisma.task.createMany({
-        data: [
-          {
-            sessionId: updatedSession.id,
-            title: 'Arrastra el conector correcto a la frase',
-            description: 'Ejercicio interactivo de conectores argumentales',
-            type: 'FILL_BLANKS',
-            content: {
-              instructions: 'Arrastra el conector correcto a cada espacio en blanco.',
-              questions: [
-                {
-                  question: '___ me gusta la gastronomía andaluza, ___ no soporto el calor del verano.',
-                  blanks: 2,
-                  options: ['Por un lado', 'Por otro lado', 'Me gusta', 'pero'],
-                  correctAnswers: ['Por un lado', 'por otro lado'],
-                  explanation: 'Usamos "Por un lado... por otro lado..." para presentar dos aspectos contrastados de forma formal.',
-                },
-                {
-                  question: '___ la ciudad tiene mucha vida cultural. ___, el coste de vida es bastante bajo.',
-                  blanks: 2,
-                  options: ['Para empezar', 'Además', 'Sin embargo', 'En conclusión'],
-                  correctAnswers: ['Para empezar', 'Además'],
-                  explanation: 'Usamos "Para empezar" para iniciar una enumeración y "Además" para añadir información.',
-                },
-                {
-                  question: 'La ubicación es perfecta. ___, echo de menos el mar.',
-                  blanks: 1,
-                  options: ['Además', 'No obstante', 'Es más', 'Por último'],
-                  correctAnswers: ['No obstante'],
-                  explanation: '"No obstante" introduce una objeción o contraste con lo anterior.',
-                },
-              ],
+        // Actualizar recursos
+        await tx.resource.deleteMany({
+          where: { sessionId: updatedSession.id },
+        })
+        await tx.resource.createMany({
+          data: [
+            {
+              sessionId: updatedSession.id,
+              title: 'Conectores argumentales C1',
+              type: 'PDF',
+              url: '/resources/conectores-argumentales-c1.pdf',
+              order: 1,
             },
-            order: 1,
-            isModeBOnly: true,
-          },
-        ],
+            {
+              sessionId: updatedSession.id,
+              title: 'Artículo: El impacto de las redes sociales',
+              type: 'PDF',
+              url: '/resources/articulo-redes-sociales.pdf',
+              order: 2,
+            },
+            {
+              sessionId: updatedSession.id,
+              title: 'Plantilla de argumentación',
+              type: 'PDF',
+              url: '/resources/plantilla-argumentacion.pdf',
+              order: 3,
+            },
+          ],
+        })
+
+        // Actualizar tareas
+        await tx.task.deleteMany({
+          where: { sessionId: updatedSession.id },
+        })
+        await tx.task.createMany({
+          data: [
+            {
+              sessionId: updatedSession.id,
+              title: 'Arrastra el conector correcto a la frase',
+              description: 'Ejercicio interactivo de conectores argumentales',
+              type: 'FILL_BLANKS',
+              content: {
+                instructions: 'Arrastra el conector correcto a cada espacio en blanco.',
+                questions: [
+                  {
+                    question: '___ me gusta la gastronomía andaluza, ___ no soporto el calor del verano.',
+                    blanks: 2,
+                    options: ['Por un lado', 'Por otro lado', 'Me gusta', 'pero'],
+                    correctAnswers: ['Por un lado', 'por otro lado'],
+                    explanation: 'Usamos "Por un lado... por otro lado..." para presentar dos aspectos contrastados de forma formal.',
+                  },
+                  {
+                    question: '___ la ciudad tiene mucha vida cultural. ___, el coste de vida es bastante bajo.',
+                    blanks: 2,
+                    options: ['Para empezar', 'Además', 'Sin embargo', 'En conclusión'],
+                    correctAnswers: ['Para empezar', 'Además'],
+                    explanation: 'Usamos "Para empezar" para iniciar una enumeración y "Además" para añadir información.',
+                  },
+                  {
+                    question: 'La ubicación es perfecta. ___, echo de menos el mar.',
+                    blanks: 1,
+                    options: ['Además', 'No obstante', 'Es más', 'Por último'],
+                    correctAnswers: ['No obstante'],
+                    explanation: '"No obstante" introduce una objeción o contraste con lo anterior.',
+                  },
+                ],
+              },
+              order: 1,
+              isModeBOnly: true,
+            },
+          ],
+        })
+
+        return updatedSession
       })
 
       return NextResponse.json({
         success: true,
         message: `Sesión ${sessionNum} actualizada correctamente`,
         session: {
-          id: updatedSession.id,
-          title: updatedSession.title,
-          subtitle: updatedSession.subtitle,
+          id: result.id,
+          title: result.title,
+          subtitle: result.subtitle,
         },
       })
     }
 
     return NextResponse.json({ error: 'Sesión no encontrada' }, { status: 404 })
   } catch (error) {
-    console.error('Error actualizando sesión:', error)
+
     return NextResponse.json(
       { error: 'Error al actualizar la sesión', details: String(error) },
       { status: 500 }

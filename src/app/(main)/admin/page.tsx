@@ -58,7 +58,7 @@ export default function AdminDashboardPage() {
         setStats(data)
       }
     } catch (error) {
-      console.error("Error loading stats:", error)
+
     } finally {
       setLoadingStats(false)
     }

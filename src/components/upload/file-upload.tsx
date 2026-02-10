@@ -118,7 +118,7 @@ export function FileUpload({
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({ error: "Error desconocido", details: response.statusText }))
-        console.error("Upload error response:", error)
+
         const errorMessage = error.details ? `${error.error}: ${error.details}` : error.error
         throw new Error(errorMessage || "Error al subir el archivo")
       }
@@ -139,7 +139,7 @@ export function FileUpload({
         fileInputRef.current.value = ""
       }
     } catch (error) {
-      console.error("Error uploading file:", error)
+
       toast({
         variant: "destructive",
         title: "Error al subir el archivo",

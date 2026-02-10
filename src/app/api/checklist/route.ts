@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       message: "Progreso guardado",
     })
   } catch (error) {
-    console.error("Error saving checklist:", error)
+
     return NextResponse.json(
       { error: "Error al guardar el progreso" },
       { status: 500 }

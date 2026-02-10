@@ -82,7 +82,7 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300 }: AudioR
         })
       }, 1000)
     } catch (error) {
-      console.error("Error accessing microphone:", error)
+
       toast({
         variant: "destructive",
         title: "Error de acceso al micrófono",
