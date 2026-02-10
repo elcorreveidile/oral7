@@ -24,15 +24,43 @@ export async function POST(request: NextRequest) {
     }
 
     // Find the session by sessionNumber to get the real DB ID
-    const dbSession = await prisma.session.findUnique({
+    const found = await prisma.session.findUnique({
       where: { sessionNumber },
     })
 
+    const dbSession =
+      found ??
+      (await (async () => {
+        // If DB wasn't seeded/synced yet, bootstrap the session from static data.
+        const { sessionsData } = await import("@/data/sessions")
+        const s = sessionsData.find((x) => x.sessionNumber === sessionNumber)
+        if (!s) return null
+
+        return prisma.session.upsert({
+          where: { sessionNumber },
+          update: {},
+          create: {
+            sessionNumber: s.sessionNumber,
+            date: s.date,
+            title: s.title,
+            subtitle: s.subtitle,
+            blockNumber: s.blockNumber,
+            blockTitle: s.blockTitle,
+            isExamDay: s.isExamDay,
+            examType: (s as any).examType,
+            objectives: s.objectives as any,
+            timing: s.timing as any,
+            dynamics: s.dynamics as any,
+            grammarContent: s.grammarContent as any,
+            vocabularyContent: s.vocabularyContent as any,
+            modeAContent: s.modeAContent as any,
+            modeBContent: s.modeBContent as any,
+          },
+        })
+      })())
+
     if (!dbSession) {
-      return NextResponse.json(
-        { error: "Sesión no encontrada" },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: "Sesión no encontrada" }, { status: 404 })
     }
 
     // Deactivate any previous active codes for this session
