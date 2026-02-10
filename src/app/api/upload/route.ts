@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth"
 import { writeFile, mkdir } from "fs/promises"
 import { join } from "path"
 import { existsSync } from "fs"
-import { rateLimit, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit"
+import { rateLimit, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit-redis"
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     // Apply rate limiting based on user ID
     const userId = session.user.id
-    const rateLimitResult = rateLimit(`upload:${userId}`, RateLimitConfig.upload)
+    const rateLimitResult = await rateLimit(`upload:${userId}`, RateLimitConfig.upload)
 
     if (!rateLimitResult.success) {
       return rateLimitResponse(rateLimitResult.resetTime)
