@@ -30,6 +30,8 @@ model User {
   checklistItems UserChecklistItem[]
   submissions   Submission[]
 
+  @@index([email])
+  @@index([role])
   @@map("users")
 }
 
@@ -74,6 +76,7 @@ model Session {
   resources       Resource[]
   progress        UserProgress[]
 
+  @@index([sessionNumber])
   @@map("sessions")
 }
 
@@ -138,6 +141,7 @@ model Submission {
   updatedAt   DateTime    @updatedAt
 
   @@unique([userId, taskId])
+  @@index([userId, taskId])
   @@map("submissions")
 }
 
@@ -169,6 +173,7 @@ model UserChecklistItem {
   completedAt     DateTime?
 
   @@unique([userId, checklistItemId])
+  @@index([userId, checklistItemId])
   @@map("user_checklist_items")
 }
 
@@ -215,6 +220,8 @@ model Attendance {
   method      AttendanceMethod  // Método de registro
 
   @@unique([userId, sessionId])
+  @@index([userId, sessionId])
+  @@index([sessionId])
   @@map("attendances")
 }
 

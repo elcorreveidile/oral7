@@ -23,25 +23,74 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Find the QR code
+    // Find the QR code without expiration filter first to give specific error
     const qrCode = await prisma.qRCode.findFirst({
       where: {
         code: code.toUpperCase(),
-        isActive: true,
-        expiresAt: {
-          gt: new Date(),
-        },
       },
     })
 
+    // Check if QR code exists
     if (!qrCode) {
       return NextResponse.json(
-        { error: "Código inválido o expirado. Pide al profesor un nuevo código." },
+        { error: "Código inválido. Verifica que hayas introducido el código correcto." },
+        { status: 404 }
+      )
+    }
+
+    // Check if QR code is active
+    if (!qrCode.isActive) {
+      return NextResponse.json(
+        { error: "Este código QR ya no está activo. Pide al profesor un nuevo código." },
         { status: 400 }
       )
     }
 
-    // Check if already registered
+    // Check if QR code has expired
+    if (qrCode.expiresAt < new Date()) {
+      return NextResponse.json(
+        { error: "El código QR ha expirado. Pide al profesor un nuevo código." },
+        { status: 400 }
+      )
+    }
+
+    // Fetch the session to check if it has already passed
+    const sessionData = await prisma.session.findUnique({
+      where: {
+        id: qrCode.sessionId,
+      },
+      select: {
+        id: true,
+        date: true,
+        title: true,
+        sessionNumber: true,
+      },
+    })
+
+    if (!sessionData) {
+      return NextResponse.json(
+        { error: "Sesión no encontrada. Contacta al administrador." },
+        { status: 404 }
+      )
+    }
+
+    // Check if session has already passed
+    const sessionDate = new Date(sessionData.date)
+    const now = new Date()
+    // End of the session day (23:59:59)
+    const endOfSessionDay = new Date(sessionDate)
+    endOfSessionDay.setHours(23, 59, 59, 999)
+
+    if (now > endOfSessionDay) {
+      return NextResponse.json(
+        {
+          error: `La sesión ${sessionData.sessionNumber} (${sessionData.title}) ya ha finalizado. No se puede registrar asistencia.`,
+        },
+        { status: 400 }
+      )
+    }
+
+    // Check if user is already registered for this session
     const existingAttendance = await prisma.attendance.findFirst({
       where: {
         userId: session.user.id,
@@ -51,7 +100,10 @@ export async function POST(request: NextRequest) {
 
     if (existingAttendance) {
       return NextResponse.json(
-        { error: "Ya has registrado tu asistencia para esta sesión." },
+        {
+          error: "Ya has registrado tu asistencia para esta sesión.",
+          alreadyRegistered: true,
+        },
         { status: 400 }
       )
     }
@@ -61,7 +113,7 @@ export async function POST(request: NextRequest) {
       data: {
         userId: session.user.id,
         sessionId: qrCode.sessionId,
-        method: "MANUAL_CODE", // or QR_SCAN based on how they submitted
+        method: "QR_SCAN",
       },
     })
 
@@ -74,6 +126,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
+    console.error("Error registering attendance:", error)
 
     return NextResponse.json(
       { error: "Error al registrar la asistencia. Inténtalo de nuevo." },

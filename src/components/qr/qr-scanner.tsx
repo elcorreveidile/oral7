@@ -21,6 +21,7 @@ export function QRScanner({ sessionId, onSuccess }: QRScannerProps) {
   const [result, setResult] = useState<"success" | "error" | null>(null)
   const [message, setMessage] = useState("")
   const [cameraError, setCameraError] = useState<string | null>(null)
+  const [errorType, setErrorType] = useState<string>("")
   const qrCodeScannerRef = useRef<Html5Qrcode | null>(null)
   const scannerId = useRef("qr-scanner")
   const { toast } = useToast()
@@ -112,6 +113,7 @@ export function QRScanner({ sessionId, onSuccess }: QRScannerProps) {
 
     setIsSubmitting(true)
     setResult(null)
+    setErrorType("")
 
     try {
       const response = await fetch("/api/attendance/register", {
@@ -135,20 +137,35 @@ export function QRScanner({ sessionId, onSuccess }: QRScannerProps) {
         onSuccess?.()
       } else {
         setResult("error")
+
+        // Determine error type for better UI handling
+        if (response.status === 404) {
+          setErrorType("invalid_code")
+        } else if (data.error?.includes("expirado") || data.error?.includes("expiró")) {
+          setErrorType("expired")
+        } else if (data.alreadyRegistered) {
+          setErrorType("already_registered")
+        } else if (data.error?.includes("finalizado") || data.error?.includes("ya ha finalizado")) {
+          setErrorType("session_passed")
+        } else {
+          setErrorType("general")
+        }
+
         setMessage(data.error || "Error al registrar asistencia")
         toast({
           variant: "destructive",
-          title: "Error",
+          title: "Error al registrar asistencia",
           description: data.error || "No se pudo registrar la asistencia",
         })
       }
     } catch (error) {
       setResult("error")
-      setMessage("Error de conexión")
+      setErrorType("network")
+      setMessage("Error de conexión. Inténtalo de nuevo.")
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Error de conexión. Inténtalo de nuevo.",
+        title: "Error de conexión",
+        description: "Verifica tu conexión a internet e inténtalo de nuevo.",
       })
     } finally {
       setIsSubmitting(false)
@@ -183,15 +200,51 @@ export function QRScanner({ sessionId, onSuccess }: QRScannerProps) {
               )}
             </div>
             <p className="font-medium text-lg">{message}</p>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setResult(null)
-                setManualCode("")
-              }}
-            >
-              Cerrar
-            </Button>
+
+            {result === "error" && (
+              <div className="text-sm text-muted-foreground space-y-2">
+                {errorType === "expired" && (
+                  <p>El código QR solo es válido durante la clase. Contacta a tu profesor.</p>
+                )}
+                {errorType === "session_passed" && (
+                  <p>No se puede registrar asistencia retroactivamente.</p>
+                )}
+                {errorType === "already_registered" && (
+                  <p>Ya tienes registrada tu asistencia para esta sesión.</p>
+                )}
+                {errorType === "invalid_code" && (
+                  <p>Verifica que hayas introducido correctamente el código de 6 caracteres.</p>
+                )}
+                {errorType === "network" && (
+                  <p>Verifica tu conexión a internet e inténtalo de nuevo.</p>
+                )}
+              </div>
+            )}
+
+            <div className="flex gap-2 justify-center">
+              {result === "error" && errorType !== "already_registered" && errorType !== "session_passed" && (
+                <Button
+                  variant="default"
+                  onClick={() => {
+                    setResult(null)
+                    setErrorType("")
+                    setManualCode("")
+                  }}
+                >
+                  Intentar de nuevo
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setResult(null)
+                  setErrorType("")
+                  setManualCode("")
+                }}
+              >
+                {result === "success" ? "Cerrar" : "Cancelar"}
+              </Button>
+            </div>
           </div>
         ) : (
           <Tabs defaultValue="manual" className="w-full">

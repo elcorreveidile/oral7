@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { Resend } from "resend"
 import { getClientIp, rateLimit, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit-redis"
+import { validateRequest, contactFormSchema } from "@/lib/validations"
 
 // Only initialize Resend if API key is available
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
@@ -15,15 +16,18 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { name, email, subject, message } = await req.json()
+    const body = await req.json()
 
-    // Validate input
-    if (!name || !email || !subject || !message) {
+    // Validate request body with Zod schema
+    const validation = validateRequest(contactFormSchema, body)
+    if (!validation.success) {
       return NextResponse.json(
-        { error: "Todos los campos son obligatorios" },
+        { error: validation.error },
         { status: 400 }
       )
     }
+
+    const { name, email, subject, message } = validation.data
 
     // Send email using Resend (if configured)
     let data, error

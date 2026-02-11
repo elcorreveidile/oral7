@@ -1,30 +1,33 @@
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
+import { getAdminSession } from '@/lib/admin-auth'
 import prisma from '@/lib/prisma'
+import { validateRequest, updateSessionSchema } from '@/lib/validations'
 
 // Endpoint protegido para actualizar contenido de sesiones
 // Requiere autenticación de administrador (session-based)
 // Uso: POST /api/admin/update-session con body { sessionNumber: 2, data: {...} }
 
 export async function POST(req: Request) {
-  // Verificar autenticación de administrador usando NextAuth
-  const session = await getServerSession(authOptions)
+  // Verificar autenticación de administrador usando centralized auth
+  const session = await getAdminSession()
 
-  if (!session || !session.user || session.user.role !== 'ADMIN') {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  if (!session) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
   try {
     const body = await req.json()
-    const { sessionNumber, data } = body
 
-    if (!sessionNumber || !data) {
+    // Validate request body with Zod schema
+    const validation = validateRequest(updateSessionSchema, body)
+    if (!validation.success) {
       return NextResponse.json(
-        { error: 'sessionNumber y data son requeridos' },
+        { error: validation.error },
         { status: 400 }
       )
     }
+
+    const { sessionNumber, data } = validation.data
 
     // Verificar que la sesión existe
     const existingSession = await prisma.session.findUnique({
@@ -66,11 +69,11 @@ export async function POST(req: Request) {
 
 // GET endpoint para obtener datos de una sesión (requiere admin)
 export async function GET(req: Request) {
-  // Verificar autenticación de administrador usando NextAuth
-  const session = await getServerSession(authOptions)
+  // Verificar autenticación de administrador usando centralized auth
+  const session = await getAdminSession()
 
-  if (!session || !session.user || session.user.role !== 'ADMIN') {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  if (!session) {
+    return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
   try {

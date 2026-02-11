@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { hash } from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 import { rateLimit, getClientIp, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit-redis"
+import { validateRequest, registerSchema } from "@/lib/validations"
 
 export async function POST(req: Request) {
   // Apply rate limiting based on IP address
@@ -13,15 +14,18 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { name, email, password, inviteCode } = await req.json()
+    const body = await req.json()
 
-    // Validate input
-    if (!name || !email || !password || !inviteCode) {
+    // Validate request body with Zod schema
+    const validation = validateRequest(registerSchema, body)
+    if (!validation.success) {
       return NextResponse.json(
-        { error: "Todos los campos son requeridos, incluido el código de invitación" },
+        { error: validation.error },
         { status: 400 }
       )
     }
+
+    const { name, email, password, inviteCode } = validation.data
 
     // Validate invite code
     const validInviteCode = process.env.STUDENT_INVITE_CODE
@@ -29,13 +33,6 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { error: "Código de invitación inválido. Solicítalo a tu profesor." },
         { status: 403 }
-      )
-    }
-
-    if (password.length < 6) {
-      return NextResponse.json(
-        { error: "La contraseña debe tener al menos 6 caracteres" },
-        { status: 400 }
       )
     }
 
