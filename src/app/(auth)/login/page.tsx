@@ -11,6 +11,17 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2, GraduationCap } from "lucide-react"
 
+function parseEnvBoolean(value: string | undefined, defaultValue = false): boolean {
+  if (value === undefined) return defaultValue
+  const normalized = value.trim().toLowerCase()
+  return normalized === "1" || normalized === "true" || normalized === "yes" || normalized === "on"
+}
+
+const AUTH_ADMIN_2FA_UI_ENABLED = parseEnvBoolean(
+  process.env.NEXT_PUBLIC_AUTH_ADMIN_2FA_ENABLED,
+  false
+)
+
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -18,6 +29,7 @@ function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [totp, setTotp] = useState("")
 
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
 
@@ -29,6 +41,7 @@ function LoginForm() {
       const result = await signIn("credentials", {
         email,
         password,
+        totp: AUTH_ADMIN_2FA_UI_ENABLED ? totp : "",
         redirect: false,
       })
 
@@ -36,7 +49,9 @@ function LoginForm() {
         toast({
           variant: "destructive",
           title: "Error de autenticación",
-          description: "Correo o contraseña incorrectos",
+          description: AUTH_ADMIN_2FA_UI_ENABLED
+            ? "Credenciales incorrectas o código 2FA inválido"
+            : "Correo o contraseña incorrectos",
         })
       } else {
         router.push(callbackUrl)
@@ -101,6 +116,20 @@ function LoginForm() {
                 disabled={isLoading}
               />
             </div>
+            {AUTH_ADMIN_2FA_UI_ENABLED && (
+              <div className="space-y-2">
+                <Label htmlFor="totp">Código 2FA (si tu cuenta lo requiere)</Label>
+                <Input
+                  id="totp"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="123456"
+                  value={totp}
+                  onChange={(e) => setTotp(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+            )}
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Iniciar sesión
