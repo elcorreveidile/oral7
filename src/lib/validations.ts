@@ -382,7 +382,7 @@ export const sessionSubmissionSchema = z.object({
     })
     .int("El número de sesión debe ser un número entero")
     .positive("El número de sesión debe ser positivo")
-    .max(27, "El número de sesión no puede exceder 27"),
+    .max(200, "El número de sesión no puede exceder 200"),
   files: z
     .array(fileMetadataSchema)
     .min(1, "Debe haber al menos un archivo")
@@ -401,6 +401,32 @@ export const getSubmissionSchema = z.object({
 })
 
 export type GetSubmissionInput = z.infer<typeof getSubmissionSchema>
+
+/**
+ * Esquema para feedback/calificación de entregas por administrador
+ */
+export const adminSubmissionUpdateSchema = z
+  .object({
+    feedback: z
+      .string()
+      .trim()
+      .max(4000, "El feedback no puede exceder 4000 caracteres")
+      .optional(),
+    score: z
+      .number({
+        invalid_type_error: "La puntuación debe ser numérica",
+      })
+      .min(0, "La puntuación mínima es 0")
+      .max(100, "La puntuación máxima es 100")
+      .nullable()
+      .optional(),
+  })
+  .refine(
+    (data) => data.feedback !== undefined || data.score !== undefined,
+    "Debes enviar feedback o puntuación"
+  )
+
+export type AdminSubmissionUpdateInput = z.infer<typeof adminSubmissionUpdateSchema>
 
 // ============================================
 // ESQUEMAS DE FORMULARIO DE CONTACTO
@@ -500,6 +526,7 @@ export const schemas = {
   submission: submissionSchema,
   sessionSubmission: sessionSubmissionSchema,
   getSubmission: getSubmissionSchema,
+  adminSubmissionUpdate: adminSubmissionUpdateSchema,
 
   // Contact
   contactForm: contactFormSchema,

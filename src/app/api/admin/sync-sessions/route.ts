@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getAdminSession } from "@/lib/admin-auth"
 import prisma from "@/lib/prisma"
 import { logAdminAction } from "@/lib/audit-logger"
+import { ensureSessionUploadTasksForSessions } from "@/lib/session-upload-tasks"
 
 export async function POST(request: NextRequest) {
   try {
@@ -71,18 +72,38 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    const syncedSessions = await prisma.session.findMany({
+      select: {
+        id: true,
+        sessionNumber: true,
+        title: true,
+        isExamDay: true,
+      },
+      orderBy: {
+        sessionNumber: "asc",
+      },
+    })
+
+    const uploadTaskSync = await ensureSessionUploadTasksForSessions(syncedSessions)
+
     await logAdminAction(
       session.user.id,
       "SESSIONS_SYNC",
       "Session",
       undefined,
-      { created, updated, total: sessionsData.length },
+      {
+        created,
+        updated,
+        total: sessionsData.length,
+        uploadTasksCreated: uploadTaskSync.created,
+        uploadTasksUpdated: uploadTaskSync.updated,
+      },
       request
     )
 
     return NextResponse.json({
       success: true,
-      message: `✅ Sync complete! Created: ${created}, Updated: ${updated}, Total: ${sessionsData.length}`
+      message: `✅ Sync complete! Sessions created: ${created}, updated: ${updated}. Upload tasks created: ${uploadTaskSync.created}, updated: ${uploadTaskSync.updated}.`
     })
   } catch (error) {
 

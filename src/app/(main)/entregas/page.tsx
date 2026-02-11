@@ -15,15 +15,26 @@ import { useToast } from "@/components/ui/use-toast"
 interface Submission {
   id: string
   content: { files: Array<{ url: string; name: string; type: string; size: number }> }
+  feedback?: string | null
+  score?: number | null
+}
+
+interface SessionAssignment {
+  sessionId: string
+  sessionNumber: number
+  sessionTitle: string
+  sessionDate: string
+  taskId: string
+  taskType: "DOCUMENT_UPLOAD"
 }
 
 export default function EntregasPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const { toast } = useToast()
-  const [sessions, setSessions] = useState<any[]>([])
+  const [assignments, setAssignments] = useState<SessionAssignment[]>([])
   const [submissions, setSubmissions] = useState<Record<string, Submission>>({})
-  const [selectedSession, setSelectedSession] = useState<any>(null)
+  const [selectedAssignment, setSelectedAssignment] = useState<SessionAssignment | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
 
   useEffect(() => {
@@ -33,19 +44,12 @@ export default function EntregasPage() {
   }, [status, router])
 
   useEffect(() => {
-    // Load sessions
-    fetch("/api/sessions")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.sessions) {
-          setSessions(data.sessions)
-        }
-      })
-
-    // Load submissions
     fetch("/api/session-submissions")
       .then((res) => res.json())
       .then((data) => {
+        if (data.assignments) {
+          setAssignments(data.assignments)
+        }
         if (data.submissions) {
           const subsMap: Record<string, Submission> = {}
           data.submissions.forEach((sub: any) => {
@@ -67,7 +71,11 @@ export default function EntregasPage() {
   const handleSubmit = async (files: any[]) => {
 
     // Save submission
-    const sessionNumber = selectedSession.sessionNumber
+    if (!selectedAssignment) {
+      return
+    }
+
+    const sessionNumber = selectedAssignment.sessionNumber
 
     try {
       const response = await fetch("/api/session-submissions", {
@@ -94,7 +102,7 @@ export default function EntregasPage() {
       // Reload submissions
       setSubmissions((prev) => ({
         ...prev,
-        [`session-${sessionNumber}`]: data.submission,
+        [selectedAssignment.taskId]: data.submission,
       }))
 
       toast({
@@ -121,23 +129,30 @@ export default function EntregasPage() {
       </div>
 
       <div className="grid gap-4">
-        {sessions.map((session) => {
-          const taskId = `session-${session.sessionNumber}`
+        {assignments.length === 0 && (
+          <Card>
+            <CardContent className="py-10 text-center text-muted-foreground">
+              No hay entregas designadas en este momento.
+            </CardContent>
+          </Card>
+        )}
+        {assignments.map((assignment) => {
+          const taskId = assignment.taskId
           const hasSubmission = submissions[taskId]
 
           return (
-            <Card key={session.id} className={hasSubmission ? "border-green-200 dark:border-green-800" : ""}>
+            <Card key={assignment.sessionId} className={hasSubmission ? "border-green-200 dark:border-green-800" : ""}>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle className="flex items-center gap-2">
-                      <span>Sesión {session.sessionNumber}</span>
+                      <span>Sesión {assignment.sessionNumber}</span>
                       {hasSubmission && <CheckCircle className="h-5 w-5 text-green-500" />}
                     </CardTitle>
-                    <CardDescription>{session.title}</CardDescription>
+                    <CardDescription>{assignment.sessionTitle}</CardDescription>
                   </div>
                   <Badge variant="outline">
-                    {formatDateSpanish(session.date)}
+                    {formatDateSpanish(new Date(assignment.sessionDate))}
                   </Badge>
                 </div>
               </CardHeader>
@@ -154,7 +169,7 @@ export default function EntregasPage() {
                   <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>
                       <Button
-                        onClick={() => setSelectedSession(session)}
+                        onClick={() => setSelectedAssignment(assignment)}
                         variant={hasSubmission ? "outline" : "default"}
                       >
                         {hasSubmission ? (
@@ -172,14 +187,14 @@ export default function EntregasPage() {
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl">
                       <DialogHeader>
-                        <DialogTitle>Subir entrega - Sesión {selectedSession?.sessionNumber}</DialogTitle>
+                        <DialogTitle>Subir entrega - Sesión {selectedAssignment?.sessionNumber}</DialogTitle>
                         <DialogDescription>
-                          {selectedSession?.title}
+                          {selectedAssignment?.sessionTitle}
                         </DialogDescription>
                       </DialogHeader>
 
                       <TaskSubmission
-                        taskId={`session-${selectedSession?.sessionNumber}`}
+                        taskId={selectedAssignment?.taskId || ""}
                         taskType="ANY"
                         onSubmit={handleSubmit}
                         submitLabel="Guardar entrega"
@@ -187,6 +202,18 @@ export default function EntregasPage() {
                     </DialogContent>
                   </Dialog>
                 </div>
+
+                {hasSubmission?.feedback && (
+                  <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm dark:border-emerald-900/60 dark:bg-emerald-950/30">
+                    <p className="font-medium text-emerald-700 dark:text-emerald-300">Feedback del profesor</p>
+                    <p className="mt-1 text-emerald-800 dark:text-emerald-200">{hasSubmission.feedback}</p>
+                    {typeof hasSubmission.score === "number" && (
+                      <p className="mt-2 text-emerald-700 dark:text-emerald-300">
+                        Puntuación: {hasSubmission.score}%
+                      </p>
+                    )}
+                  </div>
+                )}
               </CardContent>
             </Card>
           )

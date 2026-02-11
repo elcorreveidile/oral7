@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getAdminSession } from "@/lib/admin-auth"
 import prisma from "@/lib/prisma"
+import { parseSessionNumberFromUploadTaskId } from "@/lib/session-upload-tasks"
 
 export async function GET(request: NextRequest) {
   try {
@@ -36,15 +37,15 @@ export async function GET(request: NextRequest) {
         },
       },
       orderBy: {
-        createdAt: "desc",
+        updatedAt: "desc",
       },
     })
 
     // Extract unique sessionNumbers from all submissions (avoid N+1 query)
     const uniqueSessionNumbers = new Set(
       submissions
-        .map((sub) => parseInt(sub.taskId.replace("session-", "")))
-        .filter((num) => !isNaN(num))
+        .map((sub) => parseSessionNumberFromUploadTaskId(sub.taskId))
+        .filter((num): num is number => num !== null)
     )
     const sessionNumbers = Array.from(uniqueSessionNumbers)
 
@@ -68,25 +69,32 @@ export async function GET(request: NextRequest) {
     // Enrich submissions with session data from map
     const enrichedSubmissions = submissions
       .map((sub) => {
-        const sessionNumber = parseInt(sub.taskId.replace("session-", ""))
-
-        // Skip if sessionNumber is invalid
-        if (isNaN(sessionNumber)) {
+        const sessionNumber = parseSessionNumberFromUploadTaskId(sub.taskId)
+        if (sessionNumber === null) {
           return null
         }
 
         const sessionData = sessionMap.get(sessionNumber)
+        const filesRaw = (sub.content as any)?.files
+        const files = Array.isArray(filesRaw) ? filesRaw : []
+        const hasFeedback = Boolean(sub.feedback && sub.feedback.trim())
 
         return {
           id: sub.id,
+          taskId: sub.taskId,
           userId: sub.user.id,
           userName: sub.user.name,
           userEmail: sub.user.email,
           sessionNumber,
           sessionTitle: sessionData?.title,
           sessionDate: sessionData?.date,
-          files: (sub.content as any)?.files || [],
+          files,
+          score: sub.score,
+          feedback: sub.feedback,
+          canPurgeFiles: hasFeedback && files.length > 0,
+          filesPurged: files.length === 0,
           createdAt: sub.createdAt,
+          updatedAt: sub.updatedAt,
         }
       })
       .filter((sub): sub is any => sub !== null)

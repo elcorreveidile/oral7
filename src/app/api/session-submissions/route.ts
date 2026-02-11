@@ -4,6 +4,11 @@ import { authOptions } from "@/lib/auth"
 import prisma from "@/lib/prisma"
 import { rateLimit, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit-redis"
 import { validateRequest, sessionSubmissionSchema } from "@/lib/validations"
+import {
+  ensureSessionUploadTask,
+  ensureSessionUploadTasksForSessions,
+  getSessionUploadTaskId,
+} from "@/lib/session-upload-tasks"
 
 export async function POST(request: NextRequest) {
   try {
@@ -52,22 +57,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create submission record with a synthetic ID
-    const taskId = `session-${sessionNumber}`
-
-    // Ensure task exists (idempotent upsert to avoid race conditions).
-    await prisma.task.upsert({
-      where: { id: taskId },
-      update: {},
-      create: {
-        id: taskId,
-        sessionId: sessionRecord.id,
-        title: `Entrega de archivos - Sesión ${sessionNumber}`,
-        type: "FREE_TEXT",
-        content: {},
-        order: 999,
-      },
+    // Ensure the designated upload task exists for this session.
+    await ensureSessionUploadTask({
+      id: sessionRecord.id,
+      sessionNumber: sessionRecord.sessionNumber,
+      title: sessionRecord.title,
+      isExamDay: sessionRecord.isExamDay,
     })
+
+    const taskId = getSessionUploadTaskId(sessionNumber)
 
     // Create or update submission
     const submission = await prisma.submission.upsert({
@@ -126,6 +124,30 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    const sessions = await prisma.session.findMany({
+      where: {
+        isExamDay: false,
+      },
+      select: {
+        id: true,
+        sessionNumber: true,
+        title: true,
+        date: true,
+        isExamDay: true,
+      },
+      orderBy: {
+        sessionNumber: "asc",
+      },
+    })
+
+    // Ensure designated upload tasks exist for all non-exam sessions.
+    // This prevents "empty assignments" screens after syncs/migrations.
+    try {
+      await ensureSessionUploadTasksForSessions(sessions)
+    } catch {
+      console.error("[SessionSubmissions] Could not ensure upload tasks")
+    }
+
     // Get all session submissions for this user
     const submissions = await prisma.submission.findMany({
       where: {
@@ -136,7 +158,16 @@ export async function GET(request: NextRequest) {
       },
     })
 
-    return NextResponse.json({ submissions })
+    const assignments = sessions.map((sessionItem) => ({
+      sessionId: sessionItem.id,
+      sessionNumber: sessionItem.sessionNumber,
+      sessionTitle: sessionItem.title,
+      sessionDate: sessionItem.date,
+      taskId: getSessionUploadTaskId(sessionItem.sessionNumber),
+      taskType: "DOCUMENT_UPLOAD" as const,
+    }))
+
+    return NextResponse.json({ submissions, assignments })
   } catch (error) {
     return NextResponse.json(
       { error: "Error al obtener las entregas" },
