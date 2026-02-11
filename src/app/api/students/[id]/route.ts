@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
+import { logAdminAction } from '@/lib/audit-logger'
 
 // GET - Obtener un estudiante individual con detalles completos
 export async function GET(
@@ -155,6 +156,19 @@ export async function PUT(
       },
     })
 
+    await logAdminAction(
+      session.user.id,
+      'STUDENT_UPDATE',
+      'User',
+      params.id,
+      {
+        nameUpdated: Boolean(name && name !== existingStudent.name),
+        emailUpdated: Boolean(email && email !== existingStudent.email),
+        passwordUpdated: Boolean(password),
+      },
+      req
+    )
+
     return NextResponse.json(updatedStudent)
   } catch (error) {
 
@@ -187,6 +201,15 @@ export async function DELETE(
     await prisma.user.delete({
       where: { id: params.id },
     })
+
+    await logAdminAction(
+      session.user.id,
+      'STUDENT_DELETE',
+      'User',
+      params.id,
+      { email: existingStudent.email },
+      req
+    )
 
     return NextResponse.json({ message: 'Estudiante eliminado correctamente' })
   } catch (error) {

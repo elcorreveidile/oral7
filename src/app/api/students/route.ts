@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import { validateRequest, createStudentSchema } from '@/lib/validations'
 import { Prisma } from '@prisma/client'
+import { logAdminAction } from '@/lib/audit-logger'
 
 const CANCELLED_SUBTITLE_FRAGMENT = "cancelad"
 
@@ -142,6 +143,15 @@ export async function POST(req: Request) {
         createdAt: true,
       },
     })
+
+    await logAdminAction(
+      session.user.id,
+      'STUDENT_CREATE',
+      'User',
+      student.id,
+      { email: student.email },
+      req
+    )
 
     return NextResponse.json(student, { status: 201 })
   } catch (error) {

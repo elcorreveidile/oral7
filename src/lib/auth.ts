@@ -2,6 +2,7 @@ import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { compare } from "bcryptjs"
 import prisma from "./prisma"
+import { decryptSecret, verifyToken } from "./twoFactor"
 
 // Note: NEXTAUTH_URL is set dynamically in the route handler
 // based on request headers, allowing support for multiple domains
@@ -12,7 +13,8 @@ export const authOptions: NextAuthOptions = {
       name: "Credenciales",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Contraseña", type: "password" }
+        password: { label: "Contraseña", type: "password" },
+        totp: { label: "Código 2FA", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -43,6 +45,32 @@ export const authOptions: NextAuthOptions = {
             console.log('[Auth] Authentication failed')
           }
           return null
+        }
+
+        // En cuentas ADMIN con 2FA activo, exigir código TOTP válido.
+        if (user.role === "ADMIN" && user.twoFactorEnabled) {
+          if (!user.twoFactorSecret || !credentials?.totp) {
+            if (process.env.NODE_ENV === "development") {
+              console.log("[Auth] 2FA verification failed")
+            }
+            return null
+          }
+
+          try {
+            const decryptedSecret = decryptSecret(user.twoFactorSecret)
+            const twoFactorValid = verifyToken(decryptedSecret, credentials.totp)
+            if (!twoFactorValid) {
+              if (process.env.NODE_ENV === "development") {
+                console.log("[Auth] 2FA verification failed")
+              }
+              return null
+            }
+          } catch {
+            if (process.env.NODE_ENV === "development") {
+              console.log("[Auth] 2FA verification failed")
+            }
+            return null
+          }
         }
 
         // Log successful auth without exposing email in production

@@ -21,6 +21,8 @@ model User {
   password      String?   // Hash bcrypt - opcional para OAuth
   image         String?
   role          UserRole  @default(STUDENT)
+  twoFactorEnabled Boolean @default(false)
+  twoFactorSecret  String? // Secret TOTP cifrado
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -29,6 +31,7 @@ model User {
   progress      UserProgress[]
   checklistItems UserChecklistItem[]
   submissions   Submission[]
+  auditLogs     AuditLog[]
 
   @@index([email])
   @@index([role])
@@ -52,6 +55,24 @@ model PasswordResetToken {
   @@index([email])
   @@index([token])
   @@map("password_reset_tokens")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  adminId    String
+  admin      User     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  action     String
+  entityType String
+  entityId   String?
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([adminId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
 }
 
 // ============================================

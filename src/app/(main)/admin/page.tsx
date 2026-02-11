@@ -11,6 +11,8 @@ import {
   Settings,
   AlertCircle,
   TrendingUp,
+  Shield,
+  KeyRound,
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -76,6 +78,20 @@ export default async function AdminDashboardPage() {
       description: "Análisis del curso",
       icon: BarChart3,
       href: "/admin/estadisticas",
+      variant: "outline" as const,
+    },
+    {
+      title: "Auditoría",
+      description: "Eventos administrativos",
+      icon: Shield,
+      href: "/admin/auditoria",
+      variant: "outline" as const,
+    },
+    {
+      title: "Seguridad 2FA",
+      description: "Configurar segundo factor",
+      icon: KeyRound,
+      href: "/admin/configuracion/2fa",
       variant: "outline" as const,
     },
   ]

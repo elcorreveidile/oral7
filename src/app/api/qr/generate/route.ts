@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import prisma from "@/lib/prisma"
 import { rateLimit, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit-redis"
+import { logAdminAction } from "@/lib/audit-logger"
 
 export async function POST(request: NextRequest) {
   try {
@@ -92,6 +93,18 @@ export async function POST(request: NextRequest) {
         isActive: true,
       },
     })
+
+    await logAdminAction(
+      session.user.id,
+      "QR_GENERATE",
+      "QRCode",
+      qrCode.id,
+      {
+        sessionNumber,
+        expiresAt: qrCode.expiresAt.toISOString(),
+      },
+      request
+    )
 
     const response = NextResponse.json({
       success: true,

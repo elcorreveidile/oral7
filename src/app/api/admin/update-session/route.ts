@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getAdminSession } from '@/lib/admin-auth'
 import prisma from '@/lib/prisma'
 import { validateRequest, updateSessionSchema } from '@/lib/validations'
+import { logAdminAction } from '@/lib/audit-logger'
 
 // Endpoint protegido para actualizar contenido de sesiones
 // Requiere autenticación de administrador (session-based)
@@ -48,6 +49,15 @@ export async function POST(req: Request) {
 
       return updatedSession
     })
+
+    await logAdminAction(
+      session.user.id,
+      'SESSION_UPDATE',
+      'Session',
+      result.id,
+      { sessionNumber },
+      req
+    )
 
     return NextResponse.json({
       success: true,
