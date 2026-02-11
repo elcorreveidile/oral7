@@ -23,6 +23,8 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
+        const normalizedEmail = credentials.email.trim().toLowerCase()
+
         let user: {
           id: string
           email: string
@@ -36,7 +38,7 @@ export const authOptions: NextAuthOptions = {
           // Select only fields required for login to avoid hard failures
           // if optional newer columns are not present in an older database.
           user = await prisma.user.findUnique({
-            where: { email: credentials.email },
+            where: { email: normalizedEmail },
             select: {
               id: true,
               email: true,
