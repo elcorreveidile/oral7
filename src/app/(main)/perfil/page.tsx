@@ -2,20 +2,21 @@
 
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import { User, Mail, GraduationCap, Calendar } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { User, Mail, Calendar, BookOpen, CheckCircle2, TrendingUp } from "lucide-react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
 
 export default function PerfilPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
 
-  if (status === "unauthenticated") {
-    router.push("/login")
-    return null
-  }
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login")
+    }
+  }, [status, router])
 
   if (status === "loading") {
     return (
@@ -25,187 +26,104 @@ export default function PerfilPage() {
     )
   }
 
-  const isAdmin = session?.user?.role === "ADMIN"
-
-  // Mock stats - in production, fetch from API
-  const userStats = {
-    sessionsAttended: 5,
-    totalSessions: 27,
-    attendanceRate: 85,
-    checklistsCompleted: 12,
-    totalChecklists: 15,
-    lastLogin: new Date().toISOString(),
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
   }
 
+  const isAdmin = session?.user?.role === "ADMIN"
+
   return (
-    <div className="space-y-8">
+    <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-3xl font-bold">Mi Perfil</h1>
-        <p className="text-muted-foreground">
-          Información de tu cuenta y progreso
+        <h1 className="text-3xl font-bold">Mi perfil</h1>
+        <p className="text-muted-foreground mt-2">
+          Información de tu cuenta
         </p>
       </div>
 
-      {/* Profile Information */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
-            Información Personal
-          </CardTitle>
-          <CardDescription>
-            Tus datos de cuenta
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-start gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-granada-500 to-clm-600 text-white text-xl font-bold">
-              {session?.user?.name?.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
-            </div>
-            <div className="flex-1 space-y-1">
-              <h3 className="text-xl font-semibold">{session?.user?.name}</h3>
-              <p className="text-sm text-muted-foreground flex items-center gap-2">
+          <div className="flex items-center gap-4">
+            <Avatar className="h-20 w-20">
+              <AvatarImage src={session?.user?.image || ""} alt={session?.user?.name || ""} />
+              <AvatarFallback className="bg-primary/10 text-primary text-2xl">
+                {getInitials(session?.user?.name || "U")}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <CardTitle className="text-2xl">{session?.user?.name}</CardTitle>
+              <CardDescription className="flex items-center gap-2 mt-1">
                 <Mail className="h-4 w-4" />
                 {session?.user?.email}
-              </p>
-              <Badge variant={isAdmin ? "granada" : "clm"} className="w-fit mt-2">
-                {isAdmin ? "Profesor (Admin)" : "Estudiante"}
+              </CardDescription>
+              <Badge variant={isAdmin ? "granada" : "clm"} className="mt-2">
+                {isAdmin ? "Profesor" : "Estudiante"}
               </Badge>
             </div>
           </div>
+        </CardHeader>
+      </Card>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-1">
-              <p className="text-sm text-muted-foreground">Rol</p>
-              <p className="font-medium">{isAdmin ? "Profesor" : "Estudiante"}</p>
-            </div>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <GraduationCap className="h-5 w-5" />
+            Información del curso
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1">
               <p className="text-sm text-muted-foreground">Curso</p>
-              <p className="font-medium">Producción e Interacción Oral C1</p>
+              <p className="font-medium">Producción e interacción oral en español</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Nivel</p>
+              <p className="font-medium">C1 (MCER)</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Centro</p>
+              <p className="font-medium">Centro de Lenguas Modernas</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Universidad</p>
+              <p className="font-medium">Universidad de Granada</p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Progress Stats - Students only */}
-      {!isAdmin && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5" />
-              Mi Progreso
-            </CardTitle>
-            <CardDescription>
-              Tu rendimiento en el curso
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-3">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Asistencia</span>
-                  <span className="text-sm font-medium">{userStats.attendanceRate}%</span>
-                </div>
-                <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-green-500 to-emerald-500"
-                    style={{ width: `${userStats.attendanceRate}%` }}
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {userStats.sessionsAttended} de {userStats.totalSessions} sesiones
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Checklists</span>
-                  <span className="text-sm font-medium">
-                    {Math.round((userStats.checklistsCompleted / userStats.totalChecklists) * 100)}%
-                  </span>
-                </div>
-                <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-blue-500 to-indigo-500"
-                    style={{ width: `${(userStats.checklistsCompleted / userStats.totalChecklists) * 100}%` }}
-                  />
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {userStats.checklistsCompleted} de {userStats.totalChecklists} completados
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Progreso general</span>
-                  <span className="text-sm font-medium">19%</span>
-                </div>
-                <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-granada-500 to-clm-600" style={{ width: "19%" }} />
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Sesión 5 de 27
-                </p>
-              </div>
-            </div>
-
-            <div className="border-t pt-4">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Calendar className="h-4 w-4" />
-                <span>Último acceso: Hoy</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Course Info */}
-      <Card className="bg-gradient-to-br from-clm-50 to-granada-50 dark:from-clm-950/30 dark:to-granada-950/30 border-clm-200 dark:border-clm-800">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BookOpen className="h-5 w-5" />
-            Información del Curso
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm space-y-2">
-          <p>
-            <strong>Curso:</strong> Producción e Interacción Oral Nivel C1
-          </p>
-          <p>
-            <strong>Centro:</strong> Centro de Lenguas Modernas
-          </p>
-          <p>
-            <strong>Universidad:</strong> Universidad de Granada
-          </p>
-          <p>
-            <strong>Curso académico:</strong> 2025-2026
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Quick Actions */}
       <Card>
         <CardHeader>
-          <CardTitle>Acciones Rápidas</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            Período académico
+          </CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-wrap gap-3">
-          <Button asChild variant="outline">
-            <Link href="/configuracion">
-              Configuración
-            </Link>
-          </Button>
-          <Button asChild variant="outline">
-            <Link href="/sesiones">
-              Ver sesiones
-            </Link>
-          </Button>
-          {!isAdmin && (
-            <Button asChild variant="outline">
-              <Link href="/asistencia">
-                Registrar asistencia
-              </Link>
-            </Button>
-          )}
+        <CardContent className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Inicio del curso</p>
+              <p className="font-medium">3 de febrero de 2026</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Fin del curso</p>
+              <p className="font-medium">14 de mayo de 2026</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Horario</p>
+              <p className="font-medium">Martes y jueves</p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm text-muted-foreground">Total de sesiones</p>
+              <p className="font-medium">27 sesiones</p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

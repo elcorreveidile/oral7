@@ -36,9 +36,9 @@ export default function LandingPage() {
                 Iniciar sesión
               </Button>
             </Link>
-            <Link href="/register">
+            <Link href="/login">
               <Button size="sm" className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700">
-                Registrarse
+                Comenzar
               </Button>
             </Link>
           </div>
@@ -61,11 +61,11 @@ export default function LandingPage() {
               </span>
             </h1>
             <p className="mb-8 max-w-2xl text-lg text-slate-600 sm:text-xl">
-              Curso presencial de Producción e Interacción Oral. Todos los materiales del curso
-              están 100% online. Metodología híbrida A/B con 16 sesiones prácticas y evaluación continua.
+              Plataforma educativa innovadora para desarrollar competencias orales avanzadas en español.
+              Metodología híbrida A/B con 16 sesiones prácticas y evaluación continua.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/register">
+              <Link href="/login">
                 <Button size="lg" className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-lg px-8">
                   Comenzar curso
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -186,9 +186,9 @@ export default function LandingPage() {
                 <div className="h-12 w-12 rounded-lg bg-yellow-100 flex items-center justify-center mb-4">
                   <Clock className="h-6 w-6 text-yellow-600" />
                 </div>
-                <CardTitle>Acceso Flexible</CardTitle>
+                <CardTitle>Materiales siempre accesibles</CardTitle>
                 <CardDescription>
-                  Todos los materiales disponibles 24/7. Mobile-first para acceder desde cualquier lugar.
+                  Todos los contenidos del curso disponibles online. Mobile-first para consultar sobre la marcha.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -440,7 +440,7 @@ export default function LandingPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/register">
+              <Link href="/login">
                 <Button size="lg" variant="secondary" className="text-lg px-8 bg-white text-orange-600 hover:bg-orange-50">
                   <GraduationCap className="mr-2 h-5 w-5" />
                   Registrarse ahora
@@ -458,19 +458,32 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t bg-white">
         <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Mic className="h-5 w-5 text-orange-600" />
-              <span className="font-semibold">PIO-7</span>
-              <span className="text-sm text-slate-500">| Centro de Lenguas Modernas</span>
+          <div className="flex flex-col gap-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Mic className="h-5 w-5 text-orange-600" />
+                <span className="font-semibold">PIO-7</span>
+                <span className="text-sm text-slate-500">| Centro de Lenguas Modernas · Universidad de Granada</span>
+              </div>
+              <div className="flex items-center gap-6 text-sm">
+                <Link href="/terminos" className="text-slate-600 hover:text-orange-600 transition-colors">
+                  Términos
+                </Link>
+                <Link href="/privacidad" className="text-slate-600 hover:text-orange-600 transition-colors">
+                  Privacidad
+                </Link>
+                <Link href="/contacto" className="text-slate-600 hover:text-orange-600 transition-colors">
+                  Contacto
+                </Link>
+              </div>
             </div>
-            <div className="flex gap-6 text-sm text-slate-600">
-              <a href="/terminos" className="hover:text-orange-600 transition-colors">Términos</a>
-              <a href="/privacidad" className="hover:text-orange-600 transition-colors">Privacidad</a>
-              <a href="/contacto" className="hover:text-orange-600 transition-colors">Contacto</a>
-            </div>
-            <div className="text-sm text-slate-500">
-              © 2026 PIO-7 · Desarrollado por Javier Benítez Láinez
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-4 border-t">
+              <div className="text-sm text-slate-600 text-center">
+                Desarrollado por <span className="font-medium">Javier Benítez Láinez</span>
+              </div>
+              <div className="text-sm text-slate-500">
+                © 2026 PIO-7. Todos los derechos reservados.
+              </div>
             </div>
           </div>
         </div>

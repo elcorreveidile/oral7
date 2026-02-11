@@ -1,156 +1,155 @@
 "use client"
 
-import { useState } from "react"
 import { useSession } from "next-auth/react"
-import { useToast } from "@/components/ui/use-toast"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { useTheme } from "next-themes"
+import { Settings, Moon, Sun, Monitor, Bell, Eye } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { User, Mail, Shield, Save, LogOut } from "lucide-react"
-import { signOut } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { Switch } from "@/components/ui/switch"
 
 export default function ConfiguracionPage() {
-  const { data: session, update } = useSession()
+  const { data: session, status } = useSession()
   const router = useRouter()
-  const { toast } = useToast()
-  const [isLoading, setIsLoading] = useState(false)
-  const [formData, setFormData] = useState({
-    name: session?.user?.name || "",
-    email: session?.user?.email || "",
-  })
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
-  const handleSave = async () => {
-    setIsLoading(true)
-
-    try {
-      // En una implementación real, aquí harías fetch a la API
-      // Por ahora, solo mostramos un mensaje de éxito
-      toast({
-        title: "Configuración guardada",
-        description: "Tus cambios han sido guardados correctamente",
-      })
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "No se pudo guardar la configuración",
-      })
-    } finally {
-      setIsLoading(false)
+  useEffect(() => {
+    setMounted(true)
+    if (status === "unauthenticated") {
+      router.push("/login")
     }
+  }, [status, router])
+
+  if (status === "loading" || !mounted) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    )
   }
 
-  const handleLogout = async () => {
-    await signOut({ callbackUrl: "/login" })
-  }
+  const themeOptions = [
+    { value: "light", label: "Claro", icon: Sun },
+    { value: "dark", label: "Oscuro", icon: Moon },
+    { value: "system", label: "Sistema", icon: Monitor },
+  ]
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
       <div>
         <h1 className="text-3xl font-bold">Configuración</h1>
-        <p className="text-muted-foreground">
-          Gestiona tu perfil y preferencias
+        <p className="text-muted-foreground mt-2">
+          Personaliza tu experiencia en PIO-7
         </p>
       </div>
 
-      {/* Profile Information */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <User className="h-5 w-5" />
-            Información del Perfil
+            <Eye className="h-5 w-5" />
+            Apariencia
           </CardTitle>
           <CardDescription>
-            Actualiza tu información personal
+            Personaliza el aspecto visual de la aplicación
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Nombre completo</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="Tu nombre"
-            />
+        <CardContent className="space-y-6">
+          <div className="space-y-3">
+            <Label>Tema</Label>
+            <div className="grid grid-cols-3 gap-4">
+              {themeOptions.map((option) => {
+                const Icon = option.icon
+                const isActive = theme === option.value
+                return (
+                  <Button
+                    key={option.value}
+                    variant={isActive ? "default" : "outline"}
+                    className="flex flex-col items-center justify-center h-auto py-4 gap-2"
+                    onClick={() => setTheme(option.value)}
+                  >
+                    <Icon className="h-6 w-6" />
+                    <span className="text-sm">{option.label}</span>
+                  </Button>
+                )
+              })}
+            </div>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="email" className="flex items-center gap-2">
-              <Mail className="h-4 w-4" />
-              Correo electrónico
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              disabled
-              className="bg-muted"
-            />
-            <p className="text-xs text-muted-foreground">
-              El correo electrónico no se puede cambiar
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <Label className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
-              Rol
-            </Label>
-            <Input
-              value={session?.user?.role === "ADMIN" ? "Profesor (Admin)" : "Estudiante"}
-              disabled
-              className="bg-muted"
-            />
-          </div>
-
-          <Button onClick={handleSave} disabled={isLoading}>
-            <Save className="mr-2 h-4 w-4" />
-            {isLoading ? "Guardando..." : "Guardar cambios"}
-          </Button>
         </CardContent>
       </Card>
 
-      {/* Account Actions */}
       <Card>
         <CardHeader>
-          <CardTitle>Acciones de Cuenta</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Bell className="h-5 w-5" />
+            Notificaciones
+          </CardTitle>
           <CardDescription>
-            Gestiona tu cuenta
+            Configura cómo quieres recibir las notificaciones
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button
-            variant="outline"
-            onClick={handleLogout}
-            className="w-full sm:w-auto"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Cerrar sesión
-          </Button>
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>Recordatorios de sesión</Label>
+              <p className="text-sm text-muted-foreground">
+                Recibe un recordatorio antes de cada clase
+              </p>
+            </div>
+            <Switch defaultChecked />
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>Avisos de asistencia</Label>
+              <p className="text-sm text-muted-foreground">
+                Notificación cuando se abra el registro de asistencia
+              </p>
+            </div>
+            <Switch defaultChecked />
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>Nuevos materiales</Label>
+              <p className="text-sm text-muted-foreground">
+                Aviso cuando haya nuevos contenidos disponibles
+              </p>
+            </div>
+            <Switch />
+          </div>
         </CardContent>
       </Card>
 
-      {/* Course Info */}
-      <Card className="bg-gradient-to-br from-clm-50 to-granada-50 dark:from-clm-950/30 dark:to-granada-950/30 border-clm-200 dark:border-clm-800">
+      <Card>
         <CardHeader>
-          <CardTitle>Información del Curso</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            Preferencias de aprendizaje
+          </CardTitle>
+          <CardDescription>
+            Ajusta tu experiencia de aprendizaje
+          </CardDescription>
         </CardHeader>
-        <CardContent className="text-sm space-y-2">
-          <p>
-            <strong>Curso:</strong> Producción e Interacción Oral Nivel C1
-          </p>
-          <p>
-            <strong>Centro:</strong> Centro de Lenguas Modernas
-          </p>
-          <p>
-            <strong>Universidad:</strong> Universidad de Granada
-          </p>
-          <p>
-            <strong>Curso académico:</strong> 2025-2026
-          </p>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>Modo A por defecto</Label>
+              <p className="text-sm text-muted-foreground">
+                Inicia siempre en modo colaborativo/comunicativo
+              </p>
+            </div>
+            <Switch defaultChecked />
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label>Mostrar traducciones</Label>
+              <p className="text-sm text-muted-foreground">
+                Muestra equivalentes en inglés cuando estén disponibles
+              </p>
+            </div>
+            <Switch />
+          </div>
         </CardContent>
       </Card>
     </div>

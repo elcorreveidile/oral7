@@ -118,7 +118,7 @@ export function VocabularySection({ vocabulary }: VocabularySectionProps) {
                   key={index}
                   className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 group"
                 >
-                  <span className="text-violet-500 font-bold text-lg">"</span>
+                  <span className="text-violet-500 font-bold text-lg">&ldquo;</span>
                   <div className="flex-1">
                     <p className="font-medium">{expr.expression}</p>
                     <p className="text-sm text-muted-foreground">{expr.meaning}</p>

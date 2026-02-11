@@ -10,87 +10,72 @@ import {
   CheckCircle2,
   Clock,
   QrCode,
+  TrendingUp,
   ArrowRight,
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { formatDateSpanish } from "@/lib/utils"
+import { getGreeting, formatDateSpanish } from "@/lib/utils"
+import { getAllSessions } from "@/data/sessions"
 
-interface DashboardStats {
-  totalStudents: number
+const allSessions = getAllSessions()
+
+function startOfDay(d: Date) {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate())
+}
+
+function isSameDay(a: Date, b: Date) {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  )
+}
+
+interface StudentStats {
+  attendanceRate: number
+  sessionsCompleted: number
   totalSessions: number
-  currentSession: number
+  checklistProgress: number
 }
-
-interface SessionInfo {
-  id: string
-  sessionNumber: number
-  title: string
-  date: Date
-}
-
-// Mock data - se reemplazará con datos reales de la API
-const mockCurrentSession: SessionInfo = {
-  id: "session-1",
-  sessionNumber: 1,
-  title: "Toma de contacto e interacción social",
-  date: new Date("2026-02-03"),
-}
-
-const mockUpcomingSessions: SessionInfo[] = [
-  {
-    id: "session-2",
-    sessionNumber: 2,
-    title: "Socialización y registro: tutear vs. usted",
-    date: new Date("2026-02-05"),
-  },
-  {
-    id: "session-3",
-    sessionNumber: 3,
-    title: "Los bares como espacios de interacción",
-    date: new Date("2026-02-10"),
-  },
-]
 
 export default function DashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [currentDate, setCurrentDate] = useState<Date | null>(null)
-  const [mounted, setMounted] = useState(false)
-  const [stats, setStats] = useState<DashboardStats | null>(null)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const [stats, setStats] = useState<StudentStats>({
+    attendanceRate: 0,
+    sessionsCompleted: 0,
+    totalSessions: 27,
+    checklistProgress: 0,
+  })
+  const [statsLoading, setStatsLoading] = useState(true)
 
   useEffect(() => {
     setCurrentDate(new Date())
-
     if (status === "unauthenticated") {
       router.push("/login")
+    } else if (status === "authenticated" && session?.user?.role === "ADMIN") {
+      router.push("/admin")
     }
-  }, [status, router])
+  }, [status, session, router])
 
   useEffect(() => {
-    if (!mounted) return
-
-    // Cargar estadísticas reales
-    if (status === "authenticated") {
-      fetch("/api/dashboard/stats")
+    if (status === "authenticated" && session?.user?.role === "STUDENT") {
+      fetch("/api/progress")
         .then((res) => res.json())
-        .then((data) => setStats(data))
-        .catch(() => {
-          // Si falla, usar valores por defecto
-          setStats({
-            totalStudents: 0,
-            totalSessions: 27,
-            currentSession: 1,
-          })
+        .then((data) => {
+          setStats(data)
+          setStatsLoading(false)
+        })
+        .catch((error) => {
+
+          setStatsLoading(false)
         })
     }
-  }, [status, mounted])
+  }, [status, session])
 
   if (status === "loading") {
     return (
@@ -100,20 +85,35 @@ export default function DashboardPage() {
     )
   }
 
-  if (!currentDate || !mounted) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    )
+  if (!currentDate) {
+    return null // Prevent hydration mismatch
   }
 
+  // Calculate greeting based on current date
   const getGreetingForDate = (date: Date) => {
     const hour = date.getHours()
     if (hour < 12) return "Buenos días"
     if (hour < 20) return "Buenas tardes"
     return "Buenas noches"
   }
+
+  // Course dates
+  const courseStartDate = new Date("2026-02-03T00:00:00")
+  const hasStarted = currentDate >= courseStartDate
+
+  const sessionsSorted = [...allSessions].sort((a, b) => a.date.getTime() - b.date.getTime())
+  const today = startOfDay(currentDate)
+  const currentOrNext =
+    sessionsSorted.find((s) => startOfDay(s.date).getTime() >= today.getTime()) ||
+    sessionsSorted[sessionsSorted.length - 1]
+  const isTodaySession = currentOrNext ? isSameDay(currentOrNext.date, currentDate) : false
+  const currentIndex = currentOrNext
+    ? sessionsSorted.findIndex((s) => s.sessionNumber === currentOrNext.sessionNumber)
+    : -1
+  const upcomingSessions =
+    currentIndex >= 0
+      ? sessionsSorted.slice(currentIndex + 1, currentIndex + 3)
+      : sessionsSorted.slice(0, 2)
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -127,17 +127,20 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* Quick stats - ahora muestra datos reales o "Sin datos" */}
+      {/* Quick stats */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Estudiantes</CardTitle>
+            <CardTitle className="text-sm font-medium">Asistencia</CardTitle>
             <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats?.totalStudents ?? 0}</div>
+            <div className="text-2xl font-bold">
+              {hasStarted ? `${stats.attendanceRate}%` : "--"}
+            </div>
+            <Progress value={stats.attendanceRate} className="mt-2" />
             <p className="text-xs text-muted-foreground mt-2">
-              Registrados en el curso
+              Mínimo requerido: 80%
             </p>
           </CardContent>
         </Card>
@@ -149,29 +152,30 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats?.currentSession ?? 1}/{stats?.totalSessions ?? 27}
+              {stats.sessionsCompleted}/{stats.totalSessions}
             </div>
+            <Progress
+              value={(stats.sessionsCompleted / stats.totalSessions) * 100}
+              className="mt-2"
+            />
             <p className="text-xs text-muted-foreground mt-2">
-              Sesión actual
+              Progreso del curso
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Progreso</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Autoevaluación</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stats?.currentSession ? Math.round((stats.currentSession / 27) * 100) : 0}%
+              {hasStarted ? `${stats.checklistProgress}%` : "--"}
             </div>
-            <Progress
-              value={stats?.currentSession ? (stats.currentSession / 27) * 100 : 0}
-              className="mt-2"
-            />
+            <Progress value={stats.checklistProgress} className="mt-2" />
             <p className="text-xs text-muted-foreground mt-2">
-              Del curso completado
+              Objetivos completados
             </p>
           </CardContent>
         </Card>
@@ -200,7 +204,9 @@ export default function DashboardPage() {
       {/* Current/Today's session */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Sesión actual</h2>
+          <h2 className="text-xl font-semibold">
+            {hasStarted ? "Sesión actual" : "Primera sesión"}
+          </h2>
           <Button asChild variant="outline" size="sm">
             <Link href="/sesiones">
               Ver todas
@@ -209,46 +215,63 @@ export default function DashboardPage() {
           </Button>
         </div>
 
-        <Card className="session-card today border-primary">
+        {currentOrNext && (
+          <Card className={`session-card border-primary ${isTodaySession ? "today" : "future"}`}>
           <CardHeader>
             <div className="flex items-start justify-between">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <Badge variant="clm">Sesión {mockCurrentSession.sessionNumber}</Badge>
-                  <Badge variant="success">Hoy</Badge>
+                  <Badge variant="clm">Sesión {currentOrNext.sessionNumber}</Badge>
+                  {!hasStarted ? (
+                    <Badge variant="outline">Próximamente</Badge>
+                  ) : isTodaySession ? (
+                    <Badge variant="success">Hoy</Badge>
+                  ) : (
+                    <Badge variant="outline">Próxima</Badge>
+                  )}
                 </div>
                 <CardTitle className="text-xl">
-                  {mockCurrentSession.title}
+                  {currentOrNext.title}
                 </CardTitle>
+                <CardDescription>
+                  Bloque {currentOrNext.blockNumber}: {currentOrNext.blockTitle}
+                </CardDescription>
+              </div>
+              <div className="text-right text-sm text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4" />
+                  <span>{formatDateSpanish(currentOrNext.date)}</span>
+                </div>
               </div>
             </div>
           </CardHeader>
           <CardContent>
             <Button asChild className="w-full sm:w-auto">
-              <Link href={`/sesiones/${mockCurrentSession.sessionNumber}`}>
+              <Link href={`/sesiones/${currentOrNext.sessionNumber}`}>
                 <BookOpen className="mr-2 h-4 w-4" />
-                Ir a la sesión
+                Ver contenidos
               </Link>
             </Button>
           </CardContent>
-        </Card>
+          </Card>
+        )}
       </section>
 
       {/* Upcoming sessions */}
       <section>
         <h2 className="text-xl font-semibold mb-4">Próximas sesiones</h2>
         <div className="grid gap-4 md:grid-cols-2">
-          {mockUpcomingSessions.map((sessionInfo) => (
-            <Card key={sessionInfo.id} className="session-card future">
+          {upcomingSessions.map((session) => (
+            <Card key={session.id} className="session-card future">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <Badge variant="outline">Sesión {sessionInfo.sessionNumber}</Badge>
-                    <CardTitle className="text-lg">{sessionInfo.title}</CardTitle>
+                    <Badge variant="outline">Sesión {session.sessionNumber}</Badge>
+                    <CardTitle className="text-lg">{session.title}</CardTitle>
                   </div>
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    <span>{formatDateSpanish(sessionInfo.date)}</span>
+                    <Clock className="h-4 w-4" />
+                    <span>{formatDateSpanish(session.date)}</span>
                   </div>
                 </div>
               </CardHeader>

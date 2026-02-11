@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/toaster"
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
 
 export const metadata: Metadata = {
-  title: "Oral-7 | Producción e interacción oral en español",
+  title: "PIO-7 | Producción e interacción oral en español",
   description: "Plataforma educativa para el curso de Producción Oral nivel C1 - Centro de Lenguas Modernas, Universidad de Granada",
   keywords: ["español", "C1", "oral", "CLM", "Granada", "ELE"],
   authors: [{ name: "CLM - Universidad de Granada" }],

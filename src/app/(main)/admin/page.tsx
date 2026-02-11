@@ -1,8 +1,6 @@
-"use client"
-
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { redirect } from "next/navigation"
+import { requireAdmin } from "@/lib/admin-auth"
+import { getAdminStats } from "@/lib/admin-stats"
 import Link from "next/link"
 import {
   Users,
@@ -11,92 +9,55 @@ import {
   BarChart3,
   Calendar,
   Settings,
-  CheckCircle2,
   AlertCircle,
   TrendingUp,
+  Shield,
+  KeyRound,
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { getGreeting, formatDateSpanish } from "@/lib/utils"
+import { Suspense } from "react"
 
-export default function AdminDashboardPage() {
-  const { data: session, status } = useSession()
-  const router = useRouter()
-  const [currentDate, setCurrentDate] = useState<Date | null>(null)
-  const [mounted, setMounted] = useState(false)
-  const [stats, setStats] = useState({
-    totalStudents: 0,
-    averageAttendance: 0,
-    currentSession: 1,
-    totalSessions: 27,
-    studentsAtRisk: 0,
-    todayAttendance: 0,
-  })
+// Loading component for stats
+function StatsSkeleton() {
+  return (
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {[1, 2, 3, 4].map((i) => (
+        <Card key={i}>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Cargando...</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              <div className="animate-pulse">--</div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
+}
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+export default async function AdminDashboardPage() {
+  // Server-side authentication check - redirects if not admin
+  const session = await requireAdmin()
 
-  useEffect(() => {
-    if (status === "authenticated" && session?.user?.role !== "ADMIN") {
-      router.push("/dashboard")
-    } else if (status === "unauthenticated") {
-      router.push("/login")
-    }
-    setCurrentDate(new Date())
-  }, [status, session, router])
+  const currentDate = new Date()
 
-  useEffect(() => {
-    if (!mounted) return
-
-    // Cargar estadísticas reales
-    fetch("/api/dashboard/stats")
-      .then((res) => res.json())
-      .then((data) => {
-        setStats((prev) => ({
-          ...prev,
-          totalStudents: data.totalStudents,
-          currentSession: data.currentSession,
-          totalSessions: data.totalSessions,
-        }))
-      })
-      .catch(() => {
-        // Si falla, mantener valores por defecto
-      })
-  }, [mounted])
-
-  if (status === "loading" || session?.user?.role !== "ADMIN") {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    )
-  }
-
-  if (!currentDate || !mounted) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    )
-  }
+  // Check if course has started (Feb 3, 2026)
+  const courseStartDate = new Date("2026-02-03T00:00:00")
+  const hasStarted = currentDate >= courseStartDate
 
   const quickActions = [
     {
       title: "Generar QR",
-      description: "Crear código de asistencia",
+      description: "Generar código QR de clase",
       icon: QrCode,
-      href: "/admin/asistencia",
+      href: "/admin/qr",
       variant: "clm" as const,
-    },
-    {
-      title: "Códigos de registro",
-      description: "Gestionar registros",
-      icon: Users,
-      href: "/admin/codigos",
-      variant: "outline" as const,
     },
     {
       title: "Ver estudiantes",
@@ -119,12 +80,20 @@ export default function AdminDashboardPage() {
       href: "/admin/estadisticas",
       variant: "outline" as const,
     },
-  ]
-
-  const recentActivity = [
-    { student: "María Chen", action: "registró asistencia", time: "hace 5 min", session: 5 },
-    { student: "John Smith", action: "completó checklist", time: "hace 12 min", session: 4 },
-    { student: "Li Wei", action: "registró asistencia", time: "hace 15 min", session: 5 },
+    {
+      title: "Auditoría",
+      description: "Eventos administrativos",
+      icon: Shield,
+      href: "/admin/auditoria",
+      variant: "outline" as const,
+    },
+    {
+      title: "Seguridad 2FA",
+      description: "Configurar segundo factor",
+      icon: KeyRound,
+      href: "/admin/configuracion/2fa",
+      variant: "outline" as const,
+    },
   ]
 
   return (
@@ -149,69 +118,16 @@ export default function AdminDashboardPage() {
           <Button asChild size="lg" variant="clm">
             <Link href="/admin/qr">
               <QrCode className="mr-2 h-5 w-5" />
-              Generar código QR
+              Generar QR de clase
             </Link>
           </Button>
         </div>
       </div>
 
       {/* Stats grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Estudiantes</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalStudents}</div>
-            <p className="text-xs text-muted-foreground">
-              Matriculados en el curso
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Asistencia media</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.averageAttendance}%</div>
-            <Progress value={stats.averageAttendance} className="mt-2" />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Sesión actual</CardTitle>
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {stats.currentSession}/{stats.totalSessions}
-            </div>
-            <Progress
-              value={(stats.currentSession / stats.totalSessions) * 100}
-              className="mt-2"
-            />
-          </CardContent>
-        </Card>
-
-        <Card className={stats.studentsAtRisk > 0 ? "border-red-200 dark:border-red-800" : ""}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">En riesgo</CardTitle>
-            <AlertCircle className={`h-4 w-4 ${stats.studentsAtRisk > 0 ? "text-red-500" : "text-muted-foreground"}`} />
-          </CardHeader>
-          <CardContent>
-            <div className={`text-2xl font-bold ${stats.studentsAtRisk > 0 ? "text-red-500" : ""}`}>
-              {stats.studentsAtRisk}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Estudiantes bajo 80% asistencia
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+      <Suspense fallback={<StatsSkeleton />}>
+        <StatsWrapper hasStarted={hasStarted} />
+      </Suspense>
 
       {/* Quick actions */}
       <section>
@@ -240,72 +156,22 @@ export default function AdminDashboardPage() {
         </div>
       </section>
 
-      {/* Today's class and recent activity */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Today's attendance */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Asistencia de hoy</CardTitle>
-              <Badge variant="success">
-                {stats.todayAttendance}/{stats.totalStudents}
-              </Badge>
-            </div>
-            <CardDescription>
-              Sesión {stats.currentSession} - Registros de asistencia
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <Progress
-                value={(stats.todayAttendance / stats.totalStudents) * 100}
-                className="h-4"
-              />
-              <p className="text-sm text-muted-foreground">
-                {stats.totalStudents - stats.todayAttendance} estudiantes sin registrar
-              </p>
-            </div>
-            <Button asChild className="w-full mt-4" variant="outline">
-              <Link href="/admin/asistencia">
-                Ver detalle
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Recent activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Actividad reciente</CardTitle>
-            <CardDescription>
-              Últimas acciones de los estudiantes
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentActivity.map((activity, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50"
-                >
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <CheckCircle2 className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{activity.student}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {activity.action} · Sesión {activity.session}
-                    </p>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {activity.time}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Recent activity - Takes full width since attendance is removed */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Actividad reciente</CardTitle>
+          <CardDescription>
+            Últimas acciones de los estudiantes
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8 text-muted-foreground">
+            <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
+            <p>Sin actividad todavía</p>
+            <p className="text-sm">La actividad aparecerá aquí cuando comience el curso</p>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Calendar preview */}
       <Card>
@@ -359,6 +225,130 @@ export default function AdminDashboardPage() {
           </div>
         </CardContent>
       </Card>
+    </div>
+  )
+}
+
+// Separate component to handle stats rendering
+async function StatsWrapper({ hasStarted }: { hasStarted: boolean }) {
+  const stats = await getAdminStats()
+
+  if (!stats) {
+    return (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Estudiantes</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">--</div>
+            <p className="text-xs text-muted-foreground">Pendiente de matriculación</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Tasa de completitud</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">--</div>
+            <Progress value={0} className="mt-2" />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Sesión actual</CardTitle>
+            <BookOpen className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">--</div>
+            <Progress value={0} className="mt-2" />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">En riesgo</CardTitle>
+            <AlertCircle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">--</div>
+            <p className="text-xs text-muted-foreground">
+              Estudiantes que requieren atención
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  return (
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Estudiantes</CardTitle>
+          <Users className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            {stats.totalStudents ?? "--"}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {stats.totalStudents > 0
+              ? "Estudiantes registrados"
+              : "Pendiente de matriculación"}
+          </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Tasa de asistencia</CardTitle>
+          <TrendingUp className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            {hasStarted ? `${stats.averageAttendance ?? 0}%` : "--"}
+          </div>
+          <Progress value={stats.averageAttendance ?? 0} className="mt-2" />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Sesión actual</CardTitle>
+          <BookOpen className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            {stats.currentSession ?? 1}/{stats.totalSessions ?? 27}
+          </div>
+          <Progress
+            value={((stats.currentSession / stats.totalSessions) * 100)}
+            className="mt-2"
+          />
+        </CardContent>
+      </Card>
+
+      <Link href="/admin/estudiantes?filter=atrisk" className="block">
+        <Card className={(stats.studentsAtRisk ?? 0) > 0 ? "border-red-200 dark:border-red-800 cursor-pointer hover:shadow-md transition-shadow" : ""}>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">En riesgo</CardTitle>
+            <AlertCircle className={`h-4 w-4 ${(stats.studentsAtRisk ?? 0) > 0 ? "text-red-500" : "text-muted-foreground"}`} />
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${(stats.studentsAtRisk ?? 0) > 0 ? "text-red-500" : ""}`}>
+              {stats.studentsAtRisk ?? 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {(stats.studentsAtRisk ?? 0) > 0 ? "Click para ver detalles" : "Estudiantes que requieren atención"}
+            </p>
+          </CardContent>
+        </Card>
+      </Link>
     </div>
   )
 }

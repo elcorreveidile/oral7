@@ -102,7 +102,7 @@ export default function StudentDetailPage({
         setStudent(data)
       }
     } catch (error) {
-      console.error("Error fetching student detail:", error)
+
     } finally {
       setLoading(false)
     }
@@ -392,7 +392,7 @@ export default function StudentDetailPage({
                         )}
                         {submission.feedback && (
                           <p className="text-sm text-muted-foreground mt-1 max-w-xs truncate">
-                            "{submission.feedback}"
+                            &quot;{submission.feedback}&quot;
                           </p>
                         )}
                       </div>
