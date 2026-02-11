@@ -41,26 +41,34 @@ function shouldExcludePath(pathname: string): boolean {
  * 3. Review and update third-party dependencies
  */
 function getCSPHeaderValue(): string {
+  // Determine if we're in development
+  const isDev = process.env.NODE_ENV === 'development'
+
   // Base CSP directives
   const cspDirectives = [
     // Default policy: restrict to same origin
     "default-src 'self'",
 
-    // Scripts: only same-origin, no unsafe-eval or unsafe-inline
-    // For development, you might need to add localhost URLs
-    "script-src 'self'",
+    // Scripts: allow same-origin and unsafe-eval for Next.js development
+    // Next.js requires unsafe-eval for hot module replacement in development
+    isDev
+      ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'"
+      : "script-src 'self' 'unsafe-inline'",
 
-    // Styles: allow inline styles for development (consider removing in production)
+    // Styles: allow inline styles (required for Tailwind and Next.js)
     "style-src 'self' 'unsafe-inline'",
 
     // Images: same-origin, data URLs, and specific external domains
-    "img-src 'self' data: https://avatars.githubusercontent.com https://lh3.googleusercontent.com",
+    "img-src 'self' data: https://avatars.githubusercontent.com https://lh3.googleusercontent.com blob:",
 
     // Fonts: same-origin and data URLs
     "font-src 'self' data:",
 
     // Connect: restrict API calls to trusted sources
-    "connect-src 'self' https://*.vercel.app https://*.neon.tech https://oauth.googleusercontent.com https://accounts.google.com",
+    // Allow localhost and websocket connections in development
+    isDev
+      ? "connect-src 'self' http://localhost:* ws://localhost:* https://*.vercel.app https://*.neon.tech https://oauth.googleusercontent.com https://accounts.google.com"
+      : "connect-src 'self' https://*.vercel.app https://*.neon.tech https://oauth.googleusercontent.com https://accounts.google.com",
 
     // Frames: deny by default
     "frame-src 'none'",
@@ -79,10 +87,10 @@ function getCSPHeaderValue(): string {
     "manifest-src 'self'",
 
     // Media: same origin only
-    "media-src 'self'",
+    "media-src 'self' blob:",
 
     // Worker sources: restrict workers to same origin
-    "worker-src 'self'",
+    "worker-src 'self' blob:",
 
     // Upgrade insecure requests (for HTTPS)
     "upgrade-insecure-requests",
@@ -98,8 +106,8 @@ function getCSPHeaderValue(): string {
  */
 function getPermissionsPolicy(): string {
   const permissions = [
-    'camera=()',              // No camera access
-    'microphone=()',          // No microphone access
+    'camera=(self)',          // Allow camera on same origin (needed for QR scanner)
+    'microphone=(self)',      // Allow microphone on same origin (needed for audio recording)
     'geolocation=()',         // No geolocation access
     'payment=()',             // No payment requests
     'usb=()',                 // No USB access
