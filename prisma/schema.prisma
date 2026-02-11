@@ -40,6 +40,20 @@ enum UserRole {
   STUDENT   // Estudiante
 }
 
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String   // Email del usuario que solicita el reset
+  token     String   @unique  // Token único para el reset
+  expiresAt DateTime // Fecha de expiración (generalmente 1 hora)
+
+  createdAt DateTime @default(now())
+  usedAt    DateTime? // Cuándo se usó el token
+
+  @@index([email])
+  @@index([token])
+  @@map("password_reset_tokens")
+}
+
 // ============================================
 // MODELOS DE SESIONES Y CONTENIDO
 // ============================================
