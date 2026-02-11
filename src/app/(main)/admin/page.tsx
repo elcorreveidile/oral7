@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import { requireAdmin } from "@/lib/admin-auth"
+import { getAdminStats } from "@/lib/admin-stats"
 import Link from "next/link"
 import {
   Users,
@@ -17,20 +18,6 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { getGreeting, formatDateSpanish } from "@/lib/utils"
 import { Suspense } from "react"
-
-// Server component that fetches stats data
-async function AdminStats() {
-  const response = await fetch(`${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/admin/stats`, {
-    cache: "no-store",
-  })
-
-  if (!response.ok) {
-    return null
-  }
-
-  const stats = await response.json()
-  return stats
-}
 
 // Loading component for stats
 function StatsSkeleton() {
@@ -228,7 +215,7 @@ export default async function AdminDashboardPage() {
 
 // Separate component to handle stats rendering
 async function StatsWrapper({ hasStarted }: { hasStarted: boolean }) {
-  const stats = await AdminStats()
+  const stats = await getAdminStats()
 
   if (!stats) {
     return (
