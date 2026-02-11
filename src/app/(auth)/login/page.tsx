@@ -18,7 +18,6 @@ function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [totp, setTotp] = useState("")
 
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
 
@@ -30,7 +29,6 @@ function LoginForm() {
       const result = await signIn("credentials", {
         email,
         password,
-        totp,
         redirect: false,
       })
 
@@ -38,7 +36,7 @@ function LoginForm() {
         toast({
           variant: "destructive",
           title: "Error de autenticación",
-          description: "Credenciales incorrectas o código 2FA inválido",
+          description: "Correo o contraseña incorrectos",
         })
       } else {
         router.push(callbackUrl)
@@ -100,18 +98,6 @@ function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                disabled={isLoading}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="totp">Código 2FA (solo administrador)</Label>
-              <Input
-                id="totp"
-                type="text"
-                inputMode="numeric"
-                placeholder="123456"
-                value={totp}
-                onChange={(e) => setTotp(e.target.value)}
                 disabled={isLoading}
               />
             </div>
