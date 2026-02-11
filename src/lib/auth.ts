@@ -23,9 +23,35 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
-        })
+        let user: {
+          id: string
+          email: string
+          name: string
+          image: string | null
+          role: string
+          password: string | null
+        } | null = null
+
+        try {
+          // Select only fields required for login to avoid hard failures
+          // if optional newer columns are not present in an older database.
+          user = await prisma.user.findUnique({
+            where: { email: credentials.email },
+            select: {
+              id: true,
+              email: true,
+              name: true,
+              image: true,
+              role: true,
+              password: true,
+            },
+          })
+        } catch {
+          if (process.env.NODE_ENV === "development") {
+            console.error("[Auth] Failed to fetch user for credentials login")
+          }
+          return null
+        }
 
         if (!user || !user.password) {
           // Do NOT log whether user exists or email - prevents user enumeration
