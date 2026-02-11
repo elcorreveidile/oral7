@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import prisma from "@/lib/prisma"
 import { rateLimit, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit-redis"
+import { validateRequest, submissionSchema, getSubmissionSchema } from "@/lib/validations"
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,14 +24,18 @@ export async function POST(request: NextRequest) {
       return rateLimitResponse(rateLimitResult.resetTime)
     }
 
-    const { taskId, files } = await request.json()
+    const body = await request.json()
 
-    if (!taskId || !files || !Array.isArray(files) || files.length === 0) {
+    // Validate request body with Zod schema
+    const validation = validateRequest(submissionSchema, body)
+    if (!validation.success) {
       return NextResponse.json(
-        { error: "Datos inválidos" },
+        { error: validation.error },
         { status: 400 }
       )
     }
+
+    const { taskId, files } = validation.data
 
     // Check if task exists
     const task = await prisma.task.findUnique({
@@ -94,14 +99,20 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
-    const taskId = searchParams.get("taskId")
+    const queryParams = {
+      taskId: searchParams.get("taskId"),
+    }
 
-    if (!taskId) {
+    // Validate query params with Zod schema
+    const validation = validateRequest(getSubmissionSchema, queryParams)
+    if (!validation.success) {
       return NextResponse.json(
-        { error: "Falta el taskId" },
+        { error: validation.error },
         { status: 400 }
       )
     }
+
+    const { taskId } = validation.data
 
     const submission = await prisma.submission.findUnique({
       where: {

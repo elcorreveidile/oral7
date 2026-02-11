@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { getAdminSession } from "@/lib/admin-auth"
 import prisma from "@/lib/prisma"
 
 function isCancelledSubtitle(subtitle: string | null | undefined) {
@@ -12,10 +11,10 @@ export async function GET(
   { params }: { params: { sessionNumber: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getAdminSession()
 
-    if (!session || session.user.role !== "ADMIN") {
-      return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+    if (!session) {
+      return NextResponse.json({ error: "No autorizado" }, { status: 403 })
     }
 
     const sessionNum = parseInt(params.sessionNumber, 10)
@@ -111,10 +110,10 @@ export async function PUT(
   { params }: { params: { sessionNumber: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getAdminSession()
 
-    if (!session || session.user.role !== "ADMIN") {
-      return NextResponse.json({ error: "No autorizado" }, { status: 401 })
+    if (!session) {
+      return NextResponse.json({ error: "No autorizado" }, { status: 403 })
     }
 
     const sessionNum = parseInt(params.sessionNumber, 10)

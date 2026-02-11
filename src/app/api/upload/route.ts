@@ -5,8 +5,19 @@ import { writeFile, mkdir } from "fs/promises"
 import { join } from "path"
 import { existsSync } from "fs"
 import { rateLimit, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit-redis"
+import {
+  validateFileSignature,
+  getMaxFileSize,
+  getAllowedMimeTypes,
+  generateSecureFilename,
+  sanitizeError,
+  formatFileSize,
+  getFileCategory
+} from "@/lib/file-validation"
 
 export async function POST(request: NextRequest) {
+  let userId: string | undefined
+
   try {
     const session = await getServerSession(authOptions)
 
@@ -18,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Apply rate limiting based on user ID
-    const userId = session.user.id
+    userId = session.user.id
     const rateLimitResult = await rateLimit(`upload:${userId}`, RateLimitConfig.upload)
 
     if (!rateLimitResult.success) {
@@ -36,42 +47,50 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate file type
-    const allowedTypes = [
-      "audio/mp3",
-      "audio/wav",
-      "audio/mpeg",
-      "audio/webm",
-      "audio/ogg",
-      "video/mp4",
-      "video/webm",
-      "video/quicktime",
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ]
+    // Validate file type using allowed MIME types
+    const allowedTypes = getAllowedMimeTypes()
 
     if (!allowedTypes.includes(file.type)) {
-
+      console.warn(`[Security] File upload rejected: Invalid MIME type "${file.type}" by user ${userId}`)
       return NextResponse.json(
-        { error: `Tipo de archivo no permitido: ${file.type}` },
+        { error: `Tipo de archivo no permitido` },
         { status: 400 }
       )
     }
 
-    // Validate file size (max 50MB)
-    const maxSize = 50 * 1024 * 1024 // 50MB
+    // Convert File to Buffer for signature validation
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+
+    // Validate file signature (magic numbers)
+    if (!validateFileSignature(buffer, file.type)) {
+      console.warn(`[Security] File upload rejected: Invalid signature for MIME type "${file.type}" by user ${userId}`)
+      return NextResponse.json(
+        { error: `El archivo no es válido o está corrupto` },
+        { status: 400 }
+      )
+    }
+
+    // Validate file size based on type
+    const maxSize = getMaxFileSize(file.type)
     if (file.size > maxSize) {
+      const maxSizeFormatted = formatFileSize(maxSize)
+      const category = getFileCategory(file.type)
+      console.warn(`[Security] File upload rejected: Size ${formatFileSize(file.size)} exceeds ${maxSizeFormatted} for ${category} by user ${userId}`)
       return NextResponse.json(
-        { error: "El archivo es demasiado grande (máximo 50MB)" },
+        { error: `El archivo es demasiado grande. Máximo permitido: ${maxSizeFormatted}` },
         { status: 400 }
       )
     }
 
-    // Generate unique filename (simplified, without slashes)
-    const timestamp = Date.now()
-    const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_")
-    const filename = `${timestamp}-${originalName}`
+    // TODO: Integrate virus scanning
+    // This should be integrated with a virus scanning service (e.g., ClamAV, VirusTotal API)
+    // For now, we log a warning about this missing security layer
+    console.warn(`[Security] No virus scanning implemented. File uploaded by user ${userId} should be scanned.`)
+    // Recommended: await scanFileForViruses(buffer, filename)
+
+    // Generate secure filename using UUID
+    const filename = generateSecureFilename(file.name, file.type)
 
     // Upload to Vercel Blob using REST API
     const token = process.env.BLOB_READ_WRITE_TOKEN
@@ -81,16 +100,13 @@ export async function POST(request: NextRequest) {
       // Fallback: Save locally in development
       if (isDev) {
 
-
         // Create uploads directory if it doesn't exist
         const uploadsDir = join(process.cwd(), "public", "uploads")
         if (!existsSync(uploadsDir)) {
           await mkdir(uploadsDir, { recursive: true })
         }
 
-        // Convert File to Buffer and save locally
-        const arrayBuffer = await file.arrayBuffer()
-        const buffer = Buffer.from(arrayBuffer)
+        // Use the buffer we already created for validation
         const localPath = join(uploadsDir, filename)
 
         await writeFile(localPath, buffer)
@@ -116,11 +132,12 @@ export async function POST(request: NextRequest) {
       }
 
       // In production without token, return error
+      console.error(`[Configuration] BLOB_READ_WRITE_TOKEN not set in production`)
 
       return NextResponse.json(
         {
-          error: "Blob storage no configurado",
-          details: "Contacta al administrador para configurar BLOB_READ_WRITE_TOKEN"
+          error: "El servicio de almacenamiento no está configurado",
+          details: "Contacta al administrador"
         },
         { status: 500 }
       )
@@ -128,12 +145,6 @@ export async function POST(request: NextRequest) {
 
     // Use Authorization header instead of URL credentials
     const blobUrl = `https://blob.vercel-storage.com/${filename}`
-
-
-
-    // Convert File to ArrayBuffer to avoid duplex issues
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
 
     const blobResponse = await fetch(blobUrl, {
       method: 'PUT',
@@ -149,11 +160,12 @@ export async function POST(request: NextRequest) {
 
     if (!blobResponse.ok) {
       const errorText = await blobResponse.text()
+      console.error(`[Blob Storage] Upload failed for user ${userId}:`, blobResponse.status, errorText)
 
       return NextResponse.json(
         {
-          error: "Error al subir a Vercel Blob",
-          details: `Status: ${blobResponse.status}, Error: ${errorText}`
+          error: "Error al subir el archivo",
+          details: "El servicio de almacenamiento no está disponible. Intente nuevamente."
         },
         { status: 500 }
       )
@@ -179,9 +191,14 @@ export async function POST(request: NextRequest) {
       rateLimitResult.resetTime
     )
   } catch (error) {
+    console.error(`[Upload Error] User ${userId || 'unknown'}:`, error)
+    const sanitizedMessage = sanitizeError(error)
 
     return NextResponse.json(
-      { error: "Error al subir el archivo" },
+      {
+        error: "Error al procesar el archivo",
+        details: sanitizedMessage
+      },
       { status: 500 }
     )
   }

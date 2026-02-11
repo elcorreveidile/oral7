@@ -45,6 +45,15 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id
         token.role = user.role
+
+        // Role-based session timeouts for enhanced security
+        // STUDENT: 24 hours (more frequent re-authentication for student accounts)
+        // ADMIN: 7 days (balance between security and usability for administrators)
+        if (user.role === "ADMIN") {
+          token.exp = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60) // 7 days
+        } else {
+          token.exp = Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 hours
+        }
       }
       return token
     },
@@ -62,7 +71,10 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 días
+    maxAge: 24 * 60 * 60, // 24 hours - Reduced from 30 days for better security
+    // Shorter session timeout reduces the window of opportunity for stolen JWTs
+    // and ensures users must re-authenticate more frequently, improving overall security.
+    // Role-specific expiration times are set in the JWT callback above.
   },
   secret: process.env.NEXTAUTH_SECRET,
 }

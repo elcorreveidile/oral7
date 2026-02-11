@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
+import { validateRequest, createStudentSchema } from '@/lib/validations'
 
 // GET - Obtener todos los estudiantes
 export async function GET() {
@@ -51,22 +52,17 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json()
-    const { name, email, password } = body
 
-    // Validaciones
-    if (!name || !email || !password) {
+    // Validate request body with Zod schema
+    const validation = validateRequest(createStudentSchema, body)
+    if (!validation.success) {
       return NextResponse.json(
-        { error: 'Nombre, email y password son requeridos' },
+        { error: validation.error },
         { status: 400 }
       )
     }
 
-    if (password.length < 6) {
-      return NextResponse.json(
-        { error: 'El password debe tener al menos 6 caracteres' },
-        { status: 400 }
-      )
-    }
+    const { name, email, password } = validation.data
 
     // Verificar si el email ya existe
     const existingUser = await prisma.user.findUnique({
