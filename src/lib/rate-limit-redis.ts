@@ -44,12 +44,17 @@ async function getRedisClient() {
           return null
         }
         console.log(`[RateLimit] Reintentando conexión (intento ${times}/3)`)
-        return Math.min(times * 100, 1000)
+        return Math.min(times * 200, 2000) // Aumentar delay entre reintentos
       },
       tls: tlsEnabled ? {
-        rejectUnauthorized: true, // Asegurar verificación de certificado
+        rejectUnauthorized: false, // Permitir certificados de Railway
+        checkServerIdentity: () => undefined, // Saltar verificación estricta para Railway proxy
       } : undefined,
-      connectTimeout: 10000, // 10 segundos timeout
+      connectTimeout: 20000, // 20 segundos timeout para Railway proxy
+      lazyConnect: true, // Conectar solo cuando sea necesario
+      keepAlive: 5000, // Mantener conexión viva
+      enableReadyCheck: false, // Deshabilitar ready check para serverless
+      enableOfflineQueue: true, // Encolar comandos mientras conecta
     })
 
     redisClient.on('error', (err: Error) => {
