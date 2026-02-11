@@ -21,6 +21,8 @@ model User {
   password      String?   // Hash bcrypt - opcional para OAuth
   image         String?
   role          UserRole  @default(STUDENT)
+  twoFactorEnabled Boolean @default(false)
+  twoFactorSecret  String? // Secret TOTP cifrado
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -29,14 +31,48 @@ model User {
   progress      UserProgress[]
   checklistItems UserChecklistItem[]
   submissions   Submission[]
-  registrations UserRegistration[]
+  auditLogs     AuditLog[]
 
+  @@index([email])
+  @@index([role])
   @@map("users")
 }
 
 enum UserRole {
   ADMIN     // Profesor
   STUDENT   // Estudiante
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String   // Email del usuario que solicita el reset
+  token     String   @unique  // Token único para el reset
+  expiresAt DateTime // Fecha de expiración (generalmente 1 hora)
+
+  createdAt DateTime @default(now())
+  usedAt    DateTime? // Cuándo se usó el token
+
+  @@index([email])
+  @@index([token])
+  @@map("password_reset_tokens")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  adminId    String
+  admin      User     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  action     String
+  entityType String
+  entityId   String?
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([adminId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
 }
 
 // ============================================
@@ -75,6 +111,7 @@ model Session {
   resources       Resource[]
   progress        UserProgress[]
 
+  @@index([sessionNumber])
   @@map("sessions")
 }
 
@@ -117,6 +154,7 @@ enum TaskType {
   FREE_TEXT           // Texto libre
   AUDIO_RECORDING     // Grabación de audio
   VIDEO_RECORDING     // Grabación de vídeo
+  DOCUMENT_UPLOAD     // Subida de documentos
 }
 
 // ============================================
@@ -138,6 +176,7 @@ model Submission {
   updatedAt   DateTime    @updatedAt
 
   @@unique([userId, taskId])
+  @@index([userId, taskId])
   @@map("submissions")
 }
 
@@ -169,6 +208,7 @@ model UserChecklistItem {
   completedAt     DateTime?
 
   @@unique([userId, checklistItemId])
+  @@index([userId, checklistItemId])
   @@map("user_checklist_items")
 }
 
@@ -182,6 +222,7 @@ model Resource {
   session     Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   title       String        // Título del recurso
+  description String?       // Descripción o instrucciones (opcional)
   type        ResourceType  // Tipo de recurso
   url         String        // URL o path del archivo
   order       Int           // Orden
@@ -214,6 +255,8 @@ model Attendance {
   method      AttendanceMethod  // Método de registro
 
   @@unique([userId, sessionId])
+  @@index([userId, sessionId])
+  @@index([sessionId])
   @@map("attendances")
 }
 
@@ -258,40 +301,6 @@ model UserProgress {
 
   @@unique([userId, sessionId])
   @@map("user_progress")
-}
-
-// ============================================
-// MODELO DE CÓDIGOS DE REGISTRO
-// ============================================
-
-model RegistrationCode {
-  id          String   @id @default(cuid())
-  code        String   @unique
-  isActive    Boolean  @default(true)
-  maxUses     Int      @default(1)
-  usedCount   Int      @default(0)
-  description String?
-  createdAt   DateTime @default(now())
-  expiresAt   DateTime?
-
-  // Relaciones
-  registrations UserRegistration[]
-
-  @@map("registration_codes")
-}
-
-model UserRegistration {
-  id     String            @id @default(cuid())
-  userId String
-  user   User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  codeId String
-  code   RegistrationCode  @relation(fields: [codeId], references: [id], onDelete: Cascade)
-
-  usedAt DateTime @default(now())
-
-  @@unique([codeId, userId])
-  @@map("user_registrations")
 }
 
 // ============================================

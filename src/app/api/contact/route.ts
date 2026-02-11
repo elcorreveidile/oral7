@@ -1,103 +1,92 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { Resend } from "resend"
+import { getClientIp, rateLimit, rateLimitResponse, addRateLimitHeaders, RateLimitConfig } from "@/lib/rate-limit-redis"
+import { validateRequest, contactFormSchema } from "@/lib/validations"
 
-export async function POST(req: NextRequest) {
+// Only initialize Resend if API key is available
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+
+export async function POST(req: Request) {
+  // Apply rate limiting based on IP address
+  const ip = getClientIp(req)
+  const rateLimitResult = await rateLimit(ip, RateLimitConfig.contact)
+
+  if (!rateLimitResult.success) {
+    return rateLimitResponse(rateLimitResult.resetTime)
+  }
+
   try {
     const body = await req.json()
-    const { name, email, subject, message } = body
 
-    // Validar datos
-    if (!name || !email || !subject || !message) {
+    // Validate request body with Zod schema
+    const validation = validateRequest(contactFormSchema, body)
+    if (!validation.success) {
       return NextResponse.json(
-        { error: "Todos los campos son obligatorios" },
+        { error: validation.error },
         { status: 400 }
       )
     }
 
-    // Validar API key
-    const apiKey = process.env.RESEND_API_KEY
-    if (!apiKey) {
-      console.error("RESEND_API_KEY no está configurada")
-      return NextResponse.json(
-        { error: "Error de configuración del servidor" },
-        { status: 500 }
-      )
+    const { name, email, subject, message } = validation.data
+
+    // Send email using Resend (if configured)
+    let data, error
+    if (resend) {
+      const result = await resend.emails.send({
+        from: "PIO-7 Contacto <no-reply@pio7.com>",
+        to: ["benitezl@go.ugr.es"],
+        reply_to: email,
+        subject: `[PIO-7 Contacto] ${subject}`,
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #ea580c;">Nuevo mensaje de contacto</h2>
+            <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <p><strong>Nombre:</strong> ${name}</p>
+              <p><strong>Email:</strong> ${email}</p>
+              <p><strong>Asunto:</strong> ${subject}</p>
+            </div>
+            <div style="background: #fff; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+              <h3 style="margin-top: 0;">Mensaje:</h3>
+              <p style="white-space: pre-wrap;">${message}</p>
+            </div>
+            <p style="color: #64748b; font-size: 12px; margin-top: 20px;">
+              Este mensaje fue enviado desde el formulario de contacto de PIO-7.
+            </p>
+          </div>
+        `,
+      })
+      data = result.data
+      error = result.error
+    } else {
+      // Resend not configured - log the message and return success
+
+      data = { id: "dev-mode" }
+      error = null
     }
 
-    const resend = new Resend(apiKey)
-
-    // Enviar email usando Resend
-    const { data, error } = await resend.emails.send({
-      from: "PIO-7 <contacto@diariodeuninstante.com>",
-      to: process.env.CONTACT_EMAIL || "benitezl@go.ugr.es",
-      subject: `📧 Nuevo mensaje de contacto: ${subject}`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <style>
-              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-              .header { background: linear-gradient(to right, #dc2626, #ea580c); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
-              .content { background: #f9fafb; padding: 20px; border-radius: 0 0 8px 8px; }
-              .field { margin-bottom: 15px; }
-              .label { font-weight: bold; color: #dc2626; }
-              .value { background: white; padding: 10px; border-radius: 4px; border-left: 4px solid #dc2626; margin-top: 5px; }
-              .footer { margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666; font-size: 12px; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h1 style="margin: 0;">📧 Nuevo mensaje de contacto</h1>
-                <p style="margin: 5px 0 0 0;">Plataforma PIO-7</p>
-              </div>
-              <div class="content">
-                <div class="field">
-                  <div class="label">Nombre:</div>
-                  <div class="value">${name}</div>
-                </div>
-                <div class="field">
-                  <div class="label">Email:</div>
-                  <div class="value">${email}</div>
-                </div>
-                <div class="field">
-                  <div class="label">Asunto:</div>
-                  <div class="value">${subject}</div>
-                </div>
-                <div class="field">
-                  <div class="label">Mensaje:</div>
-                  <div class="value">${message.replace(/\n/g, "<br>")}</div>
-                </div>
-              </div>
-              <div class="footer">
-                <p>Centro de Lenguas Modernas · Universidad de Granada</p>
-                <p>Enviado desde la plataforma PIO-7</p>
-                <p>${new Date().toLocaleString("es-ES", { timeZone: "Europe/Madrid" })}</p>
-              </div>
-            </div>
-          </body>
-        </html>
-      `,
-      replyTo: email,
-    } as any)
-
     if (error) {
-      console.error("Error sending email:", error)
+
       return NextResponse.json(
         { error: "Error al enviar el mensaje" },
         { status: 500 }
       )
     }
 
-    return NextResponse.json({
-      message: "Mensaje enviado correctamente",
-      data,
-    })
+    const response = NextResponse.json(
+      { message: "Mensaje enviado correctamente", id: data?.id },
+      { status: 200 }
+    )
+
+    return addRateLimitHeaders(
+      response,
+      RateLimitConfig.contact.limit,
+      rateLimitResult.remaining,
+      rateLimitResult.resetTime
+    )
   } catch (error) {
-    console.error("Error in contact API:", error)
+
     return NextResponse.json(
-      { error: "Error al procesar la solicitud" },
+      { error: "Error interno del servidor" },
       { status: 500 }
     )
   }

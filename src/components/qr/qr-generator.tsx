@@ -9,12 +9,11 @@ import { generateQRCode, copyToClipboard } from "@/lib/utils"
 import { useToast } from "@/components/ui/use-toast"
 
 interface QRGeneratorProps {
-  sessionId: string
   sessionNumber: number
   onCodeGenerated?: (code: string) => void
 }
 
-export function QRGenerator({ sessionId, sessionNumber, onCodeGenerated }: QRGeneratorProps) {
+export function QRGenerator({ sessionNumber, onCodeGenerated }: QRGeneratorProps) {
   const [code, setCode] = useState("")
   const [expiresAt, setExpiresAt] = useState<Date | null>(null)
   const [timeLeft, setTimeLeft] = useState("")
@@ -36,7 +35,7 @@ export function QRGenerator({ sessionId, sessionNumber, onCodeGenerated }: QRGen
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           code: newCode,
-          sessionId,
+          sessionNumber,
           expiresAt: expiry.toISOString(),
         }),
       })

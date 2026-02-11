@@ -30,7 +30,9 @@ async function main() {
   // Estudiantes de PRUEBA para desarrollo local
   // En producción, los estudiantes se registrarán por sí mismos
   const testStudents = [
-    { email: 'test.student1@ugr.es', name: 'Estudiante Demo' },
+    { email: 'test.student1@ugr.es', name: 'Estudiante Prueba 1' },
+    { email: 'test.student2@ugr.es', name: 'Estudiante Prueba 2' },
+    { email: 'test.student3@ugr.es', name: 'Estudiante Prueba 3' },
   ]
 
   const students: any[] = []
@@ -156,26 +158,59 @@ async function main() {
     {
       number: 2,
       date: allDates[1],
-      title: 'Estructuras de Argumentación',
-      subtitle: 'Organizando ideas con persuasión',
+      title: 'Cohesión y conectores argumentales',
+      subtitle: 'Mejorando la fluidez del discurso',
       block: 1,
       blockTitle: 'Fundamentos de la Expresión Oral',
       objectives: [
-        'Dominar estructuras argumentativas',
-        'Usar marcadores discursivos de opinión',
-        'Construir argumentos con evidencia',
-        'Presentar opiniones con respaldo',
+        'Mejorar la cohesión del discurso mediante conectores',
+        'Diferenciar registros (coloquial vs. formal) al argumentar',
+        'Practicar la estructura básica de una opinión oral',
       ],
       timing: [
-        { phase: 'Warm-up', duration: '15 min', description: 'Debate rápido sobre temas polémicos' },
-        { phase: 'Análisis de modelos', duration: '25 min', description: 'Estudio de discursos efectivos' },
-        { phase: 'Práctica de estructuras', duration: '30 min', description: 'Ejercicios de marcadores' },
-        { phase: 'Debate estructurado', duration: '20 min', description: 'Argumentación a favor y en contra' },
+        { phase: 'Revisión y Feedback', duration: '10 min', description: 'Escucha selectiva de 2-3 audios de la tarea de casa. Corrección rápida de errores de pronunciación o gramática.' },
+        { phase: 'Teoría Visual: El esqueleto de la argumentación', duration: '20 min', description: 'Visionado de un fragmento de debate (1 min). Análisis colectivo: ¿Cómo conecta el hablante sus ideas? Explicación del listado de conectores clave.' },
+        { phase: 'Taller: ¿Vale la pena vivir en Granada?', duration: '45 min', description: 'División en grupos. 15 min preparación de argumentos con conectores. Modo B: Rellenan plantilla. Modo A: Discusión libre. 30 min debate Pro vs Con.' },
+        { phase: 'Cierre', duration: '15 min', description: 'Puesta en común de conectores más útiles. Anuncio del tema de la próxima clase (Acuerdo y desacuerdo).' },
       ],
       dynamics: [
-        { title: 'La silla caliente', description: 'Defender posición polémica', duration: '25 min', mode: 'A' },
-        { title: 'Esqueletos argumentativos', description: 'Completar estructuras', duration: '30 min', mode: 'B' },
+        { title: 'Debate: ¿Vale la pena vivir en Granada?', description: 'Defensa de posturas Pro vs Con con uso obligatorio de conectores', duration: '30 min', mode: 'A' },
+        { title: 'Plantilla de conectores', description: 'Rellenar estructura argumentativa con conectores apropiados', duration: '15 min', mode: 'B' },
       ],
+      // Contenido específico de la sesión 2
+      grammarContentFull: {
+        title: 'Conectores argumentales C1',
+        topics: [
+          { category: 'Iniciar', examples: ['Para empezar', 'En primer lugar'] },
+          { category: 'Añadir', examples: ['Por otro lado', 'Asimismo', 'Además'] },
+          { category: 'Contrastar', examples: ['No obstante', 'Por el contrario', 'Sin embargo'] },
+          { category: 'Concluir', examples: ['En definitiva', 'En suma'] },
+        ],
+      },
+      vocabularyContentFull: {
+        title: 'Mapa mental de conectores',
+        categories: [
+          { topic: 'Adición 🔵', words: ['Además', 'Es más', 'Asimismo', 'Por otro lado'] },
+          { topic: 'Oposición 🔴', words: ['Pero', 'Sin embargo', 'No obstante', 'Por el contrario'] },
+          { topic: 'Conclusión 🟢', words: ['En resumen', 'En definitiva', 'En suma', 'Por último'] },
+        ],
+      },
+      modeAContentFull: {
+        title: 'Modo A: Enfoque Integrador',
+        description: 'Discusión libre buscando la fluidez. Los estudiantes debaten sin plantilla, usando conectores de forma natural.',
+        activities: ['Debate espontáneo sobre vivir en Granada', 'Reaccionar a las intervenciones de los compañeros'],
+      },
+      modeBContentFull: {
+        title: 'Modo B: Soporte Visual/Analítico',
+        description: 'Rellenan una plantilla con los conectores. Mapa mental de conectores con ejemplos bilingües ES/EN y ES/CN para apoyo rápido.',
+        activities: ['Completar plantilla argumentativa', 'Identificar conectores en texto modelo'],
+      },
+      checklistItems: [
+        'He usado conectores de contraste correctamente',
+        'He mantenido un registro coherente durante mi intervención',
+        'He reaccionado a las intervenciones de mis compañeros',
+      ],
+      homework: 'Lee el artículo de opinión (PDF proporcionado) sobre "El impacto de las redes sociales". Sube una foto de 5 conectores nuevos que hayas encontrado y explica en 1 frase por qué se usan ahí.',
     },
     {
       number: 3,
@@ -496,9 +531,45 @@ async function main() {
 
   // Crear sesiones
   for (const sessionDef of sessionDefinitions) {
+    // Usar contenido específico si existe, si no usar contenido genérico
+    const grammarContent = (sessionDef as any).grammarContentFull || {
+      title: 'Contenido gramatical de la sesión',
+      topics: [
+        { category: 'Categoría 1', examples: ['ejemplo 1', 'ejemplo 2'] },
+      ],
+    }
+    const vocabularyContent = (sessionDef as any).vocabularyContentFull || {
+      title: 'Vocabulario de la sesión',
+      categories: [
+        { topic: 'Tema 1', words: ['palabra1', 'palabra2'] },
+      ],
+    }
+    const modeAContent = (sessionDef as any).modeAContentFull || {
+      title: 'Enfoque Integrador (A)',
+      description: 'Actividades colaborativas y espontáneas',
+    }
+    const modeBContent = (sessionDef as any).modeBContentFull || {
+      title: 'Enfoque Analítico (B)',
+      description: 'Ejercicios estructurados con apoyo visual',
+    }
+
     const session = await prisma.session.upsert({
       where: { sessionNumber: sessionDef.number },
-      update: {},
+      update: {
+        // Actualizar sesiones existentes con el nuevo contenido
+        date: sessionDef.date,
+        title: sessionDef.title,
+        subtitle: sessionDef.subtitle,
+        blockNumber: sessionDef.block,
+        blockTitle: sessionDef.blockTitle,
+        objectives: sessionDef.objectives,
+        timing: sessionDef.timing,
+        dynamics: sessionDef.dynamics,
+        grammarContent,
+        vocabularyContent,
+        modeAContent,
+        modeBContent,
+      },
       create: {
         sessionNumber: sessionDef.number,
         date: sessionDef.date,
@@ -510,26 +581,10 @@ async function main() {
         objectives: sessionDef.objectives,
         timing: sessionDef.timing,
         dynamics: sessionDef.dynamics,
-        grammarContent: {
-          title: 'Contenido gramatical de la sesión',
-          topics: [
-            { category: 'Categoría 1', examples: ['ejemplo 1', 'ejemplo 2'] },
-          ],
-        },
-        vocabularyContent: {
-          title: 'Vocabulario de la sesión',
-          categories: [
-            { topic: 'Tema 1', words: ['palabra1', 'palabra2'] },
-          ],
-        },
-        modeAContent: {
-          title: 'Enfoque Integrador (A)',
-          description: 'Actividades colaborativas y espontáneas',
-        },
-        modeBContent: {
-          title: 'Enfoque Analítico (B)',
-          description: 'Ejercicios estructurados con apoyo visual',
-        },
+        grammarContent,
+        vocabularyContent,
+        modeAContent,
+        modeBContent,
       },
     })
     sessions.push(session)
@@ -540,27 +595,45 @@ async function main() {
   // ============================================
   // 4. CREATE TASKS
   // ============================================
-  console.log('📝 Creating tasks...')
+  console.log('📝 Creating/updating tasks...')
 
-  // Crear algunas tareas de ejemplo
+  // Eliminar tareas existentes para las sesiones que vamos a actualizar
+  const sessionIds = sessions.map(s => s.id).filter(Boolean)
+  await prisma.task.deleteMany({
+    where: { sessionId: { in: sessionIds } },
+  })
+
+  // Crear tareas
   await prisma.task.createMany({
     data: [
       {
-        sessionId: sessions[1]?.id, // Sesión 2: Argumentación
-        title: 'Completar marcadores discursivos',
-        description: 'Selecciona el marcador apropiado',
-        type: 'MULTIPLE_CHOICE',
+        sessionId: sessions[1]?.id, // Sesión 2: Cohesión y conectores
+        title: 'Arrastra el conector correcto a la frase',
+        description: 'Ejercicio interactivo de conectores argumentales',
+        type: 'FILL_BLANKS',
         content: {
+          instructions: 'Arrastra el conector correcto a cada espacio en blanco.',
           questions: [
             {
-              question: '______ creo que la educación es fundamental.',
-              options: ['En mi opinión', 'Por último', 'Sin embargo'],
-              correct: 0,
+              question: '___ me gusta la gastronomía andaluza, ___ no soporto el calor del verano.',
+              blanks: 2,
+              options: ['Por un lado', 'Por otro lado', 'Me gusta', 'pero'],
+              correctAnswers: ['Por un lado', 'por otro lado'],
+              explanation: 'Usamos "Por un lado... por otro lado..." para presentar dos aspectos contrastados de forma formal.',
             },
             {
-              question: '______, existen varias perspectivas.',
-              options: ['En conclusión', 'Por un lado', 'Sin embargo'],
-              correct: 1,
+              question: '___ la ciudad tiene mucha vida cultural. ___, el coste de vida es bastante bajo.',
+              blanks: 2,
+              options: ['Para empezar', 'Además', 'Sin embargo', 'En conclusión'],
+              correctAnswers: ['Para empezar', 'Además'],
+              explanation: 'Usamos "Para empezar" para iniciar una enumeración y "Además" para añadir información.',
+            },
+            {
+              question: 'La ubicación es perfecta. ___, echo de menos el mar.',
+              blanks: 1,
+              options: ['Además', 'No obstante', 'Es más', 'Por último'],
+              correctAnswers: ['No obstante'],
+              explanation: '"No obstante" introduce una objeción o contraste con lo anterior.',
             },
           ],
         },
@@ -609,9 +682,29 @@ async function main() {
   // ============================================
   // 5. CREATE CHECKLIST ITEMS
   // ============================================
-  console.log('📝 Creating checklist items...')
+  console.log('📝 Creating/updating checklist items...')
 
+  // Eliminar checklist existentes para las sesiones que vamos a actualizar
   for (const session of sessions.slice(0, 5)) {
+    await prisma.checklistItem.deleteMany({
+      where: { sessionId: session.id },
+    })
+  }
+
+  // Checklist específico para Sesión 2
+  if (sessions[1]) {
+    await prisma.checklistItem.createMany({
+      data: [
+        { sessionId: sessions[1].id, text: 'He usado conectores de contraste correctamente', order: 1 },
+        { sessionId: sessions[1].id, text: 'He mantenido un registro coherente durante mi intervención', order: 2 },
+        { sessionId: sessions[1].id, text: 'He reaccionado a las intervenciones de mis compañeros', order: 3 },
+      ],
+    })
+  }
+
+  // Checklist genérico para otras sesiones (excepto sesión 2)
+  for (const session of sessions.slice(0, 5)) {
+    if (session.sessionNumber === 2) continue // Ya tiene checklist específico
     await prisma.checklistItem.createMany({
       data: [
         { sessionId: session.id, text: 'He participado activamente en clase', order: 1 },
@@ -659,6 +752,7 @@ async function main() {
     })
   }
 
+  // Recursos genéricos para otras sesiones (excepto sesión 2)
   for (const session of sessions.slice(0, 8)) {
     if (session.sessionNumber === 2) continue // Ya tiene recursos específicos
     await prisma.resource.createMany({

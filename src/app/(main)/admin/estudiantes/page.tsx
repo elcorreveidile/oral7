@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import {
   Users,
@@ -17,6 +17,7 @@ import {
   Eye,
   Search,
   X,
+  AlertCircle,
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -60,11 +61,14 @@ interface Student {
     attendances: number
     progress: number
   }
+  isAtRisk?: boolean
+  attendanceRate?: number
 }
 
-export default function AdminStudentsPage() {
+function AdminStudentsContent() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [students, setStudents] = useState<Student[]>([])
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([])
   const [loading, setLoading] = useState(true)
@@ -75,6 +79,7 @@ export default function AdminStudentsPage() {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [studentToDelete, setStudentToDelete] = useState<Student | null>(null)
+  const [showOnlyAtRisk, setShowOnlyAtRisk] = useState(false)
 
   const [formData, setFormData] = useState({
     name: "",
@@ -92,6 +97,16 @@ export default function AdminStudentsPage() {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
 
+  // Detect filter parameter from URL
+  useEffect(() => {
+    const filter = searchParams.get('filter')
+    if (filter === 'atrisk') {
+      setShowOnlyAtRisk(true)
+    } else {
+      setShowOnlyAtRisk(false)
+    }
+  }, [searchParams])
+
   useEffect(() => {
     if (status === "authenticated" && session?.user?.role !== "ADMIN") {
       router.push("/dashboard")
@@ -104,7 +119,7 @@ export default function AdminStudentsPage() {
     if (status === "authenticated" && session?.user?.role === "ADMIN") {
       fetchStudents()
     }
-  }, [status, session])
+  }, [status, session, showOnlyAtRisk])
 
   useEffect(() => {
     // Filtrar estudiantes por búsqueda
@@ -121,19 +136,36 @@ export default function AdminStudentsPage() {
   }, [searchQuery, students])
 
   const fetchStudents = async () => {
+    setLoading(true)
     try {
-      const response = await fetch("/api/students")
+      const url = showOnlyAtRisk ? "/api/students?filter=atrisk" : "/api/students"
+      const response = await fetch(url)
       if (response.ok) {
         const data = await response.json()
         setStudents(data)
         setFilteredStudents(data)
       }
     } catch (error) {
-      console.error("Error fetching students:", error)
+      console.error('Error fetching students:', error)
     } finally {
       setLoading(false)
     }
   }
+
+  // Keep counts reasonably fresh (e.g. progress updates while an admin is viewing this page).
+  useEffect(() => {
+    if (status !== "authenticated" || session?.user?.role !== "ADMIN") return
+
+    const onFocus = () => fetchStudents()
+    window.addEventListener("focus", onFocus)
+    const interval = window.setInterval(fetchStudents, 60_000)
+
+    return () => {
+      window.removeEventListener("focus", onFocus)
+      window.clearInterval(interval)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, session?.user?.role])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -263,7 +295,7 @@ export default function AdminStudentsPage() {
         fetchStudents()
       }
     } catch (error) {
-      console.error("Error deleting student:", error)
+
     }
   }
 
@@ -291,6 +323,8 @@ export default function AdminStudentsPage() {
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
+    // Clean up to prevent memory leak
+    URL.revokeObjectURL(url)
   }
 
   if (status === "loading" || session?.user?.role !== "ADMIN") {
@@ -309,13 +343,28 @@ export default function AdminStudentsPage() {
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <Users className="h-8 w-8" />
             Gestión de Estudiantes
+            {showOnlyAtRisk && (
+              <Badge variant="destructive" className="ml-2">
+                <AlertCircle className="h-4 w-4 mr-1" />
+                En riesgo
+              </Badge>
+            )}
           </h1>
           <p className="text-muted-foreground">
-            {students.length} estudiantes matriculados
+            {filteredStudents.length} estudiantes{showOnlyAtRisk && " en riesgo"}
           </p>
         </div>
 
         <div className="flex gap-2">
+          {showOnlyAtRisk && (
+            <Button
+              variant="outline"
+              onClick={() => router.push('/admin/estudiantes')}
+            >
+              <X className="mr-2 h-4 w-4" />
+              Ver todos
+            </Button>
+          )}
           <Button
             variant="outline"
             onClick={exportToCSV}
@@ -461,12 +510,26 @@ export default function AdminStudentsPage() {
       {/* Students table */}
       <Card>
         <CardHeader>
-          <CardTitle>Lista de Estudiantes</CardTitle>
-          <CardDescription>
-            {filteredStudents.length === students.length
-              ? "Todos los estudiantes"
-              : `${filteredStudents.length} de ${students.length} estudiantes`}
-          </CardDescription>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <CardTitle>Lista de Estudiantes</CardTitle>
+              <CardDescription>
+                {filteredStudents.length === students.length
+                  ? "Todos los estudiantes"
+                  : `${filteredStudents.length} de ${students.length} estudiantes`}
+              </CardDescription>
+            </div>
+            <Button variant="outline" onClick={fetchStudents} disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Actualizando...
+                </>
+              ) : (
+                "Actualizar"
+              )}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -493,16 +556,24 @@ export default function AdminStudentsPage() {
                   <TableRow>
                     <TableHead>Nombre</TableHead>
                     <TableHead>Email</TableHead>
-                    <TableHead className="text-center">Asistencias</TableHead>
+                    <TableHead className="text-center">Asistencia</TableHead>
                     <TableHead className="text-center">Progreso</TableHead>
                     <TableHead>Registro</TableHead>
+                    <TableHead>Estado</TableHead>
                     <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredStudents.map((student) => (
-                    <TableRow key={student.id}>
-                      <TableCell className="font-medium">{student.name}</TableCell>
+                    <TableRow key={student.id} className={student.isAtRisk ? "bg-red-50 dark:bg-red-900/10" : ""}>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center gap-2">
+                          {student.name}
+                          {student.isAtRisk && (
+                            <AlertCircle className="h-4 w-4 text-red-500" />
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <Mail className="h-4 w-4 text-muted-foreground" />
@@ -510,7 +581,14 @@ export default function AdminStudentsPage() {
                         </div>
                       </TableCell>
                       <TableCell className="text-center">
-                        <Badge variant="outline">{student._count.attendances}</Badge>
+                        <div className="flex flex-col items-center gap-1">
+                          <Badge variant="outline">{student._count.attendances}</Badge>
+                          {student.attendanceRate !== undefined && (
+                            <span className={`text-xs ${student.attendanceRate < 50 ? 'text-red-500 font-medium' : 'text-muted-foreground'}`}>
+                              {student.attendanceRate}%
+                            </span>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell className="text-center">
                         <Badge variant={student._count.progress > 0 ? "default" : "secondary"}>
@@ -526,6 +604,13 @@ export default function AdminStudentsPage() {
                             year: "numeric",
                           })}
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        {student.isAtRisk ? (
+                          <Badge variant="destructive">En riesgo</Badge>
+                        ) : (
+                          <Badge variant="secondary">Normal</Badge>
+                        )}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
@@ -669,5 +754,17 @@ export default function AdminStudentsPage() {
         </AlertDialogContent>
       </AlertDialog>
     </div>
+  )
+}
+
+export default function AdminStudentsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    }>
+      <AdminStudentsContent />
+    </Suspense>
   )
 }

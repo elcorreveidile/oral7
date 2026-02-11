@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { CheckSquare, Save, Loader2 } from "lucide-react"
+import { useState, useEffect, useCallback } from "react"
+import { CheckSquare, Save, Loader2, Cloud, CloudOff } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -18,15 +18,74 @@ interface ChecklistSectionProps {
 export function ChecklistSection({ sessionId, items, onSave }: ChecklistSectionProps) {
   const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set())
   const [isSaving, setIsSaving] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [syncStatus, setSyncStatus] = useState<"synced" | "unsaved" | "error">("synced")
   const { toast } = useToast()
 
-  // Load saved state from localStorage
+  // Load from backend first, fallback to localStorage
   useEffect(() => {
-    const saved = localStorage.getItem(`checklist-${sessionId}`)
-    if (saved) {
-      setCheckedItems(new Set(JSON.parse(saved)))
+    const loadProgress = async () => {
+      setIsLoading(true)
+      try {
+        const response = await fetch(`/api/checklist?sessionId=${sessionId}`)
+        if (response.ok) {
+          const data = await response.json()
+          if (data.completedItems && data.completedItems.length > 0) {
+            setCheckedItems(new Set(data.completedItems))
+            // Also update localStorage as cache
+            localStorage.setItem(`checklist-${sessionId}`, JSON.stringify(data.completedItems))
+            setSyncStatus("synced")
+            return
+          }
+        }
+      } catch (error) {
+        // If fetch fails, try localStorage as fallback
+      }
+
+      // Fallback to localStorage
+      const saved = localStorage.getItem(`checklist-${sessionId}`)
+      if (saved) {
+        setCheckedItems(new Set(JSON.parse(saved)))
+        setSyncStatus("unsaved")
+      }
+      setIsLoading(false)
     }
+
+    loadProgress()
   }, [sessionId])
+
+  // Save to backend automatically when items change (debounced)
+  useEffect(() => {
+    if (isLoading) return
+
+    const timeoutId = setTimeout(async () => {
+      const completedArray = Array.from(checkedItems)
+      // Save to localStorage immediately
+      localStorage.setItem(`checklist-${sessionId}`, JSON.stringify(completedArray))
+
+      // Then sync to backend
+      try {
+        const response = await fetch("/api/checklist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sessionId,
+            completedItems: completedArray,
+          }),
+        })
+
+        if (response.ok) {
+          setSyncStatus("synced")
+        } else {
+          setSyncStatus("error")
+        }
+      } catch (error) {
+        setSyncStatus("error")
+      }
+    }, 500) // Debounce 500ms
+
+    return () => clearTimeout(timeoutId)
+  }, [checkedItems, sessionId, isLoading])
 
   const handleToggle = (itemId: string) => {
     const newChecked = new Set(checkedItems)
@@ -36,9 +95,7 @@ export function ChecklistSection({ sessionId, items, onSave }: ChecklistSectionP
       newChecked.add(itemId)
     }
     setCheckedItems(newChecked)
-
-    // Auto-save to localStorage
-    localStorage.setItem(`checklist-${sessionId}`, JSON.stringify(Array.from(newChecked)))
+    setSyncStatus("unsaved")
   }
 
   const handleSave = async () => {
@@ -64,6 +121,16 @@ export function ChecklistSection({ sessionId, items, onSave }: ChecklistSectionP
 
   const progress = items.length > 0 ? (checkedItems.size / items.length) * 100 : 0
 
+  if (isLoading) {
+    return (
+      <div className="bg-white dark:bg-gray-900 rounded-lg border overflow-hidden p-8">
+        <div className="flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-green-600" />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="bg-white dark:bg-gray-900 rounded-lg border overflow-hidden">
       <div className="bg-gradient-to-r from-green-500 to-emerald-500 px-4 py-3 flex items-center justify-between">
@@ -71,9 +138,20 @@ export function ChecklistSection({ sessionId, items, onSave }: ChecklistSectionP
           <CheckSquare className="h-5 w-5" />
           <h2 className="font-semibold">Autoevaluación</h2>
         </div>
-        <span className="text-white/80 text-sm">
-          {checkedItems.size}/{items.length} completados
-        </span>
+        <div className="flex items-center gap-2">
+          {syncStatus === "synced" && (
+            <Cloud className="h-4 w-4 text-white/80" />
+          )}
+          {syncStatus === "unsaved" && (
+            <CloudOff className="h-4 w-4 text-white/60 animate-pulse" />
+          )}
+          {syncStatus === "error" && (
+            <CloudOff className="h-4 w-4 text-red-200" />
+          )}
+          <span className="text-white/80 text-sm">
+            {checkedItems.size}/{items.length} completados
+          </span>
+        </div>
       </div>
 
       <div className="p-4 md:p-6 space-y-4">

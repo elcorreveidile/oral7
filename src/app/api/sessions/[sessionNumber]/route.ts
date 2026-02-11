@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import prisma from "@/lib/prisma"
+import { validateRequest, updateSessionDataSchema } from "@/lib/validations"
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ sessionNumber: string }> }
+  { params }: { params: { sessionNumber: string } }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -17,7 +18,7 @@ export async function GET(
       )
     }
 
-    const { sessionNumber } = await params
+    const { sessionNumber } = params
     const sessionNum = parseInt(sessionNumber)
 
     const sessionData = await prisma.session.findUnique({
@@ -50,55 +51,40 @@ export async function GET(
       )
     }
 
-    // Get user's progress for this session
-    const userProgress = await prisma.userProgress.findUnique({
-      where: {
-        userId_sessionId: {
-          userId: session.user.id,
-          sessionId: sessionData.id,
-        },
-      },
-    })
+    // Progress tracking (Student only)
+    const isStudent = session.user.role === "STUDENT"
+    const progress = isStudent
+      ? await prisma.userProgress.findUnique({
+          where: {
+            userId_sessionId: {
+              userId: session.user.id,
+              sessionId: sessionData.id,
+            },
+          },
+          select: { viewedAt: true, timeSpent: true, lastAccess: true },
+        })
+      : null
 
-    // Get user's checklist items
-    const userChecklistItems = await prisma.userChecklistItem.findMany({
-      where: {
-        userId: session.user.id,
-        checklistItem: {
-          sessionId: sessionData.id,
-        },
-      },
-    })
-
-    // Record view
-    if (!userProgress) {
-      await prisma.userProgress.create({
-        data: {
-          userId: session.user.id,
-          sessionId: sessionData.id,
-          viewedAt: new Date(),
-        },
-      })
-    } else {
-      await prisma.userProgress.update({
-        where: {
-          id: userProgress.id,
-        },
-        data: {
-          lastAccess: new Date(),
-        },
-      })
-    }
+    const completedChecklist = isStudent
+      ? await prisma.userChecklistItem
+          .findMany({
+            where: {
+              userId: session.user.id,
+              isCompleted: true,
+              checklistItem: { sessionId: sessionData.id },
+            },
+            select: { checklistItemId: true },
+          })
+          .then((rows) => rows.map((r) => r.checklistItemId))
+      : []
 
     return NextResponse.json({
       session: sessionData,
-      progress: userProgress,
-      completedChecklist: userChecklistItems
-        .filter((item) => item.isCompleted)
-        .map((item) => item.checklistItemId),
+      progress,
+      completedChecklist,
     })
   } catch (error) {
-    console.error("Error fetching session:", error)
+
     return NextResponse.json(
       { error: "Error al obtener la sesión" },
       { status: 500 }
@@ -108,7 +94,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ sessionNumber: string }> }
+  { params }: { params: { sessionNumber: string } }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -120,9 +106,20 @@ export async function PUT(
       )
     }
 
-    const { sessionNumber } = await params
+    const { sessionNumber } = params
     const sessionNum = parseInt(sessionNumber)
-    const data = await request.json()
+    const body = await request.json()
+
+    // Validate request body with Zod schema
+    const validation = validateRequest(updateSessionDataSchema, body)
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: validation.error },
+        { status: 400 }
+      )
+    }
+
+    const data = validation.data
 
     const updatedSession = await prisma.session.update({
       where: {
@@ -148,7 +145,7 @@ export async function PUT(
       session: updatedSession,
     })
   } catch (error) {
-    console.error("Error updating session:", error)
+
     return NextResponse.json(
       { error: "Error al actualizar la sesión" },
       { status: 500 }

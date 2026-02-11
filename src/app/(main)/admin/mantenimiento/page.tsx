@@ -15,8 +15,8 @@ type ApiResult = {
   body: any
 }
 
-async function callApi(path: string): Promise<ApiResult> {
-  const res = await fetch(path, { method: "GET" })
+async function callApi(path: string, method: "GET" | "POST"): Promise<ApiResult> {
+  const res = await fetch(path, { method })
   let body: any = null
   try {
     body = await res.json()
@@ -40,10 +40,19 @@ export default function AdminMaintenancePage() {
     }
   }, [status, session, router])
 
-  const run = async (key: string, path: string) => {
+  const copyPath = async (path: string) => {
+    try {
+      await navigator.clipboard.writeText(path)
+      toast({ title: "Copiado", description: path })
+    } catch {
+      toast({ variant: "destructive", title: "Error", description: "No se pudo copiar la ruta" })
+    }
+  }
+
+  const run = async (key: string, path: string, method: "GET" | "POST") => {
     setLoadingKey(key)
     try {
-      const result = await callApi(path)
+      const result = await callApi(path, method)
       toast({
         variant: result.ok ? undefined : "destructive",
         title: result.ok ? "OK" : `Error (${result.status})`,
@@ -96,22 +105,20 @@ export default function AdminMaintenancePage() {
               <CardTitle>Sincronizar sesiones</CardTitle>
             </div>
             <CardDescription>
-              Si tu despliegue antiguo dependía de un `sessions.ts`, esta operación ahora es un no-op seguro.
+              Actualiza la base de datos con el contenido de `sessions.ts`.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex gap-2">
             <Button
-              onClick={() => run("sync", "/api/admin/sync-sessions")}
+              onClick={() => run("sync", "/api/admin/sync-sessions", "POST")}
               disabled={loadingKey !== null}
             >
               {loadingKey === "sync" && <RefreshCw className="mr-2 h-4 w-4 animate-spin" />}
               Sincronizar
             </Button>
-            <Button asChild variant="outline">
-              <a href="/api/admin/sync-sessions" target="_blank" rel="noreferrer">
-                <ExternalLink className="mr-2 h-4 w-4" />
-                Abrir API
-              </a>
+            <Button variant="outline" onClick={() => copyPath("/api/admin/sync-sessions")}>
+              <ExternalLink className="mr-2 h-4 w-4" />
+              Copiar ruta
             </Button>
           </CardContent>
         </Card>
@@ -128,7 +135,7 @@ export default function AdminMaintenancePage() {
           </CardHeader>
           <CardContent className="flex gap-2">
             <Button
-              onClick={() => run("blob", "/api/admin/check-blob")}
+              onClick={() => run("blob", "/api/admin/check-blob", "GET")}
               disabled={loadingKey !== null}
             >
               {loadingKey === "blob" && <RefreshCw className="mr-2 h-4 w-4 animate-spin" />}
@@ -150,22 +157,20 @@ export default function AdminMaintenancePage() {
               <CardTitle>Probar subida de archivos</CardTitle>
             </div>
             <CardDescription>
-              Validación rápida de configuración. No sube nada permanente.
+              Sube un archivo de prueba para verificar que funciona correctamente.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex gap-2">
             <Button
-              onClick={() => run("upload", "/api/admin/test-upload")}
+              onClick={() => run("upload", "/api/admin/test-upload", "POST")}
               disabled={loadingKey !== null}
             >
               {loadingKey === "upload" && <RefreshCw className="mr-2 h-4 w-4 animate-spin" />}
               Probar
             </Button>
-            <Button asChild variant="outline">
-              <a href="/api/admin/test-upload" target="_blank" rel="noreferrer">
-                <ExternalLink className="mr-2 h-4 w-4" />
-                Abrir API
-              </a>
+            <Button variant="outline" onClick={() => copyPath("/api/admin/test-upload")}>
+              <ExternalLink className="mr-2 h-4 w-4" />
+              Copiar ruta
             </Button>
           </CardContent>
         </Card>
@@ -177,22 +182,20 @@ export default function AdminMaintenancePage() {
               <CardTitle>Migrar base de datos</CardTitle>
             </div>
             <CardDescription>
-              Solo para casos excepcionales. Actualmente, `DOCUMENT_UPLOAD` ya está contemplado en el esquema.
+              Añade `DOCUMENT_UPLOAD` al enum `TaskType` (solo si no existe).
             </CardDescription>
           </CardHeader>
           <CardContent className="flex gap-2">
             <Button
-              onClick={() => run("migrate", "/api/admin/migrate-tasktype")}
+              onClick={() => run("migrate", "/api/admin/migrate-tasktype", "POST")}
               disabled={loadingKey !== null}
             >
               {loadingKey === "migrate" && <RefreshCw className="mr-2 h-4 w-4 animate-spin" />}
               Ejecutar
             </Button>
-            <Button asChild variant="outline">
-              <a href="/api/admin/migrate-tasktype" target="_blank" rel="noreferrer">
-                <ExternalLink className="mr-2 h-4 w-4" />
-                Abrir API
-              </a>
+            <Button variant="outline" onClick={() => copyPath("/api/admin/migrate-tasktype")}>
+              <ExternalLink className="mr-2 h-4 w-4" />
+              Copiar ruta
             </Button>
           </CardContent>
         </Card>

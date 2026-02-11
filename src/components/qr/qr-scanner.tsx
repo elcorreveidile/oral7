@@ -1,12 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { QrCode, Keyboard, Check, Loader2, AlertCircle } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import { QrCode, Keyboard, Check, Loader2, AlertCircle, CameraOff, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/components/ui/use-toast"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Html5Qrcode } from "html5-qrcode"
 
 interface QRScannerProps {
   sessionId?: string
@@ -19,7 +20,86 @@ export function QRScanner({ sessionId, onSuccess }: QRScannerProps) {
   const [scannerActive, setScannerActive] = useState(false)
   const [result, setResult] = useState<"success" | "error" | null>(null)
   const [message, setMessage] = useState("")
+  const [cameraError, setCameraError] = useState<string | null>(null)
+  const [errorType, setErrorType] = useState<string>("")
+  const qrCodeScannerRef = useRef<Html5Qrcode | null>(null)
+  const scannerId = useRef("qr-scanner")
   const { toast } = useToast()
+
+  // Cleanup scanner on unmount
+  useEffect(() => {
+    return () => {
+      if (qrCodeScannerRef.current && scannerActive) {
+        qrCodeScannerRef.current.stop().catch(console.error)
+      }
+    }
+  }, [scannerActive])
+
+  // Handle QR scan result
+  const handleScanSuccess = (decodedText: string) => {
+    // Extract code from URL format oral7://attendance/XXXXXX
+    const match = decodedText.match(/oral7:\/\/attendance\/([A-Z0-9]+)/i)
+    if (match) {
+      handleSubmitCode(match[1])
+      stopScanner()
+    } else {
+      // Try to use the text directly if it's a 6-character code
+      if (decodedText.length === 6) {
+        handleSubmitCode(decodedText)
+        stopScanner()
+      }
+    }
+  }
+
+  // Handle camera errors
+  const handleScanError = (errorMessage: string) => {
+    setCameraError("No se pudo acceder a la cámara. Verifica los permisos.")
+    stopScanner()
+    toast({
+      variant: "destructive",
+      title: "Error de cámara",
+      description: "No se pudo acceder a la cámara. Verifica los permisos del navegador.",
+    })
+  }
+
+  // Start the scanner
+  const startScanner = async () => {
+    setCameraError(null)
+    const html5QrCode = new Html5Qrcode(scannerId.current)
+    qrCodeScannerRef.current = html5QrCode
+
+    try {
+      await html5QrCode.start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
+          qrbox: { width: 250, height: 250 },
+        },
+        handleScanSuccess,
+        handleScanError
+      )
+      setScannerActive(true)
+    } catch (error) {
+      setCameraError("No se pudo iniciar la cámara.")
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo iniciar la cámara. Verifica los permisos.",
+      })
+    }
+  }
+
+  // Stop the scanner
+  const stopScanner = async () => {
+    if (qrCodeScannerRef.current) {
+      try {
+        await qrCodeScannerRef.current.stop()
+        qrCodeScannerRef.current.clear()
+      } catch (error) {
+      }
+    }
+    setScannerActive(false)
+  }
 
   const handleSubmitCode = async (code: string) => {
     if (!code || code.length < 6) {
@@ -33,6 +113,7 @@ export function QRScanner({ sessionId, onSuccess }: QRScannerProps) {
 
     setIsSubmitting(true)
     setResult(null)
+    setErrorType("")
 
     try {
       const response = await fetch("/api/attendance/register", {
@@ -56,20 +137,35 @@ export function QRScanner({ sessionId, onSuccess }: QRScannerProps) {
         onSuccess?.()
       } else {
         setResult("error")
+
+        // Determine error type for better UI handling
+        if (response.status === 404) {
+          setErrorType("invalid_code")
+        } else if (data.error?.includes("expirado") || data.error?.includes("expiró")) {
+          setErrorType("expired")
+        } else if (data.alreadyRegistered) {
+          setErrorType("already_registered")
+        } else if (data.error?.includes("finalizado") || data.error?.includes("ya ha finalizado")) {
+          setErrorType("session_passed")
+        } else {
+          setErrorType("general")
+        }
+
         setMessage(data.error || "Error al registrar asistencia")
         toast({
           variant: "destructive",
-          title: "Error",
+          title: "Error al registrar asistencia",
           description: data.error || "No se pudo registrar la asistencia",
         })
       }
     } catch (error) {
       setResult("error")
-      setMessage("Error de conexión")
+      setErrorType("network")
+      setMessage("Error de conexión. Inténtalo de nuevo.")
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Error de conexión. Inténtalo de nuevo.",
+        title: "Error de conexión",
+        description: "Verifica tu conexión a internet e inténtalo de nuevo.",
       })
     } finally {
       setIsSubmitting(false)
@@ -79,18 +175,6 @@ export function QRScanner({ sessionId, onSuccess }: QRScannerProps) {
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     handleSubmitCode(manualCode)
-  }
-
-  // Simulated QR scan result handler
-  const handleScan = (data: string | null) => {
-    if (data) {
-      // Extract code from URL format oral7://attendance/XXXXXX
-      const match = data.match(/oral7:\/\/attendance\/([A-Z0-9]+)/)
-      if (match) {
-        handleSubmitCode(match[1])
-        setScannerActive(false)
-      }
-    }
   }
 
   return (
@@ -116,15 +200,51 @@ export function QRScanner({ sessionId, onSuccess }: QRScannerProps) {
               )}
             </div>
             <p className="font-medium text-lg">{message}</p>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setResult(null)
-                setManualCode("")
-              }}
-            >
-              Cerrar
-            </Button>
+
+            {result === "error" && (
+              <div className="text-sm text-muted-foreground space-y-2">
+                {errorType === "expired" && (
+                  <p>El código QR solo es válido durante la clase. Contacta a tu profesor.</p>
+                )}
+                {errorType === "session_passed" && (
+                  <p>No se puede registrar asistencia retroactivamente.</p>
+                )}
+                {errorType === "already_registered" && (
+                  <p>Ya tienes registrada tu asistencia para esta sesión.</p>
+                )}
+                {errorType === "invalid_code" && (
+                  <p>Verifica que hayas introducido correctamente el código de 6 caracteres.</p>
+                )}
+                {errorType === "network" && (
+                  <p>Verifica tu conexión a internet e inténtalo de nuevo.</p>
+                )}
+              </div>
+            )}
+
+            <div className="flex gap-2 justify-center">
+              {result === "error" && errorType !== "already_registered" && errorType !== "session_passed" && (
+                <Button
+                  variant="default"
+                  onClick={() => {
+                    setResult(null)
+                    setErrorType("")
+                    setManualCode("")
+                  }}
+                >
+                  Intentar de nuevo
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setResult(null)
+                  setErrorType("")
+                  setManualCode("")
+                }}
+              >
+                {result === "success" ? "Cerrar" : "Cancelar"}
+              </Button>
+            </div>
           </div>
         ) : (
           <Tabs defaultValue="manual" className="w-full">
@@ -179,12 +299,36 @@ export function QRScanner({ sessionId, onSuccess }: QRScannerProps) {
 
             <TabsContent value="scan" className="mt-6">
               <div className="space-y-4">
+                {cameraError && (
+                  <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg flex items-start gap-3">
+                    <CameraOff className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-sm text-red-600 dark:text-red-400 font-medium">
+                        Error de cámara
+                      </p>
+                      <p className="text-xs text-red-500 dark:text-red-500 mt-1">
+                        {cameraError}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 {scannerActive ? (
-                  <div className="aspect-square bg-gray-900 rounded-lg flex items-center justify-center">
-                    <p className="text-white text-sm">
-                      Cámara activa - Apunta al código QR
+                  <div className="space-y-4">
+                    <div className="aspect-square bg-black rounded-lg overflow-hidden relative">
+                      <div id={scannerId.current} className="w-full h-full" />
+                    </div>
+                    <p className="text-center text-sm text-muted-foreground">
+                      Apunta al código QR del profesor
                     </p>
-                    {/* Note: In production, integrate react-qr-reader here */}
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => stopScanner()}
+                    >
+                      <X className="mr-2 h-4 w-4" />
+                      Cancelar
+                    </Button>
                   </div>
                 ) : (
                   <div className="aspect-square bg-gray-100 dark:bg-gray-800 rounded-lg flex flex-col items-center justify-center gap-4 p-4">
@@ -192,20 +336,11 @@ export function QRScanner({ sessionId, onSuccess }: QRScannerProps) {
                     <p className="text-center text-muted-foreground text-sm">
                       Activa la cámara para escanear el código QR del profesor
                     </p>
-                    <Button onClick={() => setScannerActive(true)}>
+                    <Button onClick={() => startScanner()}>
+                      <QrCode className="mr-2 h-4 w-4" />
                       Activar cámara
                     </Button>
                   </div>
-                )}
-
-                {scannerActive && (
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => setScannerActive(false)}
-                  >
-                    Cancelar
-                  </Button>
                 )}
               </div>
             </TabsContent>

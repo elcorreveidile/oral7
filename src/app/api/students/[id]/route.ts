@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
+import { logAdminAction } from '@/lib/audit-logger'
 
 // GET - Obtener un estudiante individual con detalles completos
 export async function GET(
@@ -83,7 +84,7 @@ export async function GET(
 
     return NextResponse.json(student)
   } catch (error) {
-    console.error('Error fetching student:', error)
+
     return NextResponse.json({ error: 'Error fetching student' }, { status: 500 })
   }
 }
@@ -130,8 +131,17 @@ export async function PUT(
     const updateData: any = {}
     if (name) updateData.name = name
     if (email) updateData.email = email
-    if (password && password.length >= 6) {
-      updateData.password = await bcrypt.hash(password, 10)
+
+    // Validate and hash password if provided
+    // Use consistent password policy: minimum 8 characters (same as registration)
+    if (password) {
+      if (password.length < 8) {
+        return NextResponse.json(
+          { error: 'La contraseña debe tener al menos 8 caracteres' },
+          { status: 400 }
+        )
+      }
+      updateData.password = await bcrypt.hash(password, 12)
     }
 
     // Actualizar estudiante
@@ -146,9 +156,22 @@ export async function PUT(
       },
     })
 
+    await logAdminAction(
+      session.user.id,
+      'STUDENT_UPDATE',
+      'User',
+      params.id,
+      {
+        nameUpdated: Boolean(name && name !== existingStudent.name),
+        emailUpdated: Boolean(email && email !== existingStudent.email),
+        passwordUpdated: Boolean(password),
+      },
+      req
+    )
+
     return NextResponse.json(updatedStudent)
   } catch (error) {
-    console.error('Error updating student:', error)
+
     return NextResponse.json({ error: 'Error updating student' }, { status: 500 })
   }
 }
@@ -179,9 +202,18 @@ export async function DELETE(
       where: { id: params.id },
     })
 
+    await logAdminAction(
+      session.user.id,
+      'STUDENT_DELETE',
+      'User',
+      params.id,
+      { email: existingStudent.email },
+      req
+    )
+
     return NextResponse.json({ message: 'Estudiante eliminado correctamente' })
   } catch (error) {
-    console.error('Error deleting student:', error)
+
     return NextResponse.json({ error: 'Error deleting student' }, { status: 500 })
   }
 }

@@ -2,6 +2,10 @@ import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { compare } from "bcryptjs"
 import prisma from "./prisma"
+import { decryptSecret, verifyToken } from "./twoFactor"
+
+// Note: NEXTAUTH_URL is set dynamically in the route handler
+// based on request headers, allowing support for multiple domains
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -9,10 +13,15 @@ export const authOptions: NextAuthOptions = {
       name: "Credenciales",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Contraseña", type: "password" }
+        password: { label: "Contraseña", type: "password" },
+        totp: { label: "Código 2FA", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
+          // Log generic message only in development
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[Auth] Authentication attempt with missing credentials')
+          }
           return null
         }
 
@@ -21,13 +30,52 @@ export const authOptions: NextAuthOptions = {
         })
 
         if (!user || !user.password) {
+          // Do NOT log whether user exists or email - prevents user enumeration
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[Auth] Authentication failed')
+          }
           return null
         }
 
         const isPasswordValid = await compare(credentials.password, user.password)
 
         if (!isPasswordValid) {
+          // Do NOT log email or specific failure reason - prevents user enumeration
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[Auth] Authentication failed')
+          }
           return null
+        }
+
+        // En cuentas ADMIN con 2FA activo, exigir código TOTP válido.
+        if (user.role === "ADMIN" && user.twoFactorEnabled) {
+          if (!user.twoFactorSecret || !credentials?.totp) {
+            if (process.env.NODE_ENV === "development") {
+              console.log("[Auth] 2FA verification failed")
+            }
+            return null
+          }
+
+          try {
+            const decryptedSecret = decryptSecret(user.twoFactorSecret)
+            const twoFactorValid = verifyToken(decryptedSecret, credentials.totp)
+            if (!twoFactorValid) {
+              if (process.env.NODE_ENV === "development") {
+                console.log("[Auth] 2FA verification failed")
+              }
+              return null
+            }
+          } catch {
+            if (process.env.NODE_ENV === "development") {
+              console.log("[Auth] 2FA verification failed")
+            }
+            return null
+          }
+        }
+
+        // Log successful auth without exposing email in production
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[Auth] Authentication successful')
         }
 
         return {
@@ -45,6 +93,15 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id
         token.role = user.role
+
+        // Role-based session timeouts for enhanced security
+        // STUDENT: 24 hours (more frequent re-authentication for student accounts)
+        // ADMIN: 7 days (balance between security and usability for administrators)
+        if (user.role === "ADMIN") {
+          token.exp = Math.floor(Date.now() / 1000) + (7 * 24 * 60 * 60) // 7 days
+        } else {
+          token.exp = Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 hours
+        }
       }
       return token
     },
@@ -62,9 +119,15 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 días
+    maxAge: 24 * 60 * 60, // 24 hours - Reduced from 30 days for better security
+    // Shorter session timeout reduces the window of opportunity for stolen JWTs
+    // and ensures users must re-authenticate more frequently, improving overall security.
+    // Role-specific expiration times are set in the JWT callback above.
   },
   secret: process.env.NEXTAUTH_SECRET,
+  // Use secure cookies in production
+  useSecureCookies: process.env.NODE_ENV === 'production',
+  debug: process.env.NODE_ENV === 'development',
 }
 
 // Tipos extendidos para NextAuth
