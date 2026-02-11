@@ -14,6 +14,12 @@ import {
   formatFileSize,
   getFileCategory
 } from "@/lib/file-validation"
+import {
+  FileInfectedError,
+  FileScannerMisconfiguredError,
+  FileScannerUnavailableError,
+  scanFileForMalware,
+} from "@/lib/file-scanning"
 
 export async function POST(request: NextRequest) {
   let userId: string | undefined
@@ -83,11 +89,38 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // TODO: Integrate virus scanning
-    // This should be integrated with a virus scanning service (e.g., ClamAV, VirusTotal API)
-    // For now, we log a warning about this missing security layer
-    console.warn(`[Security] No virus scanning implemented. File uploaded by user ${userId} should be scanned.`)
-    // Recommended: await scanFileForViruses(buffer, filename)
+    // Malware scanning (fail-closed in production).
+    try {
+      const scanResult = await scanFileForMalware(buffer)
+      if (scanResult.status === "skipped" && process.env.NODE_ENV === "development") {
+        console.warn(`[Security] File scan skipped in development: ${scanResult.reason}`)
+      }
+    } catch (scanError) {
+      if (scanError instanceof FileInfectedError) {
+        console.warn(
+          `[Security] File upload rejected: Malware detected for user ${userId}${scanError.signature ? ` (${scanError.signature})` : ""}`
+        )
+        return NextResponse.json(
+          { error: "El archivo fue rechazado por controles de seguridad." },
+          { status: 400 }
+        )
+      }
+
+      if (
+        scanError instanceof FileScannerMisconfiguredError ||
+        scanError instanceof FileScannerUnavailableError
+      ) {
+        console.error(`[Security] File scanning unavailable for user ${userId}: ${scanError.message}`)
+        return NextResponse.json(
+          {
+            error: "El servicio de validacion de seguridad no esta disponible. Intenta nuevamente mas tarde.",
+          },
+          { status: 503 }
+        )
+      }
+
+      throw scanError
+    }
 
     // Generate secure filename using UUID
     const filename = generateSecureFilename(file.name, file.type)
