@@ -76,13 +76,19 @@ export async function POST(request: NextRequest) {
       data: { usedAt: new Date() }
     })
 
-    console.log('[Reset Password] Contraseña actualizada para:', user.email)
+    // Do NOT log email address in production
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Reset Password] Password reset completed successfully')
+    }
 
     return NextResponse.json({
       message: 'Contraseña actualizada exitosamente'
     })
   } catch (error) {
-    console.error('[Reset Password] Error:', error)
+    // Log generic error only in development
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[Reset Password] Error processing password reset')
+    }
     return NextResponse.json(
       { error: 'Error interno del servidor' },
       { status: 500 }

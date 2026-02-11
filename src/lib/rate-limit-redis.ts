@@ -65,48 +65,29 @@ export async function rateLimit(
 ): Promise<{ success: boolean; remaining: number; resetTime: number }> {
   const redis = await getRedisClient()
 
-  // Si no hay Redis, permitir todas las solicitudes (fallback)
+  // Fail-closed: si no hay Redis, bloquear para no desactivar la protección
   if (!redis) {
     return {
-      success: true,
-      remaining: config.limit,
-      resetTime: Date.now() + config.window * 1000,
+      success: false,
+      remaining: 0,
+      resetTime: Date.now() + 60 * 1000,
     }
   }
 
   try {
     const key = `ratelimit:${identifier}:${config.window}`
-    const now = Date.now()
-    const windowStart = now - config.window * 1000
 
-    // Usar pipeline para atomicidad
-    const pipeline = redis.pipeline()
-
-    // Remover entradas expiradas
-    pipeline.zremrangebyscore(key, 0, windowStart)
-
-    // Contar solicitudes en la ventana actual
-    pipeline.zcard(key)
-
-    // Añadir esta solicitud
-    pipeline.zadd(key, now, `${now}:${Math.random()}`)
-
-    // Establecer expiración
-    pipeline.expire(key, config.window)
-
-    const results = await pipeline.exec()
-
-    if (!results || results[1][1] === null) {
-      throw new Error('Error al ejecutar pipeline de Redis')
+    // INCR + EXPIRE (fixed-window) evita off-by-one y es atómico en Redis.
+    const currentCount = await redis.incr(key)
+    if (currentCount === 1) {
+      await redis.expire(key, config.window)
     }
 
-    const count = results[1][1] as number
+    const ttl = await redis.ttl(key)
+    const ttlSeconds = ttl > 0 ? ttl : config.window
+    const resetTime = Date.now() + ttlSeconds * 1000
 
-    if (count > config.limit) {
-      // Obtener el timestamp de la solicitud más antigua
-      const oldest = await redis.zrange(key, 0, 0, 'WITHSCORES')
-      const resetTime = oldest && oldest[1] ? parseInt(oldest[1] as string) + config.window * 1000 : now + config.window * 1000
-
+    if (currentCount > config.limit) {
       return {
         success: false,
         remaining: 0,
@@ -116,16 +97,16 @@ export async function rateLimit(
 
     return {
       success: true,
-      remaining: config.limit - count,
-      resetTime: now + config.window * 1000,
+      remaining: Math.max(0, config.limit - currentCount),
+      resetTime,
     }
   } catch (error) {
     console.error('[RateLimit] Error:', error)
-    // En caso de error, permitir la solicitud (fail open)
+    // Fail-closed: ante error de Redis, bloquear.
     return {
-      success: true,
-      remaining: config.limit,
-      resetTime: Date.now() + config.window * 1000,
+      success: false,
+      remaining: 0,
+      resetTime: Date.now() + 60 * 1000,
     }
   }
 }
@@ -134,19 +115,20 @@ export async function rateLimit(
  * Get client IP address from request
  */
 export function getClientIp(request: Request): string {
-  // Check various headers for IP
-  const forwarded = request.headers.get('x-forwarded-for')
-  const realIp = request.headers.get('x-real-ip')
+  // Priorizar cabeceras gestionadas por plataformas/proxies conocidos.
+  const vercelForwardedFor = request.headers.get('x-vercel-forwarded-for')
   const cfConnectingIp = request.headers.get('cf-connecting-ip')
+  const realIp = request.headers.get('x-real-ip')
+  const forwarded = request.headers.get('x-forwarded-for')
 
-  if (forwarded) {
-    return forwarded.split(',')[0].trim()
-  }
-  if (realIp) {
-    return realIp
-  }
-  if (cfConnectingIp) {
-    return cfConnectingIp
+  const candidate =
+    vercelForwardedFor ||
+    cfConnectingIp ||
+    realIp ||
+    (forwarded ? forwarded.split(',')[0].trim() : null)
+
+  if (candidate) {
+    return candidate
   }
 
   // Fallback to a generic identifier

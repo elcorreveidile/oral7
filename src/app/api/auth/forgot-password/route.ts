@@ -24,7 +24,10 @@ export async function POST(request: NextRequest) {
     // Por seguridad, no revelamos si el email existe o no
     // Siempre respondemos con éxito aunque el usuario no exista
     if (!user) {
-      console.log('[Forgot Password] Email no encontrado:', email)
+      // Do NOT log specific email - prevents user enumeration
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[Forgot Password] Password reset requested for non-existent user')
+      }
       return NextResponse.json({
         message: 'Si el email existe en nuestra base de datos, recibirás un enlace para restablecer tu contraseña.'
       })
@@ -50,7 +53,10 @@ export async function POST(request: NextRequest) {
     const protocol = request.headers.get('x-forwarded-proto') || 'https'
     const resetUrl = `${protocol}://${host}/reset-password?token=${token}`
 
-    console.log('[Forgot Password] Reset URL generada:', resetUrl)
+    // Do NOT log reset URL with token in production
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[Forgot Password] Reset token generated')
+    }
 
     // Enviar email
     try {
@@ -99,10 +105,15 @@ export async function POST(request: NextRequest) {
         `
       })
 
-      console.log('[Forgot Password] Email enviado exitosamente a:', email)
+      // Do NOT log email address in production
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[Forgot Password] Password reset email sent successfully')
+      }
     } catch (emailError: any) {
-      console.error('[Forgot Password] Error enviando email:', emailError)
-      console.error('[Forgot Password] Detalles del error:', emailError?.message)
+      // Do NOT log detailed error messages that might expose sensitive info
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[Forgot Password] Failed to send password reset email')
+      }
 
       // Por seguridad, no revelamos el error del email al usuario
       // Pero sí lo registramos para poder debuggear
@@ -112,7 +123,10 @@ export async function POST(request: NextRequest) {
       message: 'Si el email existe en nuestra base de datos, recibirás un enlace para restablecer tu contraseña.'
     })
   } catch (error) {
-    console.error('[Forgot Password] Error:', error)
+    // Log generic error only in development
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[Forgot Password] Error processing request')
+    }
     return NextResponse.json(
       { error: 'Error interno del servidor' },
       { status: 500 }

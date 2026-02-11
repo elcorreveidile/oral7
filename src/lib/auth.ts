@@ -16,7 +16,10 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          console.log('[Auth] Missing credentials')
+          // Log generic message only in development
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[Auth] Authentication attempt with missing credentials')
+          }
           return null
         }
 
@@ -25,24 +28,27 @@ export const authOptions: NextAuthOptions = {
         })
 
         if (!user || !user.password) {
-          console.log('[Auth] User not found or no password:', credentials.email)
+          // Do NOT log whether user exists or email - prevents user enumeration
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[Auth] Authentication failed')
+          }
           return null
         }
-
-        console.log('[Auth] User found:', user.email, 'Role:', user.role)
-        console.log('[Auth] Password hash exists:', !!user.password)
-        console.log('[Auth] Input password length:', credentials.password.length)
 
         const isPasswordValid = await compare(credentials.password, user.password)
 
-        console.log('[Auth] Password valid:', isPasswordValid)
-
         if (!isPasswordValid) {
-          console.log('[Auth] Password comparison failed for:', user.email)
+          // Do NOT log email or specific failure reason - prevents user enumeration
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[Auth] Authentication failed')
+          }
           return null
         }
 
-        console.log('[Auth] Authentication successful for:', user.email)
+        // Log successful auth without exposing email in production
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[Auth] Authentication successful')
+        }
 
         return {
           id: user.id,
