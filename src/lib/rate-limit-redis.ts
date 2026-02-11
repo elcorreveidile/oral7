@@ -8,6 +8,64 @@ import { NextResponse } from 'next/server'
 // Cliente Redis (lazy load)
 let redisClient: any = null
 
+const DEFAULT_CONNECT_TIMEOUT_MS = 2000
+const DEFAULT_COMMAND_TIMEOUT_MS = 1000
+const DEFAULT_MAX_RETRIES = 1
+const DEFAULT_OPERATION_TIMEOUT_MS = 1500
+
+function parsePositiveInt(value: string | undefined, fallback: number): number {
+  if (!value) return fallback
+  const parsed = Number.parseInt(value, 10)
+  if (!Number.isFinite(parsed) || parsed <= 0) return fallback
+  return parsed
+}
+
+function getConnectTimeoutMs(): number {
+  return parsePositiveInt(process.env.RATE_LIMIT_REDIS_CONNECT_TIMEOUT_MS, DEFAULT_CONNECT_TIMEOUT_MS)
+}
+
+function getCommandTimeoutMs(): number {
+  return parsePositiveInt(process.env.RATE_LIMIT_REDIS_COMMAND_TIMEOUT_MS, DEFAULT_COMMAND_TIMEOUT_MS)
+}
+
+function getMaxRetriesPerRequest(): number {
+  return parsePositiveInt(process.env.RATE_LIMIT_REDIS_MAX_RETRIES, DEFAULT_MAX_RETRIES)
+}
+
+function getDefaultOperationTimeoutMs(): number {
+  return parsePositiveInt(process.env.RATE_LIMIT_OPERATION_TIMEOUT_MS, DEFAULT_OPERATION_TIMEOUT_MS)
+}
+
+class RateLimitTimeoutError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'RateLimitTimeoutError'
+  }
+}
+
+async function withTimeout<T>(operation: Promise<T>, timeoutMs: number): Promise<T> {
+  if (timeoutMs <= 0) {
+    return operation
+  }
+
+  let timeoutHandle: ReturnType<typeof setTimeout> | null = null
+
+  try {
+    return await Promise.race([
+      operation,
+      new Promise<T>((_, reject) => {
+        timeoutHandle = setTimeout(() => {
+          reject(new RateLimitTimeoutError(`[RateLimit] Timeout after ${timeoutMs}ms`))
+        }, timeoutMs)
+      }),
+    ])
+  } finally {
+    if (timeoutHandle) {
+      clearTimeout(timeoutHandle)
+    }
+  }
+}
+
 /**
  * Inicializar cliente Redis
  * Usa ioredis que es compatible con Railway, Upstash, y Redis estándar
@@ -30,31 +88,39 @@ async function getRedisClient() {
     // Detectar automáticamente si usar TLS basándose en el protocolo de la URL
     // rediss:// = TLS habilitado, redis:// = sin TLS
     const tlsEnabled = redisUrl.startsWith('rediss://')
+    const connectTimeout = getConnectTimeoutMs()
+    const commandTimeout = getCommandTimeoutMs()
+    const maxRetries = getMaxRetriesPerRequest()
 
     console.log('[RateLimit] Iniciando conexión Redis...', {
       protocol: tlsEnabled ? 'rediss (TLS)' : 'redis',
-      host: redisUrl.split('@')[1]?.split(':')[0] || 'N/A'
+      host: redisUrl.split('@')[1]?.split(':')[0] || 'N/A',
+      connectTimeout,
+      commandTimeout,
+      maxRetries,
     })
 
     redisClient = new Redis(redisUrl, {
-      maxRetriesPerRequest: 3,
+      // Fail-fast para evitar que auth quede "pensando" por infraestructura Redis.
+      maxRetriesPerRequest: maxRetries,
       retryStrategy: (times: number) => {
-        if (times > 3) {
+        if (times > maxRetries) {
           console.error('[RateLimit] Máximo de reintentos alcanzado')
           return null
         }
-        console.log(`[RateLimit] Reintentando conexión (intento ${times}/3)`)
-        return Math.min(times * 200, 2000) // Aumentar delay entre reintentos
+        console.log(`[RateLimit] Reintentando conexión (intento ${times}/${maxRetries})`)
+        return Math.min(times * 100, 500)
       },
       tls: tlsEnabled ? {
         rejectUnauthorized: false, // Permitir certificados de Railway
         checkServerIdentity: () => undefined, // Saltar verificación estricta para Railway proxy
       } : undefined,
-      connectTimeout: 20000, // 20 segundos timeout para Railway proxy
+      connectTimeout,
+      commandTimeout,
       lazyConnect: true, // Conectar solo cuando sea necesario
       keepAlive: 5000, // Mantener conexión viva
       enableReadyCheck: false, // Deshabilitar ready check para serverless
-      enableOfflineQueue: true, // Encolar comandos mientras conecta
+      enableOfflineQueue: false, // Fail-fast: no encolar cuando Redis no está listo
     })
 
     redisClient.on('error', (err: Error) => {
@@ -83,37 +149,78 @@ export interface RateLimitConfig {
   window: number
 }
 
+export interface RateLimitOptions {
+  /** Policy when Redis is unavailable/errors/timeouts */
+  onRedisError?: 'fail-open' | 'fail-closed'
+  /** Timeout for each Redis operation in milliseconds */
+  timeoutMs?: number
+}
+
+export interface RateLimitResult {
+  success: boolean
+  remaining: number
+  resetTime: number
+  degraded?: boolean
+  reason?: 'redis_unavailable' | 'redis_error' | 'redis_timeout'
+}
+
+function fallbackResult(
+  config: RateLimitConfig,
+  onRedisError: 'fail-open' | 'fail-closed',
+  reason: RateLimitResult['reason']
+): RateLimitResult {
+  if (onRedisError === 'fail-open') {
+    return {
+      success: true,
+      remaining: config.limit,
+      resetTime: Date.now() + config.window * 1000,
+      degraded: true,
+      reason,
+    }
+  }
+
+  return {
+    success: false,
+    remaining: 0,
+    resetTime: Date.now() + 60 * 1000,
+    degraded: true,
+    reason,
+  }
+}
+
 /**
  * Rate limiter con Redis
  * @param identifier Unique identifier (user ID, IP address, etc.)
  * @param config Rate limit configuration
+ * @param options Additional control for resilience/behavior on Redis failures
  * @returns Object with success status and rate limit info
  */
 export async function rateLimit(
   identifier: string,
-  config: RateLimitConfig
-): Promise<{ success: boolean; remaining: number; resetTime: number }> {
+  config: RateLimitConfig,
+  options: RateLimitOptions = {}
+): Promise<RateLimitResult> {
+  const onRedisError = options.onRedisError ?? 'fail-closed'
+  const operationTimeoutMs = options.timeoutMs ?? getDefaultOperationTimeoutMs()
   const redis = await getRedisClient()
 
-  // Fail-closed: si no hay Redis, bloquear para no desactivar la protección
+  // Por defecto fail-closed para rutas sensibles; login puede pedir fail-open controlado.
   if (!redis) {
-    return {
-      success: false,
-      remaining: 0,
-      resetTime: Date.now() + 60 * 1000,
-    }
+    return fallbackResult(config, onRedisError, 'redis_unavailable')
   }
 
   try {
     const key = `ratelimit:${identifier}:${config.window}`
 
     // INCR + EXPIRE (fixed-window) evita off-by-one y es atómico en Redis.
-    const currentCount = await redis.incr(key)
+    const currentCountRaw = await withTimeout<number>(Promise.resolve(redis.incr(key)), operationTimeoutMs)
+    const currentCount = Number(currentCountRaw)
     if (currentCount === 1) {
-      await redis.expire(key, config.window)
+      await withTimeout<number>(Promise.resolve(redis.expire(key, config.window)), operationTimeoutMs)
     }
 
-    const ttl = await redis.ttl(key)
+    const ttlRaw = await withTimeout<number>(Promise.resolve(redis.ttl(key)), operationTimeoutMs)
+    const ttl = Number(ttlRaw)
     const ttlSeconds = ttl > 0 ? ttl : config.window
     const resetTime = Date.now() + ttlSeconds * 1000
 
@@ -131,13 +238,12 @@ export async function rateLimit(
       resetTime,
     }
   } catch (error) {
-    console.error('[RateLimit] Error:', error)
-    // Fail-closed: ante error de Redis, bloquear.
-    return {
-      success: false,
-      remaining: 0,
-      resetTime: Date.now() + 60 * 1000,
+    if (error instanceof RateLimitTimeoutError) {
+      console.error('[RateLimit] Timeout:', error.message)
+      return fallbackResult(config, onRedisError, 'redis_timeout')
     }
+    console.error('[RateLimit] Error:', error)
+    return fallbackResult(config, onRedisError, 'redis_error')
   }
 }
 
