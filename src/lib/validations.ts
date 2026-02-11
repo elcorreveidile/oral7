@@ -161,7 +161,76 @@ export type CreateStudentInput = z.infer<typeof createStudentSchema>
 // ============================================
 
 /**
- * Esquema para actualización de sesiones por administrador
+ * Esquema base para datos de sesión
+ */
+const sessionDataBaseSchema = z.object({
+  title: z
+    .string()
+    .min(1, "El título es obligatorio")
+    .max(200, "El título no puede exceder 200 caracteres"),
+  subtitle: z
+    .string()
+    .max(300, "El subtítulo no puede exceder 300 caracteres")
+    .optional(),
+  blockNumber: z
+    .number({
+      required_error: "El número de bloque es obligatorio",
+      invalid_type_error: "El número de bloque debe ser un número entero",
+    })
+    .int("El número de bloque debe ser un número entero")
+    .min(1, "El número de bloque debe estar entre 1 y 3")
+    .max(3, "El número de bloque debe estar entre 1 y 3"),
+  blockTitle: z
+    .string()
+    .min(1, "El título del bloque es obligatorio")
+    .max(100, "El título del bloque no puede exceder 100 caracteres"),
+  isExamDay: z.boolean().optional(),
+  examType: z.enum(["PARTIAL", "FINAL"]).optional().nullable(),
+  objectives: z
+    .array(z.string().min(1, "Los objetivos no pueden estar vacíos"))
+    .min(1, "Debe haber al menos un objetivo"),
+  timing: z.array(z.any()).min(1, "El timing debe tener al menos un elemento"),
+  dynamics: z.array(z.any()).min(1, "Las dinámicas deben tener al menos un elemento"),
+  grammarContent: z.any().optional().nullable(),
+  vocabularyContent: z.any().optional().nullable(),
+  modeAContent: z.any().optional().nullable(),
+  modeBContent: z.any().optional().nullable(),
+})
+
+/**
+ * Esquema para creación de sesiones
+ */
+export const createSessionSchema = z.object({
+  sessionNumber: z
+    .number({
+      required_error: "El número de sesión es obligatorio",
+      invalid_type_error: "El número de sesión debe ser un número entero",
+    })
+    .int("El número de sesión debe ser un número entero")
+    .positive("El número de sesión debe ser positivo")
+    .max(27, "El número de sesión no puede exceder 27"),
+  date: z
+    .string({
+      required_error: "La fecha es obligatoria",
+    })
+    .min(1, "La fecha es obligatoria")
+    .refine(
+      (date) => !isNaN(Date.parse(date)),
+      "Formato de fecha inválido"
+    ),
+}).merge(sessionDataBaseSchema)
+
+export type CreateSessionInput = z.infer<typeof createSessionSchema>
+
+/**
+ * Esquema para actualización de datos de sesión (sin wrapper)
+ */
+export const updateSessionDataSchema = sessionDataBaseSchema.partial()
+
+export type UpdateSessionDataInput = z.infer<typeof updateSessionDataSchema>
+
+/**
+ * Esquema para actualización de sesiones por administrador (con wrapper sessionNumber + data)
  * Permite actualizar campos específicos de una sesión
  */
 export const updateSessionSchema = z.object({
@@ -173,22 +242,7 @@ export const updateSessionSchema = z.object({
     .int("El número de sesión debe ser un número entero")
     .positive("El número de sesión debe ser positivo")
     .max(27, "El número de sesión no puede exceder 27"),
-  data: z.object({
-    title: z.string().max(200).optional(),
-    subtitle: z.string().max(300).optional(),
-    date: z.coerce.date().optional(),
-    blockNumber: z.number().int().min(1).max(3).optional(),
-    blockTitle: z.string().max(100).optional(),
-    isExamDay: z.boolean().optional(),
-    examType: z.enum(["PARTIAL", "FINAL"]).optional(),
-    objectives: z.array(z.string()).optional(),
-    timing: z.any().optional(),
-    dynamics: z.any().optional(),
-    grammarContent: z.any().optional(),
-    vocabularyContent: z.any().optional(),
-    modeAContent: z.any().optional(),
-    modeBContent: z.any().optional(),
-  }),
+  data: sessionDataBaseSchema.partial(),
 })
 
 export type UpdateSessionInput = z.infer<typeof updateSessionSchema>
@@ -430,6 +484,8 @@ export const schemas = {
   createStudent: createStudentSchema,
 
   // Sessions
+  createSession: createSessionSchema,
+  updateSessionData: updateSessionDataSchema,
   updateSession: updateSessionSchema,
 
   // Files

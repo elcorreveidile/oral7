@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { format, isToday, isBefore, isAfter, parseISO } from "date-fns"
 import { es } from "date-fns/locale"
+import { randomInt } from "crypto"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -51,12 +52,12 @@ export function getDayOfWeek(date: Date | string): string {
   return day.charAt(0).toUpperCase() + day.slice(1)
 }
 
-// Generar código QR aleatorio
+// Generar código QR aleatorio (criptográficamente seguro)
 export function generateQRCode(): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789' // Sin caracteres confusos
   let code = ''
   for (let i = 0; i < 6; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length))
+    code += chars.charAt(randomInt(0, chars.length))
   }
   return code
 }

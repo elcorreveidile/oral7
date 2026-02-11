@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import prisma from "@/lib/prisma"
+import { validateRequest, updateSessionDataSchema } from "@/lib/validations"
 
 export async function GET(
   request: NextRequest,
@@ -107,7 +108,18 @@ export async function PUT(
 
     const { sessionNumber } = params
     const sessionNum = parseInt(sessionNumber)
-    const data = await request.json()
+    const body = await request.json()
+
+    // Validate request body with Zod schema
+    const validation = validateRequest(updateSessionDataSchema, body)
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: validation.error },
+        { status: 400 }
+      )
+    }
+
+    const data = validation.data
 
     const updatedSession = await prisma.session.update({
       where: {
