@@ -3,29 +3,8 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { compare } from "bcryptjs"
 import prisma from "./prisma"
 
-// Dynamically determine NEXTAUTH_URL based on the environment
-// This allows the app to work with multiple domains (preview URLs, custom domains, etc.)
-function getNextAuthUrl(): string {
-  // In production on Vercel, use the VERCEL_URL if NEXTAUTH_URL is not explicitly set
-  // or if NEXTAUTH_URL is set to the default Vercel URL but we're on a custom domain
-  if (process.env.VERCEL === '1') {
-    // Check if we're on a custom domain by checking VERCEL_URL
-    // VERCEL_URL is automatically set by Vercel and changes based on the deployment
-    const vercelUrl = process.env.VERCEL_URL
-    if (vercelUrl && !vercelUrl.includes('.vercel.app')) {
-      // We're on a custom domain (like pio8.cognoscencia.com)
-      return `https://${vercelUrl}`
-    }
-  }
-
-  // Fall back to NEXTAUTH_URL environment variable
-  return process.env.NEXTAUTH_URL || 'http://localhost:3000'
-}
-
-// Set NEXTAUTH_URL dynamically for NextAuth internal use
-if (typeof process.env.NEXTAUTH_URL === 'undefined' || process.env.VERCEL === '1') {
-  process.env.NEXTAUTH_URL = getNextAuthUrl()
-}
+// Note: NEXTAUTH_URL is set dynamically in the route handler
+// based on request headers, allowing support for multiple domains
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -112,6 +91,9 @@ export const authOptions: NextAuthOptions = {
     // Role-specific expiration times are set in the JWT callback above.
   },
   secret: process.env.NEXTAUTH_SECRET,
+  // Use secure cookies in production
+  useSecureCookies: process.env.NODE_ENV === 'production',
+  debug: process.env.NODE_ENV === 'development',
 }
 
 // Tipos extendidos para NextAuth
