@@ -2,9 +2,24 @@ import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { compare } from "bcryptjs"
 import prisma from "./prisma"
+import { decryptSecret, verifyToken } from "./twoFactor"
 
 // Note: NEXTAUTH_URL is set dynamically in the route handler
 // based on request headers, allowing support for multiple domains
+
+function parseEnvBoolean(value: string | undefined, defaultValue = false): boolean {
+  if (value === undefined) return defaultValue
+  const normalized = value.trim().toLowerCase()
+  return normalized === "1" || normalized === "true" || normalized === "yes" || normalized === "on"
+}
+
+function isAdmin2FAEnabled(): boolean {
+  return parseEnvBoolean(process.env.AUTH_ADMIN_2FA_ENABLED, false)
+}
+
+function isAdmin2FAStrictMode(): boolean {
+  return parseEnvBoolean(process.env.AUTH_ADMIN_2FA_STRICT, false)
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -13,6 +28,7 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Contraseña", type: "password" },
+        totp: { label: "Código 2FA", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -71,6 +87,56 @@ export const authOptions: NextAuthOptions = {
             console.log('[Auth] Authentication failed')
           }
           return null
+        }
+
+        // 2FA gradual rollout:
+        // - Disabled by default through AUTH_ADMIN_2FA_ENABLED
+        // - Optional strict mode can be enabled with AUTH_ADMIN_2FA_STRICT
+        if (isAdmin2FAEnabled() && user.role === "ADMIN") {
+          try {
+            const adminSecurity = await prisma.user.findUnique({
+              where: { id: user.id },
+              select: {
+                twoFactorEnabled: true,
+                twoFactorSecret: true,
+              },
+            })
+
+            if (adminSecurity?.twoFactorEnabled) {
+              const totpToken = credentials?.totp?.trim() || ""
+
+              if (!adminSecurity.twoFactorSecret || !totpToken) {
+                if (process.env.NODE_ENV === "development") {
+                  console.log("[Auth] 2FA token required for admin login")
+                }
+                return null
+              }
+
+              try {
+                const decryptedSecret = decryptSecret(adminSecurity.twoFactorSecret)
+                const isTotpValid = verifyToken(decryptedSecret, totpToken)
+                if (!isTotpValid) {
+                  if (process.env.NODE_ENV === "development") {
+                    console.log("[Auth] Invalid 2FA token")
+                  }
+                  return null
+                }
+              } catch {
+                if (process.env.NODE_ENV === "development") {
+                  console.log("[Auth] Failed to verify 2FA token")
+                }
+                return null
+              }
+            }
+          } catch {
+            // If DB schema is partially deployed, keep auth available unless strict mode is enabled.
+            if (process.env.NODE_ENV === "development") {
+              console.error("[Auth] Could not load admin 2FA fields")
+            }
+            if (isAdmin2FAStrictMode()) {
+              return null
+            }
+          }
         }
 
         // Log successful auth without exposing email in production
