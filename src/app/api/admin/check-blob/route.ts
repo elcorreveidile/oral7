@@ -31,20 +31,21 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       configured: true,
-      message: "Vercel Blob Storage está configurado correctamente",
-      tokenPreview: token.substring(0, 20) + "..."
+      message: "Vercel Blob Storage está configurado correctamente"
+      // Do NOT expose token or token preview to client - security risk
     })
 
   } catch (error) {
-    // Better error logging to prevent "n" output
-    const errorMessage = error instanceof Error ? error.message : String(error)
+    // Log error internally for debugging (development only)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[Check Blob] Error verifying blob storage connection')
+    }
 
-
+    // Return generic error message to client - do not expose internal details
     return NextResponse.json(
       {
         configured: false,
-        message: "Error al verificar la conexión",
-        error: errorMessage
+        message: "Error al verificar la configuración de almacenamiento"
       },
       { status: 500 }
     )

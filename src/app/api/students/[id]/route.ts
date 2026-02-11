@@ -130,8 +130,17 @@ export async function PUT(
     const updateData: any = {}
     if (name) updateData.name = name
     if (email) updateData.email = email
-    if (password && password.length >= 6) {
-      updateData.password = await bcrypt.hash(password, 10)
+
+    // Validate and hash password if provided
+    // Use consistent password policy: minimum 8 characters (same as registration)
+    if (password) {
+      if (password.length < 8) {
+        return NextResponse.json(
+          { error: 'La contraseña debe tener al menos 8 caracteres' },
+          { status: 400 }
+        )
+      }
+      updateData.password = await bcrypt.hash(password, 12)
     }
 
     // Actualizar estudiante
