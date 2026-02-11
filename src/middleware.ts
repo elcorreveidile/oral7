@@ -40,9 +40,14 @@ function shouldExcludePath(pathname: string): boolean {
  * 2. Move inline scripts to external files
  * 3. Review and update third-party dependencies
  */
-function getCSPHeaderValue(): string {
+function getCSPHeaderValue(request: NextRequest): string {
   // Determine if we're in development
   const isDev = process.env.NODE_ENV === 'development'
+
+  // Get the current host for dynamic CSP
+  const host = request.headers.get('host') || ''
+  const protocol = request.headers.get('x-forwarded-proto') || 'https'
+  const currentOrigin = `${protocol}://${host}`
 
   // Base CSP directives
   const cspDirectives = [
@@ -66,9 +71,10 @@ function getCSPHeaderValue(): string {
 
     // Connect: restrict API calls to trusted sources
     // Allow localhost and websocket connections in development
+    // In production, allow current origin, Vercel URLs, and Neon database
     isDev
       ? "connect-src 'self' http://localhost:* ws://localhost:* https://*.vercel.app https://*.neon.tech https://oauth.googleusercontent.com https://accounts.google.com"
-      : "connect-src 'self' https://*.vercel.app https://*.neon.tech https://oauth.googleusercontent.com https://accounts.google.com",
+      : `connect-src 'self' ${currentOrigin} https://*.vercel.app https://*.neon.tech https://oauth.googleusercontent.com https://accounts.google.com`,
 
     // Frames: deny by default
     "frame-src 'none'",
@@ -143,7 +149,7 @@ export function middleware(request: NextRequest) {
 
   if (process.env.NODE_ENV === 'production') {
     // Content-Security-Policy: Controls what resources can be loaded
-    response.headers.set('Content-Security-Policy', getCSPHeaderValue())
+    response.headers.set('Content-Security-Policy', getCSPHeaderValue(request))
     response.headers.set('X-Frame-Options', 'DENY')
     response.headers.set('X-Content-Type-Options', 'nosniff')
     response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
