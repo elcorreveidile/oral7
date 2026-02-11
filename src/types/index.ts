@@ -13,6 +13,7 @@ export type TaskType =
   | "FREE_TEXT"
   | "AUDIO_RECORDING"
   | "VIDEO_RECORDING"
+  | "DOCUMENT_UPLOAD"
 
 export type ResourceType = "PDF" | "AUDIO" | "VIDEO" | "LINK" | "IMAGE"
 

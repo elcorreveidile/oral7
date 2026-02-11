@@ -679,6 +679,44 @@ async function main() {
 
   console.log('✅ Tasks created')
 
+  // Designated upload assignment per teaching session.
+  for (const session of sessions) {
+    await prisma.task.upsert({
+      where: {
+        id: `session-${session.sessionNumber}`,
+      },
+      update: {
+        sessionId: session.id,
+        title: `Entrega de archivos - Sesión ${session.sessionNumber}`,
+        description: `Sube tu entrega para "${session.title}". El profesor revisará y enviará feedback.`,
+        type: 'DOCUMENT_UPLOAD',
+        content: {
+          instructions: 'Sube tus evidencias de la sesión (audio, vídeo o documento). Máximo 10 archivos.',
+          acceptedFileTypes: ['audio', 'video', 'document'],
+          maxFiles: 10,
+        },
+        order: 900,
+        isModeBOnly: false,
+      },
+      create: {
+        id: `session-${session.sessionNumber}`,
+        sessionId: session.id,
+        title: `Entrega de archivos - Sesión ${session.sessionNumber}`,
+        description: `Sube tu entrega para "${session.title}". El profesor revisará y enviará feedback.`,
+        type: 'DOCUMENT_UPLOAD',
+        content: {
+          instructions: 'Sube tus evidencias de la sesión (audio, vídeo o documento). Máximo 10 archivos.',
+          acceptedFileTypes: ['audio', 'video', 'document'],
+          maxFiles: 10,
+        },
+        order: 900,
+        isModeBOnly: false,
+      },
+    })
+  }
+
+  console.log(`✅ ${sessions.length} designated upload tasks ensured`)
+
   // ============================================
   // 5. CREATE CHECKLIST ITEMS
   // ============================================
