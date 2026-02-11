@@ -3,7 +3,7 @@
  * Ejecutar con: npx tsx scripts/test-redis-connection.ts
  */
 
-import { createClient } from 'redis'
+import Redis from 'ioredis'
 
 async function testRedisConnection() {
   console.log('\n========================================')
@@ -28,12 +28,10 @@ async function testRedisConnection() {
 
   console.log('\n🔌 Conectando a Redis...')
 
-  const client = createClient({
-    url: redisUrl,
-    socket: {
-      connectTimeout: 10000,
-      reconnectStrategy: false
-    }
+  const client = new Redis(redisUrl, {
+    connectTimeout: 10000,
+    maxRetriesPerRequest: 3,
+    retryStrategy: () => null // No reintentar en test
   })
 
   client.on('error', (err) => {
@@ -42,7 +40,13 @@ async function testRedisConnection() {
   })
 
   try {
-    await client.connect()
+    // Esperar conexión
+    await new Promise((resolve, reject) => {
+      client.once('ready', resolve)
+      client.once('error', reject)
+      setTimeout(() => reject(new Error('Connection timeout')), 10000)
+    })
+
     console.log('✅ Conexión exitosa a Redis')
 
     // Test básico: SET
@@ -114,7 +118,7 @@ async function testRedisConnection() {
     console.log('2. Redeploy: vercel --prod')
     console.log('3. Verificar logs de Vercel para confirmar conexión')
 
-    await client.disconnect()
+    await client.quit()
     process.exit(0)
 
   } catch (error) {
@@ -124,7 +128,7 @@ async function testRedisConnection() {
     console.log('2. Verificar que REDIS_URL sea correcta')
     console.log('3. Verificar conectividad de red')
     console.log('4. Verificar que Railway tenga minutos disponibles (free tier)')
-    await client.disconnect().catch(() => {})
+    await client.quit().catch(() => {})
     process.exit(1)
   }
 }
