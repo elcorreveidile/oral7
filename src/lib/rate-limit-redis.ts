@@ -27,16 +27,29 @@ async function getRedisClient() {
     // Import dinámico para evitar problemas en entornos sin Redis
     const Redis = (await import('ioredis')).default
 
-    // Configurar TLS si está habilitado (requerido para Railway público y otros proveedores)
-    const tlsEnabled = process.env.REDIS_TLS_ENABLED === 'true'
+    // Detectar automáticamente si usar TLS basándose en el protocolo de la URL
+    // rediss:// = TLS habilitado, redis:// = sin TLS
+    const tlsEnabled = redisUrl.startsWith('rediss://')
+
+    console.log('[RateLimit] Iniciando conexión Redis...', {
+      protocol: tlsEnabled ? 'rediss (TLS)' : 'redis',
+      host: redisUrl.split('@')[1]?.split(':')[0] || 'N/A'
+    })
 
     redisClient = new Redis(redisUrl, {
       maxRetriesPerRequest: 3,
       retryStrategy: (times: number) => {
-        if (times > 3) return null
+        if (times > 3) {
+          console.error('[RateLimit] Máximo de reintentos alcanzado')
+          return null
+        }
+        console.log(`[RateLimit] Reintentando conexión (intento ${times}/3)`)
         return Math.min(times * 100, 1000)
       },
-      tls: tlsEnabled ? {} : undefined,
+      tls: tlsEnabled ? {
+        rejectUnauthorized: true, // Asegurar verificación de certificado
+      } : undefined,
+      connectTimeout: 10000, // 10 segundos timeout
     })
 
     redisClient.on('error', (err: Error) => {
@@ -44,7 +57,11 @@ async function getRedisClient() {
     })
 
     redisClient.on('connect', () => {
-      console.log('[RateLimit] Redis conectado exitosamente', tlsEnabled ? '(TLS habilitado)' : '')
+      console.log('[RateLimit] Redis conectado exitosamente', tlsEnabled ? '(TLS habilitado)' : '(sin TLS)')
+    })
+
+    redisClient.on('ready', () => {
+      console.log('[RateLimit] Redis listo para operaciones')
     })
 
     return redisClient
