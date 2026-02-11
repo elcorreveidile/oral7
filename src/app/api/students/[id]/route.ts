@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import { logAdminAction } from '@/lib/audit-logger'
+import { passwordComplexity } from '@/lib/validations'
 
 // GET - Obtener un estudiante individual con detalles completos
 export async function GET(
@@ -133,11 +134,21 @@ export async function PUT(
     if (email) updateData.email = email
 
     // Validate and hash password if provided
-    // Use consistent password policy: minimum 8 characters (same as registration)
+    // Enforce strong policy: minimum 12 chars + uppercase + lowercase + number + special char
     if (password) {
-      if (password.length < 8) {
+      if (password.length < 12) {
         return NextResponse.json(
-          { error: 'La contraseña debe tener al menos 8 caracteres' },
+          { error: 'La contraseña debe tener al menos 12 caracteres' },
+          { status: 400 }
+        )
+      }
+
+      if (!passwordComplexity(password)) {
+        return NextResponse.json(
+          {
+            error:
+              'La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial',
+          },
           { status: 400 }
         )
       }

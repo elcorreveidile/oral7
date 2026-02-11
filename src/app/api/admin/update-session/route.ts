@@ -69,9 +69,12 @@ export async function POST(req: Request) {
       },
     })
   } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[Admin Update Session] Failed to update session')
+    }
 
     return NextResponse.json(
-      { error: 'Error al actualizar la sesión', details: String(error) },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     )
   }
@@ -113,9 +116,12 @@ export async function GET(req: Request) {
       session: sessionData,
     })
   } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[Admin Update Session] Failed to fetch session')
+    }
 
     return NextResponse.json(
-      { error: 'Error al obtener la sesión', details: String(error) },
+      { error: 'Error interno del servidor' },
       { status: 500 }
     )
   }

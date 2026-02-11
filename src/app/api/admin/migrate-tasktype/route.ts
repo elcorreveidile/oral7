@@ -60,11 +60,14 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("[Admin TaskType Migration] Failed to execute migration")
+    }
 
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Error desconocido"
+        error: "Error interno del servidor"
       },
       { status: 500 }
     )
