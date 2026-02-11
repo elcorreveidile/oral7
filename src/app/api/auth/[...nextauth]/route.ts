@@ -9,6 +9,13 @@ import {
   rateLimitResponse,
 } from "@/lib/rate-limit-redis"
 
+function isEmergencyAuthRateLimitBypassEnabled(): boolean {
+  const value = process.env.AUTH_RATE_LIMIT_BYPASS
+  if (!value) return false
+  const normalized = value.trim().toLowerCase()
+  return normalized === "1" || normalized === "true" || normalized === "yes" || normalized === "on"
+}
+
 // Dynamic handler that detects the current host from request headers
 async function handler(req: NextRequest, context: any) {
   // Get the host from request headers
@@ -40,6 +47,10 @@ export async function POST(req: NextRequest, context: any) {
     const rateLimitResult = await rateLimit(`login:${ip}`, RateLimitConfig.auth)
 
     if (!rateLimitResult.success) {
+      if (isEmergencyAuthRateLimitBypassEnabled()) {
+        console.error("[Auth] AUTH_RATE_LIMIT_BYPASS enabled: bypassing login rate limit")
+        return handler(req, context)
+      }
       return rateLimitResponse(rateLimitResult.resetTime)
     }
 
