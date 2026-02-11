@@ -137,57 +137,24 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Create response with security headers
+  // In development, only apply basic headers
+  // All security headers are disabled for debugging
   const response = NextResponse.next()
 
-  // Content-Security-Policy: Controls what resources can be loaded
-  // This is the most critical security header
-  response.headers.set(
-    'Content-Security-Policy',
-    getCSPHeaderValue()
-  )
-
-  // X-Frame-Options: Prevents clickjacking attacks
-  // DENY: Completely prevents framing
-  response.headers.set('X-Frame-Options', 'DENY')
-
-  // X-Content-Type-Options: Prevents MIME-sniffing
-  // nosniff: Forces browser to use the declared content type
-  response.headers.set('X-Content-Type-Options', 'nosniff')
-
-  // Referrer-Policy: Controls how much referrer information is sent
-  // strict-origin-when-cross-origin: Send full URL to same origin, only origin to cross-origin
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-
-  // Permissions-Policy: Restricts access to browser features
-  response.headers.set(
-    'Permissions-Policy',
-    getPermissionsPolicy()
-  )
-
-  // Strict-Transport-Security: Enforces HTTPS
-  // max-age=31536000: Cache for 1 year
-  // includeSubDomains: Apply to all subdomains
-  // Only set this header in production with HTTPS
   if (process.env.NODE_ENV === 'production') {
-    response.headers.set(
-      'Strict-Transport-Security',
-      'max-age=31536000; includeSubDomains; preload'
-    )
+    // Content-Security-Policy: Controls what resources can be loaded
+    response.headers.set('Content-Security-Policy', getCSPHeaderValue())
+    response.headers.set('X-Frame-Options', 'DENY')
+    response.headers.set('X-Content-Type-Options', 'nosniff')
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+    response.headers.set('Permissions-Policy', getPermissionsPolicy())
+    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
+    response.headers.set('X-XSS-Protection', '1; mode=block')
+    response.headers.set('Cross-Origin-Opener-Policy', 'same-origin')
+    response.headers.set('Cross-Origin-Resource-Policy', 'same-origin')
+    response.headers.set('X-Permitted-Cross-Domain-Policies', 'none')
+    response.headers.delete('x-powered-by')
   }
-
-  // X-XSS-Protection: Activates browser's built-in XSS filter
-  // 1; mode=block: Enable filter and block entire page if attack detected
-  // Note: Modern browsers rely more on CSP, but this provides legacy support
-  response.headers.set('X-XSS-Protection', '1; mode=block')
-
-  // Additional security headers
-  response.headers.set('Cross-Origin-Opener-Policy', 'same-origin')
-  response.headers.set('Cross-Origin-Resource-Policy', 'same-origin')
-  response.headers.set('X-Permitted-Cross-Domain-Policies', 'none')
-
-  // Remove server information (security through obscurity)
-  response.headers.delete('x-powered-by')
 
   return response
 }
