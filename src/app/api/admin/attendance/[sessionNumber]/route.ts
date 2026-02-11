@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getAdminSession } from "@/lib/admin-auth"
 import prisma from "@/lib/prisma"
+import { logAdminAction } from "@/lib/audit-logger"
 
 function isCancelledSubtitle(subtitle: string | null | undefined) {
   return (subtitle || "").toLowerCase().includes("cancelad")
@@ -168,6 +169,19 @@ export async function PUT(
     if (ops.length > 0) {
       await prisma.$transaction(ops)
     }
+
+    await logAdminAction(
+      session.user.id,
+      "ATTENDANCE_BULK_UPDATE",
+      "Attendance",
+      dbSession.id,
+      {
+        sessionNumber: sessionNum,
+        created: toCreate.length,
+        deleted: toDeleteIds.length,
+      },
+      request
+    )
 
     return NextResponse.json({
       success: true,

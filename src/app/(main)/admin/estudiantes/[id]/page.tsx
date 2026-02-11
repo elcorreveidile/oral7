@@ -392,7 +392,7 @@ export default function StudentDetailPage({
                         )}
                         {submission.feedback && (
                           <p className="text-sm text-muted-foreground mt-1 max-w-xs truncate">
-                            "{submission.feedback}"
+                            &quot;{submission.feedback}&quot;
                           </p>
                         )}
                       </div>

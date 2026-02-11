@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getAdminSession } from "@/lib/admin-auth"
 import prisma from "@/lib/prisma"
+import { logAdminAction } from "@/lib/audit-logger"
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,6 +25,15 @@ export async function POST(request: NextRequest) {
     `
 
     if (checkResult.length > 0) {
+      await logAdminAction(
+        session.user.id,
+        "TASKTYPE_MIGRATION_CHECK",
+        "TaskType",
+        undefined,
+        { alreadyExists: true },
+        request
+      )
+
       return NextResponse.json({
         success: true,
         message: "DOCUMENT_UPLOAD ya existe en el enum TaskType",
@@ -34,6 +44,15 @@ export async function POST(request: NextRequest) {
     await prisma.$executeRaw`
       ALTER TYPE "TaskType" ADD VALUE 'DOCUMENT_UPLOAD'
     `
+
+    await logAdminAction(
+      session.user.id,
+      "TASKTYPE_MIGRATION_EXECUTED",
+      "TaskType",
+      undefined,
+      { value: "DOCUMENT_UPLOAD" },
+      request
+    )
 
     return NextResponse.json({
       success: true,
@@ -51,4 +70,3 @@ export async function POST(request: NextRequest) {
     )
   }
 }
-

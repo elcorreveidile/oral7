@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getAdminSession } from "@/lib/admin-auth"
 import prisma from "@/lib/prisma"
+import { logAdminAction } from "@/lib/audit-logger"
 
 export async function POST(request: NextRequest) {
   try {
@@ -70,6 +71,15 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    await logAdminAction(
+      session.user.id,
+      "SESSIONS_SYNC",
+      "Session",
+      undefined,
+      { created, updated, total: sessionsData.length },
+      request
+    )
+
     return NextResponse.json({
       success: true,
       message: `✅ Sync complete! Created: ${created}, Updated: ${updated}, Total: ${sessionsData.length}`
@@ -82,4 +92,3 @@ export async function POST(request: NextRequest) {
     )
   }
 }
-
