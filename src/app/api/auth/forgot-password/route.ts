@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     // Enviar email
     try {
       await resend.emails.send({
-        from: 'PIO-7 <noreply@pio8.cognoscencia.com>',
+        from: 'PIO-7 <onboarding@resend.dev>',
         to: email,
         subject: 'Restablece tu contraseña - PIO-7',
         html: `
@@ -99,10 +99,13 @@ export async function POST(request: NextRequest) {
         `
       })
 
-      console.log('[Forgot Password] Email enviado a:', email)
-    } catch (emailError) {
+      console.log('[Forgot Password] Email enviado exitosamente a:', email)
+    } catch (emailError: any) {
       console.error('[Forgot Password] Error enviando email:', emailError)
+      console.error('[Forgot Password] Detalles del error:', emailError?.message)
+
       // Por seguridad, no revelamos el error del email al usuario
+      // Pero sí lo registramos para poder debuggear
     }
 
     return NextResponse.json({
