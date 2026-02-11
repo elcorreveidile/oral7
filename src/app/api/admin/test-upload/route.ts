@@ -42,10 +42,13 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       const errorText = await response.text()
+      if (process.env.NODE_ENV === "development") {
+        console.error(`[Admin Test Upload] Blob service error ${response.status}: ${errorText}`)
+      }
 
       return NextResponse.json({
         success: false,
-        error: `Error ${response.status}: ${errorText}`,
+        error: "El servicio de almacenamiento no está disponible",
         status: response.status,
       })
     }
@@ -59,14 +62,16 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("[Admin Test Upload] Unexpected error while testing upload")
+    }
 
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Unknown error"
+        error: "Error interno del servidor"
       },
       { status: 500 }
     )
   }
 }
-

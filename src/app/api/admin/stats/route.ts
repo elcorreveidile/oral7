@@ -95,14 +95,12 @@ export async function GET(request: NextRequest) {
       studentsAtRisk
     })
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error)
-
+    if (process.env.NODE_ENV === "development") {
+      console.error("[Admin Stats] Failed to retrieve statistics")
+    }
 
     return NextResponse.json(
-      {
-        error: "Error al obtener las estadísticas",
-        message: errorMessage
-      },
+      { error: "Error interno del servidor" },
       { status: 500 }
     )
   }

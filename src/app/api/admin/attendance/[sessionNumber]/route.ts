@@ -100,9 +100,11 @@ export async function GET(
       absent,
     })
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
+    if (process.env.NODE_ENV === "development") {
+      console.error("[Admin Attendance] Failed to fetch attendance")
+    }
 
-    return NextResponse.json({ error: "Error al obtener la asistencia", message }, { status: 500 })
+    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
   }
 }
 
@@ -189,8 +191,10 @@ export async function PUT(
       created: toCreate.length,
     })
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
+    if (process.env.NODE_ENV === "development") {
+      console.error("[Admin Attendance] Failed to update attendance")
+    }
 
-    return NextResponse.json({ error: "Error al actualizar la asistencia", message }, { status: 500 })
+    return NextResponse.json({ error: "Error interno del servidor" }, { status: 500 })
   }
 }

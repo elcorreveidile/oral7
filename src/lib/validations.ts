@@ -55,7 +55,7 @@ export function validateRequest<T>(
  * - Al menos 1 número
  * - Al menos 1 carácter especial
  */
-const passwordComplexity = (password: string): boolean => {
+export const passwordComplexity = (password: string): boolean => {
   if (password.length < 12) return false
 
   const hasUpperCase = /[A-Z]/.test(password)
