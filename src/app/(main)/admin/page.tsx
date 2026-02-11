@@ -290,7 +290,7 @@ async function StatsWrapper({ hasStarted }: { hasStarted: boolean }) {
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Tasa de completitud</CardTitle>
+          <CardTitle className="text-sm font-medium">Tasa de asistencia</CardTitle>
           <TrendingUp className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
@@ -308,7 +308,7 @@ async function StatsWrapper({ hasStarted }: { hasStarted: boolean }) {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            `${stats.currentSession ?? 1}/${stats.totalSessions ?? 27}`
+            {stats.currentSession ?? 1}/{stats.totalSessions ?? 27}
           </div>
           <Progress
             value={((stats.currentSession / stats.totalSessions) * 100)}
@@ -317,20 +317,22 @@ async function StatsWrapper({ hasStarted }: { hasStarted: boolean }) {
         </CardContent>
       </Card>
 
-      <Card className={(stats.studentsAtRisk ?? 0) > 0 ? "border-red-200 dark:border-red-800" : ""}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">En riesgo</CardTitle>
-          <AlertCircle className={`h-4 w-4 ${(stats.studentsAtRisk ?? 0) > 0 ? "text-red-500" : "text-muted-foreground"}`} />
-        </CardHeader>
-        <CardContent>
-          <div className={`text-2xl font-bold ${(stats.studentsAtRisk ?? 0) > 0 ? "text-red-500" : ""}`}>
-            {stats.studentsAtRisk ?? 0}
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Estudiantes que requieren atención
-          </p>
-        </CardContent>
-      </Card>
+      <Link href="/admin/estudiantes?filter=atrisk" className="block">
+        <Card className={(stats.studentsAtRisk ?? 0) > 0 ? "border-red-200 dark:border-red-800 cursor-pointer hover:shadow-md transition-shadow" : ""}>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">En riesgo</CardTitle>
+            <AlertCircle className={`h-4 w-4 ${(stats.studentsAtRisk ?? 0) > 0 ? "text-red-500" : "text-muted-foreground"}`} />
+          </CardHeader>
+          <CardContent>
+            <div className={`text-2xl font-bold ${(stats.studentsAtRisk ?? 0) > 0 ? "text-red-500" : ""}`}>
+              {stats.studentsAtRisk ?? 0}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {(stats.studentsAtRisk ?? 0) > 0 ? "Click para ver detalles" : "Estudiantes que requieren atención"}
+            </p>
+          </CardContent>
+        </Card>
+      </Link>
     </div>
   )
 }
