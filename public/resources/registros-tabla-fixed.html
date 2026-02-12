@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla de Registros Lingüísticos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @page {
+            margin: 1.5cm;
+            size: A4;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-size: 11pt;
+            line-height: 1.4;
+            color: #1a1a1a;
+            background: #fff;
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 1cm;
+        }
+
+        h1 {
+            font-size: 22pt;
+            text-align: center;
+            margin-bottom: 0.2cm;
+            color: #1e3a5f;
+            border-bottom: 3px solid #1e3a5f;
+            padding-bottom: 0.3cm;
+        }
+
+        h2 {
+            font-size: 14pt;
+            text-align: center;
+            margin-bottom: 0.8cm;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        h3 {
+            font-size: 13pt;
+            margin-top: 0.7cm;
+            margin-bottom: 0.3cm;
+            color: #2d3748;
+            border-left: 4px solid #3182ce;
+            padding-left: 0.3cm;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0.5cm;
+            font-size: 9.5pt;
+            page-break-inside: avoid;
+        }
+
+        th, td {
+            border: 1px solid #cbd5e0;
+            padding: 0.2cm 0.25cm;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+            text-align: center;
+        }
+
+        th:first-child, td:first-child {
+            background: #edf2f7;
+            font-weight: 600;
+            width: 18%;
+        }
+
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        td:first-child {
+            font-weight: 600;
+        }
+
+        .col-informal {
+            background: #fef5e7 !important;
+        }
+
+        .col-estandar {
+            background: #e8f5e9 !important;
+        }
+
+        .col-formal {
+            background: #e3f2fd !important;
+        }
+
+        .notes {
+            margin-top: 0.8cm;
+            padding: 0.5cm;
+            background: #fffbeb;
+            border-left: 4px solid #d69e2e;
+            font-size: 10pt;
+        }
+
+        .notes ul {
+            margin: 0;
+            padding-left: 0.8cm;
+        }
+
+        .notes li {
+            margin: 0.15cm 0;
+        }
+
+        .notes strong {
+            color: #744210;
+        }
+
+        .footer {
+            margin-top: 1cm;
+            text-align: center;
+            font-size: 9pt;
+            color: #718096;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 0.3cm;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+
+        .print-hint {
+            position: fixed;
+            top: 1cm;
+            right: 1cm;
+            background: #3182ce;
+            color: white;
+            padding: 0.3cm 0.6cm;
+            border-radius: 5px;
+            font-size: 10pt;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .print-hint a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="print-hint no-print">
+        💾 Presiona <a href="javascript:window.print()">Ctrl+P</a> para guardar como PDF
+    </div>
+
+    <h1>TABLA DE REGISTROS LINGÜÍSTICOS</h1>
+    <h2>Sesión 4: El Registro Formal</h2>
+
+    <h3>Tabla de Situaciones y Registros</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>SITUACIÓN</th>
+                <th class="col-informal">INFORMAL</th>
+                <th class="col-estandar">ESTÁNDAR</th>
+                <th class="col-formal">FORMAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Pedir la hora a un desconocido</td>
+                <td>"Oye, ¿tienes hora?"</td>
+                <td>"Perdone, ¿tiene hora?"</td>
+                <td>"Disculpe, ¿podría decirme la hora, por favor?"</td>
+            </tr>
+            <tr>
+                <td>Solicitar un favor</td>
+                <td>"¿Me pasas eso?"</td>
+                <td>"¿Me podrías pasar eso?"</td>
+                <td>"¿Podría facilitarme ese documento?"</td>
+            </tr>
+            <tr>
+                <td>Saludo inicial</td>
+                <td>"¡Hola! ¿Qué tal?"</td>
+                <td>"Buenos días, ¿cómo está?"</td>
+                <td>"Buenos días. Espero que se encuentre bien."</td>
+            </tr>
+            <tr>
+                <td>Despedida</td>
+                <td>"¡Hasta luego!" / "¡Nos vemos!"</td>
+                <td>"Que tenga un buen día"</td>
+                <td>"Ha sido un placer. Le deseo un excelente día."</td>
+            </tr>
+            <tr>
+                <td>Decir que no sabes algo</td>
+                <td>"No tengo ni idea"</td>
+                <td>"No lo sé" / "No estoy seguro"</td>
+                <td>"Desconozco la respuesta" / "Ignoro ese dato"</td>
+            </tr>
+            <tr>
+                <td>Estar de acuerdo</td>
+                <td>"¡Totalmente!" / "¡Dale!"</td>
+                <td>"Estoy de acuerdo"</td>
+                <td>"Comparto su opinión" / "Le doy la razón"</td>
+            </tr>
+            <tr>
+                <td>Decir que estás cansado</td>
+                <td>"Estoy reventado" / "¡muerto!"</td>
+                <td>"Estoy cansado" / "Estoy agotado"</td>
+                <td>"Me siento fatigado" / "Me encuentro agotado"</td>
+            </tr>
+            <tr>
+                <td>Pedir que repitan algo</td>
+                <td>"¿Cómo?" / "¿Qué?"</td>
+                <td>"¿Perdón?" / "¿Puede repetir?"</td>
+                <td>"¿Podría repetir, por favor?"</td>
+            </tr>
+            <tr>
+                <td>Llamar la atención</td>
+                <td>"¡Oye!" / "¡Psst!"</td>
+                <td>"Disculpe" / "Perdone"</td>
+                <td>"Disculpe, ¿podría atenderme un momento?"</td>
+            </tr>
+            <tr>
+                <td>Dar las gracias</td>
+                <td>"¡Gracias!" / "¡Mil gracias!"</td>
+                <td>"Muchas gracias"</td>
+                <td>"Le agradezco sinceramente su colaboración"</td>
+            </tr>
+            <tr>
+                <td>Pedir perdón</td>
+                <td>"¡Perdona!" / "¡Sorry!"</td>
+                <td>"Lo siento" / "Disculpe"</td>
+                <td>"Le ruego acepte mis más sinceras disculpas"</td>
+            </tr>
+            <tr>
+                <td>Decir que te gustó algo</td>
+                <td>"¡Estuvo genial!" / "¡Me flipó!"</td>
+                <td>"Me gustó mucho" / "Fue muy bueno"</td>
+                <td>"Me resultó sumamente satisfactorio"</td>
+            </tr>
+            <tr>
+                <td>Decir que no a algo</td>
+                <td>"¡Ni hablar!" / "¡Para nada!"</td>
+                <td>"No puedo" / "Prefiero no hacerlo"</td>
+                <td>"Lamentablemente no me es posible"</td>
+            </tr>
+            <tr>
+                <td>Expresar desacuerdo</td>
+                <td>"¡Qué va!" / "¡Ni de coña!"</td>
+                <td>"No estoy de acuerdo"</td>
+                <td>"Con todo respeto, disiento de esa afirmación"</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Vocabulario Según el Registro</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Concepto</th>
+                <th class="col-informal">Informal / Coloquial</th>
+                <th class="col-estandar">Estándar</th>
+                <th class="col-formal">Formal</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Trabajo</td>
+                <td>Curro</td>
+                <td>Trabajo</td>
+                <td>Empleo / Puesto</td>
+            </tr>
+            <tr>
+                <td>Dinero</td>
+                <td>Pasta / Madera</td>
+                <td>Dinero</td>
+                <td>Capital / Recursos</td>
+            </tr>
+            <tr>
+                <td>Cosa</td>
+                <td>Chisme / Trasto</td>
+                <td>Cosa</td>
+                <td>Objeto / Artículo</td>
+            </tr>
+            <tr>
+                <td>Problema</td>
+                <td>Marrón / Lío</td>
+                <td>Problema</td>
+                <td>Inconveniente / Dificultad</td>
+            </tr>
+            <tr>
+                <td>Enfadado</td>
+                <td>Cabreado / Pirado</td>
+                <td>Enfadado</td>
+                <td>Alterado / Molesto</td>
+            </tr>
+            <tr>
+                <td>Asustado</td>
+                <td>Acojonado / Pasmao</td>
+                <td>Asustado</td>
+                <td>Preocupado / Inquieto</td>
+            </tr>
+            <tr>
+                <td>Mucha gente</td>
+                <td>Un montón de gente</td>
+                <td>Mucha gente</td>
+                <td>Numerosas personas</td>
+            </tr>
+            <tr>
+                <td>Rápido</td>
+                <td>A toda leche / Como rayos</td>
+                <td>Rápido</td>
+                <td>Con rapidez / Veloz</td>
+            </tr>
+            <tr>
+                <td>Bien / Bonito</td>
+                <td>Guapo / Chulo</td>
+                <td>Bueno / Bonito</td>
+                <td>Agradable / Excelente</td>
+            </tr>
+            <tr>
+                <td>Feo / Malo</td>
+                <td>Cutre / Asqueroso</td>
+                <td>Malo</td>
+                <td>Deficiente / Inadecuado</td>
+            </tr>
+            <tr>
+                <td>Beber alcohol</td>
+                <td>Ponerse como una cabra</td>
+                <td>Beber alcohol</td>
+                <td>Consumir bebidas alcohólicas</td>
+            </tr>
+            <tr>
+                <td>Comer</td>
+                <td>Matar el hambre / Tragar</td>
+                <td>Comer</td>
+                <td>Alimentarse / Ingerir alimentos</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Uso de TÚ vs. USTED</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Criterio</th>
+                <th class="col-informal">CUANDO USAR "TÚ"</th>
+                <th class="col-formal">CUANDO USAR "USTED"</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Relación</strong></td>
+                <td>Amigos, familia, compañeros de confianza</td>
+                <td>Desconocidos, superiores, clientes</td>
+            </tr>
+            <tr>
+                <td><strong>Edad</strong></td>
+                <td>Personas de edad similar o menores</td>
+                <td>Personas mayores (salvo que ofrezcan tuteo)</td>
+            </tr>
+            <tr>
+                <td><strong>Contexto laboral</strong></td>
+                <td>Empresas modernas / startups (a veces)</td>
+                <td>Empresas tradicionales, banca, administración</td>
+            </tr>
+            <tr>
+                <td><strong>Académico</strong></td>
+                <td>Entre compañeros de clase</td>
+                <td>Con profesores, autoridades académicas</td>
+            </tr>
+            <tr>
+                <td><strong>Primera vez</strong></td>
+                <td>Generalmente NO</td>
+                <td>SÍ, es la opción más segura</td>
+            </tr>
+            <tr>
+                <td><strong>Señal de cambio</strong></td>
+                <td>Podemos tutearnos si quieres</td>
+                <td>De usted podemos pasar a tú</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Muletillas y Coloquialismos a Evitar en Registro Formal</h3>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 30%;">Muletilla / Coloquialismo</th>
+                <th style="width: 35%;">Alternativa Formal</th>
+                <th style="width: 17%;">Contexto</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>"O sea..."</td>
+                <td>Es decir / En otras palabras</td>
+                <td>Explicaciones</td>
+            </tr>
+            <tr>
+                <td>"Es que..."</td>
+                <td>La razón es que / Debido a que</td>
+                <td>Dar explicaciones</td>
+            </tr>
+            <tr>
+                <td>"¿Sabes?" / "¿Entiendes?"</td>
+                <td>¿Comprende? / ¿Le parece claro?</td>
+                <td>Verificar entendimiento</td>
+            </tr>
+            <tr>
+                <td>"Tío / Tía" (España)</td>
+                <td>No usar / Usar nombre propio</td>
+                <td>Dirigirse a alguien</td>
+            </tr>
+            <tr>
+                <td>"Tipo / Chico / Chica"</td>
+                <td>Persona / Individuo / Caballero / Señora</td>
+                <td>Referirse a alguien</td>
+            </tr>
+            <tr>
+                <td>"¡Epa!" / "¡Oye!"</td>
+                <td>Disculpe / Perdone / Mire</td>
+                <td>Llamar atención</td>
+            </tr>
+            <tr>
+                <td>"¡Genial!" / "¡Flipante!"</td>
+                <td>Excelente / Muy satisfactorio</td>
+                <td>Expresar aprobación</td>
+            </tr>
+            <tr>
+                <td>"No tengo ni idea"</td>
+                <td>Desconozco / Ignoro</td>
+                <td>Expresar desconocimiento</td>
+            </tr>
+            <tr>
+                <td>"Me da igual"</td>
+                <td>Me es indiferente / No tengo preferencia</td>
+                <td>Expresar indiferencia</td>
+            </tr>
+            <tr>
+                <td>"¡Ni hablar!" / "¡De ninguna manera!"</td>
+                <td>Lamentablemente no es posible</td>
+                <td>Negativa formal</td>
+            </tr>
+            <tr>
+                <td>"A lo mejor..."</td>
+                <td>Es posible que / Tal vez</td>
+                <td>Expresar probabilidad</td>
+            </tr>
+            <tr>
+                <td>"¡Qué fuerte!" / "¡Qué loco!"</td>
+                <td>Es sorprendente / Resulta inusual</td>
+                <td>Expresar sorpresa</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="notes">
+        <strong>📌 Notas Importantes:</strong>
+        <ul>
+            <li>El registro <strong>estándar</strong> es el más seguro en situaciones no definidas.</li>
+            <li>En <strong>Latinoamérica</strong> el "usted" es mucho más común que en España.</li>
+            <li>El <strong>tuteo</strong> debe ser ofrecido por la persona de mayor estatus o edad.</li>
+            <li><strong>Observar</strong> cómo se dirigen los demás en el contexto antes de hablar.</li>
+            <li>Es mejor <strong>pecar de excesivamente formal</strong> que de demasiado informal.</li>
+            <li>El registro puede <strong>cambiar dentro de una misma conversación</strong> si la relación evoluciona.</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        Curso de Español C1 - Registro y Cortesía
+    </div>
+</body>
+</html>
