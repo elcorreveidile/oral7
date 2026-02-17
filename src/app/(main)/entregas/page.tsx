@@ -26,6 +26,7 @@ interface SessionAssignment {
   sessionDate: string
   taskId: string
   taskType: "DOCUMENT_UPLOAD"
+  taskInstructions: string | null
 }
 
 export default function EntregasPage() {
@@ -192,6 +193,14 @@ export default function EntregasPage() {
                           {selectedAssignment?.sessionTitle}
                         </DialogDescription>
                       </DialogHeader>
+
+                      {/* Show task instructions if available */}
+                      {selectedAssignment?.taskInstructions && (
+                        <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                          <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">Instrucciones:</p>
+                          <p className="text-sm text-blue-800 dark:text-blue-200 whitespace-pre-wrap">{selectedAssignment.taskInstructions}</p>
+                        </div>
+                      )}
 
                       <TaskSubmission
                         taskId={selectedAssignment?.taskId || ""}

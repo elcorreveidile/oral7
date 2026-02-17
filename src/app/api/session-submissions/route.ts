@@ -170,14 +170,35 @@ export async function GET(request: NextRequest) {
       },
     })
 
-    const assignments = sessions.map((sessionItem) => ({
-      sessionId: sessionItem.id,
-      sessionNumber: sessionItem.sessionNumber,
-      sessionTitle: sessionItem.title,
-      sessionDate: sessionItem.date,
-      taskId: getSessionUploadTaskId(sessionItem.sessionNumber),
-      taskType: "DOCUMENT_UPLOAD" as const,
-    }))
+    // Get tasks to include instructions
+    const taskIds = sessions.map((s) => getSessionUploadTaskId(s.sessionNumber))
+    const tasks = await prisma.task.findMany({
+      where: {
+        id: { in: taskIds },
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        content: true,
+      },
+    })
+    const taskById = new Map(tasks.map((t) => [t.id, t]))
+
+    const assignments = sessions.map((sessionItem) => {
+      const taskId = getSessionUploadTaskId(sessionItem.sessionNumber)
+      const task = taskById.get(taskId)
+      const content = task?.content as any
+      return {
+        sessionId: sessionItem.id,
+        sessionNumber: sessionItem.sessionNumber,
+        sessionTitle: sessionItem.title,
+        sessionDate: sessionItem.date,
+        taskId: taskId,
+        taskType: "DOCUMENT_UPLOAD" as const,
+        taskInstructions: content?.instructions || null,
+      }
+    })
 
     return NextResponse.json({ submissions, assignments })
   } catch (error) {
