@@ -148,6 +148,7 @@ export interface SessionData {
   tasks?: TaskData[]
   checklistItems?: ChecklistItemData[]
   resources?: ResourceData[]
+  homeworkInstructions?: string
 }
 
 export interface TaskData {
