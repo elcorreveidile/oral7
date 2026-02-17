@@ -84,7 +84,16 @@ export async function POST(request: NextRequest) {
       },
     })
 
-    const uploadTaskSync = await ensureSessionUploadTasksForSessions(syncedSessions)
+    // Merge homeworkInstructions from sessionsData
+    const sessionsWithHomework = syncedSessions.map((dbSession) => {
+      const sessionData = sessionsData.find((s) => s.sessionNumber === dbSession.sessionNumber)
+      return {
+        ...dbSession,
+        homeworkInstructions: sessionData?.homeworkInstructions || null,
+      }
+    })
+
+    const uploadTaskSync = await ensureSessionUploadTasksForSessions(sessionsWithHomework)
 
     await logAdminAction(
       session.user.id,
