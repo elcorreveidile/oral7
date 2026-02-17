@@ -140,10 +140,22 @@ export async function GET(request: NextRequest) {
       },
     })
 
+    // Import sessions data to get homeworkInstructions
+    const { sessionsData } = await import('@/data/sessions')
+
+    // Merge homeworkInstructions from sessionsData
+    const sessionsWithHomework = sessions.map((dbSession) => {
+      const sessionData = sessionsData.find((s) => s.sessionNumber === dbSession.sessionNumber)
+      return {
+        ...dbSession,
+        homeworkInstructions: sessionData?.homeworkInstructions || null,
+      }
+    })
+
     // Ensure designated upload tasks exist for all non-exam sessions.
     // This prevents "empty assignments" screens after syncs/migrations.
     try {
-      await ensureSessionUploadTasksForSessions(sessions)
+      await ensureSessionUploadTasksForSessions(sessionsWithHomework)
     } catch {
       console.error("[SessionSubmissions] Could not ensure upload tasks")
     }
