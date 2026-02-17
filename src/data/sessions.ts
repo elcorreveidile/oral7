@@ -912,7 +912,55 @@ export const sessionsData: SessionData[] = [
           },
         },
         order: 1,
-        isModeBOnly: true,
+        isModeBOnly: false,
+      },
+      {
+        id: 'task-5-2',
+        title: 'Elige la respuesta más adecuada',
+        description: 'Selecciona la expresión correcta según el contexto',
+        type: 'MULTIPLE_CHOICE',
+        content: {
+          instructions: 'Elige la respuesta más apropiada:',
+          items: [
+            {
+              id: 'q1',
+              type: 'question',
+              content: { question: 'Tu jefe propone una idea con la que no estás de acuerdo. ¿Qué dices?' },
+              options: [
+                { id: 'a', type: 'option', text: 'Estás totalmente equivocado.' },
+                { id: 'b', type: 'option', text: 'Con todo respeto, tengo una perspectiva diferente.' },
+                { id: 'c', type: 'option', text: 'Ni hablar, eso es horrible.' },
+              ],
+            },
+            {
+              id: 'q2',
+              type: 'question',
+              content: { question: 'Un amigo sugiere un restaurante que no te gusta. ¿Qué dices?' },
+              options: [
+                { id: 'a', type: 'option', text: 'Disiento rotundamente de su elección.' },
+                { id: 'b', type: 'option', text: 'Lo veo de otra forma, prefiero algo más casual.' },
+                { id: 'c', type: 'option', text: 'Me permito disentir de su proposición.' },
+              ],
+            },
+            {
+              id: 'q3',
+              type: 'question',
+              content: { question: 'En una conferencia académica, no estás de acuerdo con el ponente. ¿Qué dices?' },
+              options: [
+                { id: 'a', type: 'option', text: 'Muy interesante, aunque veo las cosas de otra forma.' },
+                { id: 'b', type: 'option', text: 'No estoy nada de acuerdo.' },
+                { id: 'c', type: 'option', text: 'Estás mal.' },
+              ],
+            },
+          ],
+          correctAnswers: { q1: 'b', q2: 'b', q3: 'a' },
+          feedback: {
+            correct: '¡Excelente! Has identificado correctamente los registros.',
+            incorrect: 'Revisa: Contexto formal requiere "Con todo respeto"; con amigos usa "Lo veo de otra forma"; en conferencias usa fórmulas suavizadas.',
+          },
+        },
+        order: 2,
+        isModeBOnly: false,
       },
     ],
     checklistItems: [
@@ -926,7 +974,7 @@ export const sessionsData: SessionData[] = [
       { id: 'r5-1', title: 'Tabla de acuerdo y desacuerdo', type: 'PDF', url: '/resources/acuerdo-desacuerdo-tabla.pdf', order: 1 },
       { id: 'r5-2', title: 'Pragmática del desacuerdo intercultural', type: 'PDF', url: '/resources/desacuerdo-intercultural.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Graba 3 situaciones cortas (1-2 min cada una): (a) una conversación formal con tu jefe, (b) una entrevista de trabajo, (c) una cena informal con amigos. Demuestra el uso apropiado de tú vs usted y registro formal/informal.',
+    homeworkInstructions: 'Graba un debate contigo mismo o con un compañero (4-5 minutos). Elige un tema polémico y expresa acuerdo/desacuerdo usando toda la escala: desde "Totalmente de acuerdo" hasta "Totalmente en desacuerdo", usando las fórmulas suavizadas, matizadas y rotundas.',
   },
 
   // ============================================
@@ -1103,7 +1151,7 @@ export const sessionsData: SessionData[] = [
       { id: 'r6-1', title: 'Estructura de contraargumentación', type: 'PDF', url: '/resources/contraargumentacion-estructura.pdf', order: 1 },
       { id: 'r6-2', title: 'Ejercicios de contraargumentación', type: 'PDF', url: '/resources/ejercicios-contraargumentacion.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Graba un debate contigo mismo o con un compañero (4-5 minutos). Elige un tema polémico y expresa acuerdo/desacuerdo usando toda la escala: desde "Totalmente de acuerdo" hasta "Totalmente en desacuerdo", usando las fórmulas suavizadas, matizadas y rotundas.',
+    homeworkInstructions: 'Graba un contraargumento de 3-4 minutos. Primero presenta un argumento (ej. "La tecnología nos hace menos sociables"), luego contraargumenta usando conectores de contraargumentación (sin embargo, no obstante, aun así, no por eso) y concesiones (es cierto que, admite que).',
   },
 
   // ============================================
