@@ -171,13 +171,19 @@ export async function ensureSessionUploadTasksForSessions(sessions: SessionLite[
       continue
     }
 
+    // Compare content as JSON string to detect changes in homeworkInstructions
+    const existingContentStr = JSON.stringify(existingTask.content)
+    const newContentStr = JSON.stringify(content)
+    const contentChanged = existingContentStr !== newContentStr
+
     const needsUpdate =
       existingTask.sessionId !== session.id ||
       existingTask.type !== "DOCUMENT_UPLOAD" ||
       existingTask.title !== title ||
       existingTask.description !== description ||
       existingTask.order !== SESSION_UPLOAD_TASK_ORDER ||
-      existingTask.isModeBOnly !== false
+      existingTask.isModeBOnly !== false ||
+      contentChanged
 
     if (needsUpdate) {
       toUpdate.push({
