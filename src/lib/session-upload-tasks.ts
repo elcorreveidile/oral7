@@ -5,6 +5,7 @@ type SessionLite = {
   sessionNumber: number
   title: string
   isExamDay: boolean
+  homeworkInstructions?: string | null
 }
 
 export const SESSION_UPLOAD_TASK_PREFIX = "session-"
@@ -18,10 +19,13 @@ function buildSessionUploadTaskDescription(sessionTitle: string): string {
   return `Sube tu entrega para "${sessionTitle}". El profesor revisará y enviará feedback.`
 }
 
-function buildSessionUploadTaskContent() {
+function buildSessionUploadTaskContent(homeworkInstructions?: string | null) {
+  const instructions = homeworkInstructions
+    ? homeworkInstructions
+    : "Sube tus evidencias de la sesión (audio, vídeo o documento). Máximo 10 archivos."
+
   return {
-    instructions:
-      "Sube tus evidencias de la sesión (audio, vídeo o documento). Máximo 10 archivos.",
+    instructions,
     acceptedFileTypes: ["audio", "video", "document"],
     maxFiles: 10,
   }
@@ -67,7 +71,7 @@ export async function ensureSessionUploadTask(session: SessionLite): Promise<voi
       title: buildSessionUploadTaskTitle(session.sessionNumber),
       description: buildSessionUploadTaskDescription(session.title),
       type: "DOCUMENT_UPLOAD",
-      content: buildSessionUploadTaskContent(),
+      content: buildSessionUploadTaskContent(session.homeworkInstructions),
       order: SESSION_UPLOAD_TASK_ORDER,
       isModeBOnly: false,
     },
@@ -77,7 +81,7 @@ export async function ensureSessionUploadTask(session: SessionLite): Promise<voi
       title: buildSessionUploadTaskTitle(session.sessionNumber),
       description: buildSessionUploadTaskDescription(session.title),
       type: "DOCUMENT_UPLOAD",
-      content: buildSessionUploadTaskContent(),
+      content: buildSessionUploadTaskContent(session.homeworkInstructions),
       order: SESSION_UPLOAD_TASK_ORDER,
       isModeBOnly: false,
     },
@@ -150,7 +154,7 @@ export async function ensureSessionUploadTasksForSessions(sessions: SessionLite[
     const taskId = getSessionUploadTaskId(session.sessionNumber)
     const title = buildSessionUploadTaskTitle(session.sessionNumber)
     const description = buildSessionUploadTaskDescription(session.title)
-    const content = buildSessionUploadTaskContent()
+    const content = buildSessionUploadTaskContent(session.homeworkInstructions)
 
     const existingTask = existingTaskById.get(taskId)
     if (!existingTask) {
