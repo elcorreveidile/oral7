@@ -7,7 +7,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useToast } from "@/components/ui/use-toast"
-import { ArrowLeft, RefreshCw, ExternalLink, Database, HardDrive, Wrench } from "lucide-react"
+import { ArrowLeft, RefreshCw, ExternalLink, Database, HardDrive, Wrench, Trash2 } from "lucide-react"
 
 type ApiResult = {
   ok: boolean
@@ -194,6 +194,32 @@ export default function AdminMaintenancePage() {
               Ejecutar
             </Button>
             <Button variant="outline" onClick={() => copyPath("/api/admin/migrate-tasktype")}>
+              <ExternalLink className="mr-2 h-4 w-4" />
+              Copiar ruta
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="border-red-200 dark:border-red-800">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <Trash2 className="h-5 w-5 text-red-500" />
+              <CardTitle className="text-red-600 dark:text-red-400">Limpiar sesiones de prueba</CardTitle>
+            </div>
+            <CardDescription>
+              Elimina sesiones de prueba (998, 999, "asistencia test", etc.) de la base de datos.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex gap-2">
+            <Button
+              variant="destructive"
+              onClick={() => run("cleanup", "/api/admin/cleanup-test-sessions", "POST")}
+              disabled={loadingKey !== null}
+            >
+              {loadingKey === "cleanup" && <RefreshCw className="mr-2 h-4 w-4 animate-spin" />}
+              Limpiar
+            </Button>
+            <Button variant="outline" onClick={() => copyPath("/api/admin/cleanup-test-sessions")}>
               <ExternalLink className="mr-2 h-4 w-4" />
               Copiar ruta
             </Button>
