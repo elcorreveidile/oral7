@@ -121,6 +121,7 @@ export async function ensureSessionUploadTasksForSessions(sessions: SessionLite[
       sessionId: true,
       title: true,
       description: true,
+      content: true,
       type: true,
       order: true,
       isModeBOnly: true,
