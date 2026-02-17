@@ -207,7 +207,7 @@ export default function AdminMaintenancePage() {
               <CardTitle className="text-red-600 dark:text-red-400">Limpiar sesiones de prueba</CardTitle>
             </div>
             <CardDescription>
-              Elimina sesiones de prueba (998, 999, "asistencia test", etc.) de la base de datos.
+              Elimina sesiones de prueba (998, 999, &quot;asistencia test&quot;, etc.) de la base de datos.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex gap-2">
