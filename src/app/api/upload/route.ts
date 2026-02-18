@@ -34,9 +34,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Apply rate limiting based on user ID
+    // Apply rate limiting based on user ID.
+    // fail-open: if Redis is unavailable the upload is allowed through (degraded mode)
+    // rather than blocking the student with a false "Too many requests" error.
     userId = session.user.id
-    const rateLimitResult = await rateLimit(`upload:${userId}`, RateLimitConfig.upload)
+    const rateLimitResult = await rateLimit(`upload:${userId}`, RateLimitConfig.upload, {
+      onRedisError: 'fail-open',
+    })
 
     if (!rateLimitResult.success) {
       return rateLimitResponse(rateLimitResult.resetTime)
