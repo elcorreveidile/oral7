@@ -241,6 +241,13 @@ export function TaskSubmission({
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: "Error desconocido" }))
+        if (response.status === 429) {
+          const retryAfter = errorData.retryAfter
+          const waitMsg = retryAfter ? ` Intenta de nuevo en ${retryAfter} segundos.` : ""
+          throw new Error(
+            (errorData.message || "Has excedido el límite de solicitudes. Por favor, espera un momento.") + waitMsg
+          )
+        }
         throw new Error(errorData.error || errorData.details || "Error al subir el archivo")
       }
 
