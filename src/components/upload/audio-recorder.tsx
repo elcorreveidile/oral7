@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Mic, Square, Play, Pause, Trash2, Loader2 } from "lucide-react"
+import { Mic, Square, Play, Pause, Trash2, Loader2, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -19,6 +19,7 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const [duration, setDuration] = useState(0)
   const [uploading, setUploading] = useState(false)
+  const pendingBlobRef = useRef<{ blob: Blob; url: string } | null>(null)
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
@@ -123,12 +124,11 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
         const url = URL.createObjectURL(audioBlob)
         setAudioUrl(url)
 
+        // Store blob for when user explicitly confirms upload
+        pendingBlobRef.current = { blob: audioBlob, url }
+
         // Stop all tracks to release microphone
         stream.getTracks().forEach((track) => track.stop())
-
-        if (onRecordingComplete) {
-          onRecordingComplete(audioBlob, url)
-        }
       }
 
       mediaRecorder.start()
@@ -182,8 +182,15 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
       URL.revokeObjectURL(audioUrl)
       setAudioUrl(null)
     }
+    pendingBlobRef.current = null
     setDuration(0)
     setIsPlaying(false)
+  }
+
+  const confirmRecording = () => {
+    if (pendingBlobRef.current && onRecordingComplete) {
+      onRecordingComplete(pendingBlobRef.current.blob, pendingBlobRef.current.url)
+    }
   }
 
   const formatTime = (seconds: number) => {
@@ -284,6 +291,7 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
                   variant="outline"
                   size="icon"
                   onClick={deleteRecording}
+                  disabled={disabled || uploading}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -292,6 +300,24 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
               <div className="text-center text-sm text-muted-foreground">
                 Duración: {formatTime(duration)}
               </div>
+
+              <Button
+                onClick={confirmRecording}
+                disabled={disabled || uploading}
+                className="w-full"
+              >
+                {uploading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Subiendo...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="mr-2 h-4 w-4" />
+                    Usar esta grabación
+                  </>
+                )}
+              </Button>
             </div>
           )}
 
