@@ -68,23 +68,38 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
   }, [toast])
 
   // Detect supported MIME type for audio recording
+  // Order matters: prioritize best quality formats first
   const getSupportedMimeType = () => {
     const types = [
+      // Chrome/Firefox - Opus codec (best quality)
       "audio/webm;codecs=opus",
       "audio/webm",
+      // Safari - MP4/AAC
       "audio/mp4",
-      "audio/mpeg",
+      "audio/aac",
+      // Fallbacks
       "audio/ogg",
+      "audio/mpeg",
     ]
 
     for (const type of types) {
       if (MediaRecorder.isTypeSupported(type)) {
+        console.log(`[AudioRecorder] Using MIME type: ${type}`)
         return type
       }
     }
 
     // Fallback to browser default
+    console.warn("[AudioRecorder] No supported MIME type found, using browser default")
     return ""
+  }
+
+  // Get file extension based on MIME type
+  const getFileExtension = (mimeType: string) => {
+    if (mimeType.includes("mp4") || mimeType.includes("aac")) return ".mp4"
+    if (mimeType.includes("ogg")) return ".ogg"
+    if (mimeType.includes("mpeg")) return ".mp3"
+    return ".webm" // default
   }
 
   useEffect(() => {
@@ -100,6 +115,19 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
 
   const startRecording = async () => {
     try {
+      // Check for HTTPS or localhost (required for getUserMedia)
+      if (typeof window !== "undefined" &&
+          window.location.protocol !== "https:" &&
+          window.location.hostname !== "localhost" &&
+          window.location.hostname !== "127.0.0.1") {
+        toast({
+          variant: "destructive",
+          title: "Error de seguridad",
+          description: "El acceso al micrófono requiere conexión HTTPS",
+        })
+        return
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
 
       const mimeType = getSupportedMimeType()
@@ -117,8 +145,9 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
       }
 
       mediaRecorder.onstop = () => {
+        const finalMimeType = mimeType || "audio/webm"
         const audioBlob = new Blob(audioChunksRef.current, {
-          type: mimeType || "audio/webm",
+          type: finalMimeType,
         })
         const url = URL.createObjectURL(audioBlob)
         setAudioUrl(url)
@@ -131,7 +160,8 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
         }
       }
 
-      mediaRecorder.start()
+      // Request data every second to avoid large blobs
+      mediaRecorder.start(1000)
       setIsRecording(true)
       setDuration(0)
 
@@ -145,12 +175,24 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
           return prev + 1
         })
       }, 1000)
-    } catch (error) {
+    } catch (error: any) {
+
+      console.error("[AudioRecorder] Error starting recording:", error)
+
+      let errorMessage = "Verifica que hayas dado permisos para usar el micrófono"
+
+      if (error.name === "NotAllowedError" || error.name === "PermissionDeniedError") {
+        errorMessage = "Has denegado el permiso del micrófono. Habilita los permisos en la configuración de tu navegador."
+      } else if (error.name === "NotFoundError" || error.name === "DevicesNotFoundError") {
+        errorMessage = "No se encontró ningún micrófono. Conecta un micrófono e inténtalo de nuevo."
+      } else if (error.name === "NotReadableError" || error.name === "TrackStartError") {
+        errorMessage = "El micrófono está siendo usado por otra aplicación. Cierra otras aplicaciones que puedan estar usándolo."
+      }
 
       toast({
         variant: "destructive",
         title: "Error de acceso al micrófono",
-        description: "Verifica que hayas dado permisos para usar el micrófono",
+        description: errorMessage,
       })
     }
   }
