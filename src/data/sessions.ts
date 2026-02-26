@@ -162,7 +162,7 @@ export const sessionsData: SessionData[] = [
     resources: [
       { id: 'r1-1', title: 'Descriptores MCER C1 - Producción oral', type: 'PDF', url: '/resources/mcer-c1-produccion-oral.pdf', order: 1 },
       { id: 'r1-2', title: 'Guía del curso 2026', type: 'PDF', url: '/resources/guia-curso.pdf', order: 2 },
-    ]
+    ],
   },
 
   // ============================================
@@ -373,7 +373,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r2-1', title: 'Póster', description: 'Conectores por función', type: 'PDF', url: '/resources/conectores-tabla.pdf', order: 1 },
       { id: 'r2-2', title: 'Vocabulario', description: 'Argumentación (C1)', type: 'PDF', url: '/resources/ejercicios-conectores.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Grábate presentándote en español (2-3 minutos). Incluye: tu nombre, origen, por qué estudias español, tus motivaciones y qué esperas lograr en este curso. Usa correctamente "ser" y "estar".',
   },
 
   // ============================================
@@ -546,7 +545,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r3-1', title: 'Opinión', description: 'Fórmulas y certeza', type: 'PDF', url: '/resources/fichas-opinion-certeza.pdf', order: 1 },
       { id: 'r3-2', title: 'Roles', description: 'Debate IA', type: 'PDF', url: '/resources/subjuntivo-duda.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Graba un mini-argumento de 3-4 minutos sobre un tema que te interese (ej. "¿Es bueno el trabajo remoto?"). Usa al menos 8 conectores diferentes de los vistos en clase (para empezar, además, sin embargo, por lo tanto, etc.).',
   },
 
   // ============================================
@@ -754,7 +752,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r4-1', title: 'Tabla de registros lingüísticos', type: 'PDF', url: '/resources/registros-tabla.pdf', order: 1 },
       { id: 'r4-2', title: 'Fórmulas de cortesía formales', type: 'PDF', url: '/resources/cortesia-formal.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Graba un video de 3-4 minutos dando tu opinión sobre un tema polémico actual. Usa expresiones de opinión ("En mi opinión", "Considero que", "Me parece que...") y al menos 3 modalizadores de certeza differentes.',
   },
 
   // ============================================
@@ -912,55 +909,7 @@ export const sessionsData: SessionData[] = [
           },
         },
         order: 1,
-        isModeBOnly: false,
-      },
-      {
-        id: 'task-5-2',
-        title: 'Elige la respuesta más adecuada',
-        description: 'Selecciona la expresión correcta según el contexto',
-        type: 'MULTIPLE_CHOICE',
-        content: {
-          instructions: 'Elige la respuesta más apropiada:',
-          items: [
-            {
-              id: 'q1',
-              type: 'question',
-              content: { question: 'Tu jefe propone una idea con la que no estás de acuerdo. ¿Qué dices?' },
-              options: [
-                { id: 'a', type: 'option', text: 'Estás totalmente equivocado.' },
-                { id: 'b', type: 'option', text: 'Con todo respeto, tengo una perspectiva diferente.' },
-                { id: 'c', type: 'option', text: 'Ni hablar, eso es horrible.' },
-              ],
-            },
-            {
-              id: 'q2',
-              type: 'question',
-              content: { question: 'Un amigo sugiere un restaurante que no te gusta. ¿Qué dices?' },
-              options: [
-                { id: 'a', type: 'option', text: 'Disiento rotundamente de su elección.' },
-                { id: 'b', type: 'option', text: 'Lo veo de otra forma, prefiero algo más casual.' },
-                { id: 'c', type: 'option', text: 'Me permito disentir de su proposición.' },
-              ],
-            },
-            {
-              id: 'q3',
-              type: 'question',
-              content: { question: 'En una conferencia académica, no estás de acuerdo con el ponente. ¿Qué dices?' },
-              options: [
-                { id: 'a', type: 'option', text: 'Muy interesante, aunque veo las cosas de otra forma.' },
-                { id: 'b', type: 'option', text: 'No estoy nada de acuerdo.' },
-                { id: 'c', type: 'option', text: 'Estás mal.' },
-              ],
-            },
-          ],
-          correctAnswers: { q1: 'b', q2: 'b', q3: 'a' },
-          feedback: {
-            correct: '¡Excelente! Has identificado correctamente los registros.',
-            incorrect: 'Revisa: Contexto formal requiere "Con todo respeto"; con amigos usa "Lo veo de otra forma"; en conferencias usa fórmulas suavizadas.',
-          },
-        },
-        order: 2,
-        isModeBOnly: false,
+        isModeBOnly: true,
       },
     ],
     checklistItems: [
@@ -974,7 +923,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r5-1', title: 'Tabla de acuerdo y desacuerdo', type: 'PDF', url: '/resources/acuerdo-desacuerdo-tabla.pdf', order: 1 },
       { id: 'r5-2', title: 'Pragmática del desacuerdo intercultural', type: 'PDF', url: '/resources/desacuerdo-intercultural.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Graba un debate contigo mismo o con un compañero (4-5 minutos). Elige un tema polémico y expresa acuerdo/desacuerdo usando toda la escala: desde "Totalmente de acuerdo" hasta "Totalmente en desacuerdo", usando las fórmulas suavizadas, matizadas y rotundas.',
   },
 
   // ============================================
@@ -1151,7 +1099,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r6-1', title: 'Estructura de contraargumentación', type: 'PDF', url: '/resources/contraargumentacion-estructura.pdf', order: 1 },
       { id: 'r6-2', title: 'Ejercicios de contraargumentación', type: 'PDF', url: '/resources/ejercicios-contraargumentacion.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Graba un contraargumento de 3-4 minutos. Primero presenta un argumento (ej. "La tecnología nos hace menos sociables"), luego contraargumenta usando conectores de contraargumentación (sin embargo, no obstante, aun así, no por eso) y concesiones (es cierto que, admite que).',
   },
 
   // ============================================
@@ -1299,7 +1246,6 @@ export const sessionsData: SessionData[] = [
     resources: [
       { id: 'r7-1', title: 'Rúbrica de debate', type: 'PDF', url: '/resources/rubrica-debate.pdf', order: 1 },
     ],
-    homeworkInstructions: 'Graba un contraargumento de 3-4 minutos. Primero presenta un argumento (ej. "La tecnología nos hace menos sociables"), luego contraargumenta usando conectores de contraargumentación (sin embargo, no obstante, aun así, no por eso) y concesiones (es cierto que, admite que).',
   },
 
   // ============================================
@@ -1449,7 +1395,6 @@ export const sessionsData: SessionData[] = [
     resources: [
       { id: 'r8-1', title: 'Rúbrica de autoevaluación', type: 'PDF', url: '/resources/rubrica-autoevaluacion.pdf', order: 1 },
     ],
-    homeworkInstructions: 'Asistencia obligatoria al debate en clase. Sube un documento (200 palabras) reflexionando sobre tu participación: ¿Qué estrategias usaste? ¿Qué mejoraste? ¿Qué necesitas practicar más?',
   },
 
   // ============================================
@@ -1643,7 +1588,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r9-1', title: 'Errores comunes C1 - Lista', type: 'PDF', url: '/resources/errores-c1-lista.pdf', order: 1 },
       { id: 'r9-2', title: 'Guía de auto-corrección', type: 'PDF', url: '/resources/guia-autocorrection.pdf', order: 2 },
     ],
-    homeworkInstructions: 'No hay tarea formal. Dedica tiempo a revisar las notas y feedback del debate. Prepara preguntas para la sesión de mejora.',
   },
 
   // ============================================
@@ -1812,7 +1756,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r10-1', title: 'Pretéritos: Guía completa', type: 'PDF', url: '/resources/preteritos-guia.pdf', order: 1 },
       { id: 'r10-2', title: 'Conectores temporales', type: 'PDF', url: '/resources/conectores-temporales.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Graba un monólogo de 3-4 minutos argumentando sobre tu posición respecto al tema del debate. Aplica el feedback recibido: mejora conectores, registro y estructura.',
   },
 
   // ============================================
@@ -1981,7 +1924,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r11-1', title: 'Indicadores temporales - Tabla', type: 'PDF', url: '/resources/indicadores-temporales.pdf', order: 1 },
       { id: 'r11-2', title: 'Ejercicios de temporales', type: 'PDF', url: '/resources/ejercicios-temporales.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Graba una anécdota personal en pasado (3-4 minutos). Usa pretérito indefinido, imperfecto y pluscuamperfecto. Incluye indicadores temporales específicos (antes de, cuando, en cuanto, después de, mientras).',
   },
 
   // ============================================
@@ -2133,7 +2075,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r12-1', title: 'Vocabulario histórico', type: 'PDF', url: '/resources/vocabulario-historico.pdf', order: 1 },
       { id: 'r12-2', title: 'Ejercicios de narración histórica', type: 'PDF', url: '/resources/narracion-historica.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Graba un relato de 3-4 minutos sobre un acontecimiento histórico o una secuencia de eventos. Usa al menos 10 indicadores temporales diferentes (mientras, en cuanto, al poco tiempo, inmediatamente, después de, etc.).',
   },
 
   // ============================================
@@ -2295,7 +2236,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r13-1', title: 'Estructuras condicionales - Guía', type: 'PDF', url: '/resources/condicionales-guia.pdf', order: 1 },
       { id: 'r13-2', title: 'Ejercicios de hipótesis', type: 'PDF', url: '/resources/ejercicios-hipotesis.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Graba un documental breve (3-4 minutos) sobre un evento histórico. Combina narración en pasado, citas indirectas ("Según los historiadores...") y marcadores temporales precisos.',
   },
 
   // ============================================
@@ -2456,7 +2396,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r14-1', title: 'Pluscuamperfecto subjuntivo - Guía', type: 'PDF', url: '/resources/pluscuamperfecto-subj.pdf', order: 1 },
       { id: 'r14-2', title: 'Ejercicios de hipótesis pasadas', type: 'PDF', url: '/resources/ejercicios-hipotesis-pasado.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Graba un monólogo de 3-4 minutos usando hipótesis en presente/futuro. Responde: "¿Si fueras presidente/a de tu país, qué cambiarías?" Usa condicional compuesto (habría, habría hecho, se habría).',
   },
 
   // ============================================
@@ -2636,7 +2575,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r15-1', title: 'Guía del examen parcial', type: 'PDF', url: '/resources/guia-examen-parcial.pdf', order: 1 },
       { id: 'r15-2', title: 'Rúbrica de evaluación', type: 'PDF', url: '/resources/rubrica-evaluacion.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Graba una reflexión de 3-4 minutos sobre un pasado hipotético: "¿Qué habría pasado si...?" (ej. si hubieras nacido en otro país). Usa pluscuamperfecto de subjuntivo + condicional compuesto.',
   },
 
   // ============================================
@@ -2764,7 +2702,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r16-1', title: 'Rúbrica de examen parcial', type: 'PDF', url: '/resources/rubrica-parcial.pdf', order: 1 },
       { id: 'r16-2', title: 'Guía de preparación', type: 'PDF', url: '/resources/guia-preparacion-parcial.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Práctica libre para el parcial. Graba 2 monólogos de 2-3 min cada uno: (a) narración en pasado, (b) hipótesis. Sube para recibir feedback antes del examen.',
   },
 
 
@@ -2908,7 +2845,6 @@ export const sessionsData: SessionData[] = [
       { id: 'ck17-5', text: 'Repasé estructuras clave del curso' },
     ],
     resources: [],
-    homeworkInstructions: 'Graba un resumen de tus vacaciones de Semana Santa (2-3 minutos). Usa pasado y conectores variados.',
   },
 
   // ============================================
@@ -3067,7 +3003,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r18-1', title: 'Guía de entrevistas', type: 'PDF', url: '/resources/guia-entrevistas.pdf', order: 1 },
       { id: 'r18-2', title: 'Método STAR', type: 'PDF', url: '/resources/metodo-star.pdf', order: 2 },
     ],
-    homeworkInstructions: 'Prepara y graba una entrevista simulada (3-4 minutos). Tú eres el entrevistador. Haz 5 preguntas abiertas a una figura famosa (imaginaria) sobre su vida y carrera. Demuestra estrategias de seguimiento.',
   },
 
   // ============================================
@@ -3221,7 +3156,6 @@ export const sessionsData: SessionData[] = [
     resources: [
       { id: 'r19-1', title: 'Estrategias de interacción', type: 'PDF', url: '/resources/estrategias-interaccion.pdf', order: 1 },
     ],
-    homeworkInstructions: 'Graba un role-play de entrevista (4-5 minutos). Tú eres el entrevistado. Responde preguntas sobre tu "profesión ideal" usando estrategias de interacción: pedir aclaraciones, ganar tiempo, reformular.',
   },
 
   // ============================================
@@ -3385,7 +3319,6 @@ export const sessionsData: SessionData[] = [
     resources: [
       { id: 'r20-1', title: 'Estilo indirecto - Guía', type: 'PDF', url: '/resources/estilo-indirecto.pdf', order: 1 },
     ],
-    homeworkInstructions: 'Graba 3 situaciones (1-2 min cada una) transmitiendo mensajes de otros en estilo indirecto: (a) "Juan dijo que...", (b) "Mi jefe me pidió que...", (c) "Según los expertos...". Usa tiempos de subjuntivo apropiados.',
   },
 
   // ============================================
@@ -3542,7 +3475,6 @@ export const sessionsData: SessionData[] = [
     resources: [
       { id: 'r21-1', title: 'Estrategias de influencia', type: 'PDF', url: '/resources/estrategias-influencia.pdf', order: 1 },
     ],
-    homeworkInstructions: 'Graba un monólogo de 3-4 minutos dando consejo a un amigo. Usa estrategias de influencia: aconsejar ("Te recomiendo que..."), sugerir ("¿Qué tal si...?"), advertir ("Ten cuidado con..."), insistir ("Te insisto en que...").',
   },
 
   // ============================================
@@ -3696,7 +3628,6 @@ export const sessionsData: SessionData[] = [
     resources: [
       { id: 'r22-1', title: 'Gestión de conflictos', type: 'PDF', url: '/resources/gestion-conflictos.pdf', order: 1 },
     ],
-    homeworkInstructions: 'Graba una negociación (3-4 minutos). Intenta convencer a un amigo escéptico de algo (tu restaurante favorito, una película, etc.). Usa lenguaje persuasivo y gestiona objeciones.',
   },
 
   // ============================================
@@ -3851,7 +3782,6 @@ export const sessionsData: SessionData[] = [
       { id: 'r23-1', title: 'Guía de conferencias', type: 'PDF', url: '/resources/guia-conferencias.pdf', order: 1 },
       { id: 'r23-2', title: 'Ejemplos de aperturas efectivas', type: 'VIDEO', url: '/resources/aperturas-video.mp4', order: 2 },
     ],
-    homeworkInstructions: 'Graba la apertura de una conferencia (2-3 minutos). Elige un tema que dominas y practica: captar atención (hook), presentar la idea central, y dar una visión general.',
   },
 
   // ============================================
@@ -3992,7 +3922,6 @@ export const sessionsData: SessionData[] = [
     resources: [
       { id: 'r24-1', title: 'Guía de conferencias completas', type: 'PDF', url: '/resources/guia-conferencias-completas.pdf', order: 1 },
     ],
-    homeworkInstructions: 'Graba el desarrollo y cierre de una conferencia (3-4 minutos). Continúa tu tema de la sesión anterior. Incluye: ejemplos concretos, énfasis en detalles clave, y un cierre memorable.',
   },
 
   // ============================================
@@ -4156,7 +4085,6 @@ export const sessionsData: SessionData[] = [
     resources: [
       { id: 'r25-1', title: 'Registros del español', type: 'PDF', url: '/resources/registros-espanol.pdf', order: 1 },
     ],
-    homeworkInstructions: 'Graba 2 versiones del mismo monólogo (2-3 min cada una): (a) registro coloquial con un amigo, (b) registro formal en una conferencia. Contrastativamente usa muletillas vs conectores formales.',
   },
 
   // ============================================
@@ -4306,7 +4234,6 @@ export const sessionsData: SessionData[] = [
     resources: [
       { id: 'r26-1', title: 'Pragmática del lenguaje vulgar', type: 'PDF', url: '/resources/pragmatica-vulgar.pdf', order: 1 },
     ],
-    homeworkInstructions: 'Graba una reflexión de 2-3 minutos analizando el uso de lenguaje vulgar en español. ¿Cuándo es aceptable? ¿Cuándo no? ¿Diferencias entre España y LATAM? No necesitas usar tacos, solo analizar su pragmática.',
   },
 
   // ============================================
@@ -4448,7 +4375,6 @@ export const sessionsData: SessionData[] = [
     resources: [
       { id: 'r27-1', title: 'Vocabulario abstracto C1', type: 'PDF', url: '/resources/vocabulario-abstracto.pdf', order: 1 },
     ],
-    homeworkInstructions: 'Graba un monólogo de 3-4 minutos expresando sentimientos y emociones complejas sobre un tema abstracto (ej. la soledad, el éxito, el arte). Usa vocabulario abstracto preciso (angustia, plenitud, devastación, efímero).',
   },
 
   // ============================================
@@ -4589,7 +4515,6 @@ export const sessionsData: SessionData[] = [
       { id: 'ck28-5', text: 'Me despedí del grupo' },
     ],
     resources: [],
-    homeworkInstructions: 'No hay tarea formal. ¡Felicidades por completar el curso! Si quieres, sube tu presentación final como portafolio.',
   },
 ]
 

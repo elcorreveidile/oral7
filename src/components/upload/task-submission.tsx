@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Mic, Video, Upload, Loader2, CheckCircle2, XCircle, AlertCircle } from "lucide-react"
+import { Mic, Video, Upload, Loader2, CheckCircle2, XCircle } from "lucide-react"
 import { AudioRecorder } from "./audio-recorder"
 import { VideoRecorder } from "./video-recorder"
 import { FileUpload } from "./file-upload"
@@ -68,89 +68,100 @@ export function TaskSubmission({
     })
   }
 
-  const getTaskTypes = () => {
-    switch (taskType) {
-      case "AUDIO_RECORDING":
-        return ["audio"]
-      case "VIDEO_RECORDING":
-        return ["video"]
-      case "DOCUMENT_UPLOAD":
-        return ["document"]
-      case "ANY":
-      default:
-        return ["audio", "video", "document"]
-    }
-  }
+  const shouldShowTabs = taskType === "ANY"
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Enviar tu respuesta</CardTitle>
         <CardDescription>
-          {taskType === "AUDIO_RECORDING" && "Graba tu respuesta en audio"}
+          {taskType === "AUDIO_RECORDING" && "Graba tu respuesta en audio directamente"}
           {taskType === "VIDEO_RECORDING" && "Graba tu respuesta en video"}
           {taskType === "DOCUMENT_UPLOAD" && "Sube tu documento (PDF, Word)"}
           {taskType === "ANY" && "Elige el formato de tu respuesta"}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue={taskType === "ANY" ? "upload" : taskType.toLowerCase().split("_")[0]}>
-          <TabsList className="grid w-full grid-cols-3">
-            {getTaskTypes().includes("audio") && (
-              <TabsTrigger value="audio">
-                <Mic className="h-4 w-4 mr-2" />
-                Audio
-              </TabsTrigger>
-            )}
-            {getTaskTypes().includes("video") && (
-              <TabsTrigger value="video">
-                <Video className="h-4 w-4 mr-2" />
-                Video
-              </TabsTrigger>
-            )}
-            {getTaskTypes().includes("document") && (
-              <TabsTrigger value="upload">
-                <Upload className="h-4 w-4 mr-2" />
-                Archivo
-              </TabsTrigger>
-            )}
-          </TabsList>
+        {shouldShowTabs ? (
+          <>
+            <Tabs defaultValue="upload">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="audio">
+                  <Mic className="h-4 w-4 mr-2" />
+                  Audio
+                </TabsTrigger>
+                <TabsTrigger value="video">
+                  <Video className="h-4 w-4 mr-2" />
+                  Video
+                </TabsTrigger>
+                <TabsTrigger value="upload">
+                  <Upload className="h-4 w-4 mr-2" />
+                  Archivo
+                </TabsTrigger>
+              </TabsList>
 
-          {getTaskTypes().includes("audio") && (
-            <TabsContent value="audio" className="mt-6">
+              <TabsContent value="audio" className="mt-6">
+                <AudioRecorder
+                  onRecordingComplete={async (blob) => {
+                    const file = new File([blob], `grabacion-${Date.now()}.webm`, { type: "audio/webm" })
+                    await uploadFile(file)
+                  }}
+                  disabled={uploadStatus === "uploading"}
+                />
+              </TabsContent>
+
+              <TabsContent value="video" className="mt-6">
+                <VideoRecorder
+                  onRecordingComplete={async (blob) => {
+                    const file = new File([blob], `grabacion-${Date.now()}.webm`, { type: "video/webm" })
+                    await uploadFile(file)
+                  }}
+                  disabled={uploadStatus === "uploading"}
+                />
+              </TabsContent>
+
+              <TabsContent value="upload" className="mt-6">
+                <FileUpload
+                  taskId={taskId}
+                  onFileUploaded={handleFileUploaded}
+                  types={["audio", "video", "document"]}
+                  disabled={uploadStatus === "uploading"}
+                />
+              </TabsContent>
+            </Tabs>
+          </>
+        ) : (
+          <>
+            {taskType === "AUDIO_RECORDING" && (
               <AudioRecorder
-                onRecordingComplete={async (blob, url) => {
+                onRecordingComplete={async (blob) => {
                   const file = new File([blob], `grabacion-${Date.now()}.webm`, { type: "audio/webm" })
                   await uploadFile(file)
                 }}
                 disabled={uploadStatus === "uploading"}
               />
-            </TabsContent>
-          )}
+            )}
 
-          {getTaskTypes().includes("video") && (
-            <TabsContent value="video" className="mt-6">
+            {taskType === "VIDEO_RECORDING" && (
               <VideoRecorder
-                onRecordingComplete={async (blob, url) => {
+                onRecordingComplete={async (blob) => {
                   const file = new File([blob], `grabacion-${Date.now()}.webm`, { type: "video/webm" })
                   await uploadFile(file)
                 }}
                 disabled={uploadStatus === "uploading"}
               />
-            </TabsContent>
-          )}
+            )}
 
-          {getTaskTypes().includes("document") && (
-            <TabsContent value="upload" className="mt-6">
+            {taskType === "DOCUMENT_UPLOAD" && (
               <FileUpload
                 taskId={taskId}
                 onFileUploaded={handleFileUploaded}
-                types={getTaskTypes() as any}
+                types={["document"]}
                 disabled={uploadStatus === "uploading"}
               />
-            </TabsContent>
-          )}
-        </Tabs>
+            )}
+          </>
+        )}
 
         {/* Upload progress indicator */}
         {uploadStatus === "uploading" && (
