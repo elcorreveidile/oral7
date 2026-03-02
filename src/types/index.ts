@@ -41,6 +41,7 @@ export interface SessionDynamic {
   materials?: string[]
   groupType?: "individual" | "pairs" | "small_group" | "whole_class"
   isModeB?: boolean
+  timeRequired?: string
 }
 
 export interface GrammarContent {
