@@ -1551,6 +1551,22 @@ export const sessionsData: SessionData[] = [
         groupType: 'small_group',
         isModeB: true,
       },
+      {
+        id: 'd9-5',
+        step: 5,
+        title: 'Mini-debate: La perfección lingüística',
+        instructions: [
+          'Tema: "¿Es posible alcanzar un nivel nativo en una segunda lengua?"',
+          'Forma dos grupos: A favor (sí es posible) y En contra (no)',
+          'Cada grupo prepara 3 argumentos (5 min)',
+          'Debate: 2 intervenciones por equipo (2 min cada una)',
+          'Usa: "En mi experiencia como aprendiz...", "Los datos demuestran que...",',
+          'Evita muletillas: "o sea", "es que", "tú sabes"',
+          'El resto de la clase evalúa: ¿usó muletillas? ¿registro formal?',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '20 min',
+      },
     ],
     grammarContent: {
       title: 'Errores comunes del nivel C1',
