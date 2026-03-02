@@ -18,7 +18,9 @@ export async function POST(request: NextRequest) {
 
     // Apply rate limiting based on user ID
     const userId = session.user.id
-    const rateLimitResult = await rateLimit(`submission:${userId}`, RateLimitConfig.submission)
+    const rateLimitResult = await rateLimit(`submission:${userId}`, RateLimitConfig.submission, {
+      onRedisError: 'fail-open',
+    })
 
     if (!rateLimitResult.success) {
       return rateLimitResponse(rateLimitResult.resetTime)

@@ -41,11 +41,10 @@ function parsePositiveInteger(value: string | undefined, defaultValue: number): 
 
 function getScanConfig(): ScanConfig {
   const isProduction = process.env.NODE_ENV === "production"
-  const enabled = isProduction
-    ? true
-    : parseBoolean(process.env.FILE_SCANNING_ENABLED, false)
-
-  const required = isProduction || parseBoolean(process.env.FILE_SCANNING_REQUIRED, false)
+  // In production scanning is ON and required by default, but both can be
+  // overridden via env vars so deployments without ClamAV can still function.
+  const enabled = parseBoolean(process.env.FILE_SCANNING_ENABLED, isProduction)
+  const required = parseBoolean(process.env.FILE_SCANNING_REQUIRED, isProduction)
 
   return {
     enabled,
