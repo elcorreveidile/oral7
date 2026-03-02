@@ -29,7 +29,9 @@ export async function POST(request: NextRequest) {
     }
 
     const userId = session.user.id
-    const rateLimitResult = await rateLimit(`session-submission:${userId}`, RateLimitConfig.submission)
+    const rateLimitResult = await rateLimit(`session-submission:${userId}`, RateLimitConfig.submission, {
+      onRedisError: 'fail-open',
+    })
     if (!rateLimitResult.success) {
       return rateLimitResponse(rateLimitResult.resetTime)
     }
@@ -58,11 +60,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Ensure the designated upload task exists for this session.
+    const { sessionsData } = await import('@/data/sessions')
+    const sessionData = sessionsData.find((s) => s.sessionNumber === sessionNumber)
     await ensureSessionUploadTask({
       id: sessionRecord.id,
       sessionNumber: sessionRecord.sessionNumber,
       title: sessionRecord.title,
       isExamDay: sessionRecord.isExamDay,
+      homeworkInstructions: sessionData?.homeworkInstructions || null,
     })
 
     const taskId = getSessionUploadTaskId(sessionNumber)
@@ -170,25 +175,8 @@ export async function GET(request: NextRequest) {
       },
     })
 
-    // Get tasks to include instructions
-    const taskIds = sessions.map((s) => getSessionUploadTaskId(s.sessionNumber))
-    const tasks = await prisma.task.findMany({
-      where: {
-        id: { in: taskIds },
-      },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        content: true,
-      },
-    })
-    const taskById = new Map(tasks.map((t) => [t.id, t]))
-
-    const assignments = sessions.map((sessionItem) => {
+    const assignments = sessionsWithHomework.map((sessionItem) => {
       const taskId = getSessionUploadTaskId(sessionItem.sessionNumber)
-      const task = taskById.get(taskId)
-      const content = task?.content as any
       return {
         sessionId: sessionItem.id,
         sessionNumber: sessionItem.sessionNumber,
@@ -196,7 +184,7 @@ export async function GET(request: NextRequest) {
         sessionDate: sessionItem.date,
         taskId: taskId,
         taskType: "DOCUMENT_UPLOAD" as const,
-        taskInstructions: content?.instructions || null,
+        taskInstructions: sessionItem.homeworkInstructions || null,
       }
     })
 
