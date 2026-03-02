@@ -176,8 +176,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un audio de 2-3 minutos presentándote. Incluye tu origen, por qué estudias español y tus objetivos para el curso. Usa correctamente ser/estar y perífrasis de interés (me interesa, me gustaría).",
     resources: [
-      { id: 'r1-1', title: 'Descriptores MCER C1 - Producción oral', type: 'PDF', url: '/resources/mcer-c1-produccion-oral.pdf', order: 1 },
-      { id: 'r1-2', title: 'Guía del curso 2026', type: 'PDF', url: '/resources/guia-curso.pdf', order: 2 },
+      { id: 'r1-1', title: 'Descriptores MCER C1 - Producción oral', type: 'PDF', url: '/resources/01-mcer-c1-produccion-oral.pdf', order: 1 },
+      { id: 'r1-2', title: 'Guía del curso 2026', type: 'PDF', url: '/resources/02-guia-curso.pdf', order: 2 },
     ],
   },
 
@@ -387,8 +387,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un video de 3 minutos argumentando sobre un tema de actualidad. Usa al menos 8 conectores diferentes de categorías variadas (estructuración, adición, contraste, consecuencia, conclusión).",
     resources: [
-      { id: 'r2-1', title: 'Póster', description: 'Conectores por función', type: 'PDF', url: '/resources/conectores-tabla.pdf', order: 1 },
-      { id: 'r2-2', title: 'Vocabulario', description: 'Argumentación (C1)', type: 'PDF', url: '/resources/ejercicios-conectores.pdf', order: 2 },
+      { id: 'r2-1', title: 'Póster', description: 'Conectores por función', type: 'PDF', url: '/resources/03-conectores-tabla.pdf', order: 1 },
+      { id: 'r2-2', title: 'Vocabulario', description: 'Argumentación (C1)', type: 'PDF', url: '/resources/04-ejercicios-conectores.pdf', order: 2 },
     ],
   },
 
@@ -576,7 +576,7 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un audio de 3 minutos expresando tu opinión sobre un tema polémico. Usa al menos 5 fórmulas diferentes de opinión y 3 grados de certeza distintos (desde 'quizá' hasta 'estoy convencido de que').",
     resources: [
-      { id: 'r3-1', title: 'Opinión', description: 'Fórmulas y certeza', type: 'PDF', url: '/resources/fichas-opinion-certeza.pdf', order: 1 },
+      { id: 'r3-1', title: 'Opinión', description: 'Fórmulas y certeza', type: 'PDF', url: '/resources/05-fichas-opinion-certeza.pdf', order: 1 },
       { id: 'r3-2', title: 'Roles', description: 'Debate IA', type: 'PDF', url: '/resources/subjuntivo-duda.pdf', order: 2 },
     ],
   },
@@ -800,8 +800,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba dos versiones de un mismo mensaje (1 minuto cada una): una en registro informal y otra en registro formal. Tema: pedir un favor a un profesor. Explica las diferencias lingüísticas.",
     resources: [
-      { id: 'r4-1', title: 'Tabla de registros lingüísticos', type: 'PDF', url: '/resources/registros-tabla.pdf', order: 1 },
-      { id: 'r4-2', title: 'Fórmulas de cortesía formales', type: 'PDF', url: '/resources/cortesia-formal.pdf', order: 2 },
+      { id: 'r4-1', title: 'Tabla de registros lingüísticos', type: 'PDF', url: '/resources/07-registros-tabla.pdf', order: 1 },
+      { id: 'r4-2', title: 'Fórmulas de cortesía formales', type: 'PDF', url: '/resources/08-cortesia-formal.pdf', order: 2 },
     ],
   },
 
@@ -972,8 +972,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un video de 3 minutos debatiendo contigo mismo sobre un tema polémico. Presenta ambos lados usando expresiones de acuerdo y desacuerdo variadas (desde suavizadas hasta rotundas).",
     resources: [
-      { id: 'r5-1', title: 'Tabla de acuerdo y desacuerdo', type: 'PDF', url: '/resources/acuerdo-desacuerdo-tabla.pdf', order: 1 },
-      { id: 'r5-2', title: 'Pragmática del desacuerdo intercultural', type: 'PDF', url: '/resources/desacuerdo-intercultural.pdf', order: 2 },
+      { id: 'r5-1', title: 'Tabla de acuerdo y desacuerdo', type: 'PDF', url: '/resources/10-acuerdo-desacuerdo-tabla.pdf', order: 1 },
+      { id: 'r5-2', title: 'Pragmática del desacuerdo intercultural', type: 'PDF', url: '/resources/11-desacuerdo-intercultural.pdf', order: 2 },
     ],
   },
 
@@ -1149,8 +1149,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un audio de 3 minutos donde presentes un argumento y luego lo contraargumentes usando la estructura completa: concesión → pivote → refutación → refuerzo. Usa conectores de contraargumentación variados.",
     resources: [
-      { id: 'r6-1', title: 'Estructura de contraargumentación', type: 'PDF', url: '/resources/contraargumentacion-estructura.pdf', order: 1 },
-      { id: 'r6-2', title: 'Ejercicios de contraargumentación', type: 'PDF', url: '/resources/ejercicios-contraargumentacion.pdf', order: 2 },
+      { id: 'r6-1', title: 'Estructura de contraargumentación', type: 'PDF', url: '/resources/12-contraargumentacion-estructura.pdf', order: 1 },
+      { id: 'r6-2', title: 'Ejercicios de contraargumentación', type: 'PDF', url: '/resources/13-ejercicios-contraargumentacion.pdf', order: 2 },
     ],
   },
 
@@ -1298,8 +1298,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un video de 5 minutos simulando un debate formal sobre el tema de tu elección. Estructura: apertura (2 min), refutación (2 min), cierre (1 min). Usa registro formal.",
     resources: [
-      { id: 'r7-1', title: 'Rúbrica de debate', type: 'PDF', url: '/resources/rubrica-debate.pdf', order: 1 },
-      { id: 'r7-2', title: 'Guía de estructuración de argumentos', type: 'PDF', url: '/resources/guia-argumentos-debate.pdf', order: 2 },
+      { id: 'r7-1', title: 'Rúbrica de debate', type: 'PDF', url: '/resources/15-rubrica-debate.pdf', order: 1 },
+      { id: 'r7-2', title: 'Guía de estructuración de argumentos', type: 'PDF', url: '/resources/14-guia-argumentos-debate.pdf', order: 2 },
     ],
   },
 
@@ -1449,8 +1449,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Escribe un documento de 300 palabras analizando tu desempeño en el debate. Identifica 2 fortalezas, 2 áreas de mejora, y establece 1 meta específica con formato SMART para el próximo bloque.",
     resources: [
-      { id: 'r8-1', title: 'Rúbrica de autoevaluación', type: 'PDF', url: '/resources/rubrica-autoevaluacion.pdf', order: 1 },
-      { id: 'r8-2', title: 'Plantilla de feedback de debate', type: 'PDF', url: '/resources/plantilla-feedback-debate.pdf', order: 2 },
+      { id: 'r8-1', title: 'Rúbrica de autoevaluación', type: 'PDF', url: '/resources/17-rubrica-autoevaluacion.pdf', order: 1 },
+      { id: 'r8-2', title: 'Plantilla de feedback de debate', type: 'PDF', url: '/resources/16-plantilla-feedback-debate.pdf', order: 2 },
     ],
   },
 
@@ -1659,8 +1659,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un audio de 2 minutos corrigiendo una intervención de tu debate anterior. Elimina muletillas ('o sea', 'es que') y usa vocabulario C1 más preciso. Explica los cambios.",
     resources: [
-      { id: 'r9-1', title: 'Errores comunes C1 - Lista', type: 'PDF', url: '/resources/errores-c1-lista.pdf', order: 1 },
-      { id: 'r9-2', title: 'Guía de auto-corrección', type: 'PDF', url: '/resources/guia-autocorrection.pdf', order: 2 },
+      { id: 'r9-1', title: 'Errores comunes C1 - Lista', type: 'PDF', url: '/resources/19-errores-c1-lista.pdf', order: 1 },
+      { id: 'r9-2', title: 'Guía de auto-corrección', type: 'PDF', url: '/resources/20-guia-autocorrection.pdf', order: 2 },
     ],
   },
 
@@ -1844,8 +1844,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un video de 3 minutos narrando una anécdota personal memorable. Usa al menos 5 conectores temporales variados (antes de, después de, mientras, cuando, en cuanto) y demuestra dominio de pretéritos.",
     resources: [
-      { id: 'r10-1', title: 'Pretéritos: Guía completa', type: 'PDF', url: '/resources/preteritos-guia.pdf', order: 1 },
-      { id: 'r10-2', title: 'Conectores temporales', type: 'PDF', url: '/resources/conectores-temporales.pdf', order: 2 },
+      { id: 'r10-1', title: 'Pretéritos: Guía completa', type: 'PDF', url: '/resources/22-preteritos-guia.pdf', order: 1 },
+      { id: 'r10-2', title: 'Conectores temporales', type: 'PDF', url: '/resources/23-conectores-temporales.pdf', order: 2 },
     ],
   },
 
@@ -2029,8 +2029,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un audio de 3 minutos narrando 'un día perfecto' usando al menos 6 indicadores temporales diferentes. Distingue correctamente entre indicativo y subjuntivo en estructuras temporales.",
     resources: [
-      { id: 'r11-1', title: 'Indicadores temporales - Tabla', type: 'PDF', url: '/resources/indicadores-temporales.pdf', order: 1 },
-      { id: 'r11-2', title: 'Ejercicios de temporales', type: 'PDF', url: '/resources/ejercicios-temporales.pdf', order: 2 },
+      { id: 'r11-1', title: 'Indicadores temporales - Tabla', type: 'PDF', url: '/resources/25-indicadores-temporales.pdf', order: 1 },
+      { id: 'r11-2', title: 'Ejercicios de temporales', type: 'PDF', url: '/resources/26-ejercicios-temporales.pdf', order: 2 },
     ],
   },
 
@@ -2197,8 +2197,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un video de 4 minutos narrando un evento histórico de tu país o España. Usa vocabulario histórico preciso (reinado, batalla, tratado, revolución) y conectores temporales. Evita anacronismos.",
     resources: [
-      { id: 'r12-1', title: 'Vocabulario histórico', type: 'PDF', url: '/resources/vocabulario-historico.pdf', order: 1 },
-      { id: 'r12-2', title: 'Ejercicios de narración histórica', type: 'PDF', url: '/resources/narracion-historica.pdf', order: 2 },
+      { id: 'r12-1', title: 'Vocabulario histórico', type: 'PDF', url: '/resources/27-vocabulario-historico.pdf', order: 1 },
+      { id: 'r12-2', title: 'Ejercicios de narración histórica', type: 'PDF', url: '/resources/28-narracion-historica.pdf', order: 2 },
     ],
   },
 
@@ -2375,8 +2375,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un audio de 3 minutos planteando y respondiendo 5 situaciones hipotéticas. Usa correctamente: si + indicativo → futuro/condicional (reales) y si + imperfecto subjuntivo → condicional (irreales).",
     resources: [
-      { id: 'r13-1', title: 'Estructuras condicionales - Guía', type: 'PDF', url: '/resources/condicionales-guia.pdf', order: 1 },
-      { id: 'r13-2', title: 'Ejercicios de hipótesis', type: 'PDF', url: '/resources/ejercicios-hipotesis.pdf', order: 2 },
+      { id: 'r13-1', title: 'Estructuras condicionales - Guía', type: 'PDF', url: '/resources/30-condicionales-guia.pdf', order: 1 },
+      { id: 'r13-2', title: 'Ejercicios de hipótesis', type: 'PDF', url: '/resources/31-ejercicios-hipotesis.pdf', order: 2 },
     ],
   },
 
@@ -2552,8 +2552,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un video de 3 minutos compartiendo 3 arrepentimientos o lamentos del pasado. Usa estructuras de hipótesis irreversible: si + pluscuamperfecto subjuntivo → condicional compuesto.",
     resources: [
-      { id: 'r14-1', title: 'Pluscuamperfecto subjuntivo - Guía', type: 'PDF', url: '/resources/pluscuamperfecto-subj.pdf', order: 1 },
-      { id: 'r14-2', title: 'Ejercicios de hipótesis pasadas', type: 'PDF', url: '/resources/ejercicios-hipotesis-pasado.pdf', order: 2 },
+      { id: 'r14-1', title: 'Pluscuamperfecto subjuntivo - Guía', type: 'PDF', url: '/resources/33-pluscuamperfecto-subj.pdf', order: 1 },
+      { id: 'r14-2', title: 'Ejercicios de hipótesis pasadas', type: 'PDF', url: '/resources/34-ejercicios-hipotesis-pasado.pdf', order: 2 },
     ],
   },
 
@@ -2748,8 +2748,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un simulacro completo de examen parcial (10-12 min): monólogo sobre un evento histórico (3-4 min) + respuestas a preguntas de hipótesis (5-6 min). Autoevalúate con la rúbrica.",
     resources: [
-      { id: 'r15-1', title: 'Guía del examen parcial', type: 'PDF', url: '/resources/guia-examen-parcial.pdf', order: 1 },
-      { id: 'r15-2', title: 'Rúbrica de evaluación', type: 'PDF', url: '/resources/rubrica-evaluacion.pdf', order: 2 },
+      { id: 'r15-1', title: 'Guía del examen parcial', type: 'PDF', url: '/resources/36-guia-examen-parcial.pdf', order: 1 },
+      { id: 'r15-2', title: 'Rúbrica de evaluación', type: 'PDF', url: '/resources/37-rubrica-evaluacion.pdf', order: 2 },
     ],
   },
 
@@ -2875,8 +2875,8 @@ export const sessionsData: SessionData[] = [
       { id: 'ck16-5', text: 'Grabé monólogos de práctica' },
     ],
     resources: [
-      { id: 'r16-1', title: 'Rúbrica de examen parcial', type: 'PDF', url: '/resources/rubrica-parcial.pdf', order: 1 },
-      { id: 'r16-2', title: 'Guía de preparación', type: 'PDF', url: '/resources/guia-preparacion-parcial.pdf', order: 2 },
+      { id: 'r16-1', title: 'Rúbrica de examen parcial', type: 'PDF', url: '/resources/39-rubrica-parcial.pdf', order: 1 },
+      { id: 'r16-2', title: 'Guía de preparación', type: 'PDF', url: '/resources/40-guia-preparacion-parcial.pdf', order: 2 },
     ],
   },
 
@@ -3037,8 +3037,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un audio de 2 minutos compartiendo tu experiencia de Semana Santa. Usa pretéritos correctamente, conectores variados, y comparte 3 metas específicas para mayo.",
     resources: [
-      { id: 'r17-1', title: 'Guía de repaso post-vacaciones', type: 'PDF', url: '/resources/repaso-post-vacaciones.pdf', order: 1 },
-      { id: 'r17-2', title: 'Ficha de metas SMART', type: 'PDF', url: '/resources/ficha-metas-smart.pdf', order: 2 },
+      { id: 'r17-1', title: 'Guía de repaso post-vacaciones', type: 'PDF', url: '/resources/42-repaso-post-vacaciones.pdf', order: 1 },
+      { id: 'r17-2', title: 'Ficha de metas SMART', type: 'PDF', url: '/resources/43-ficha-metas-smart.pdf', order: 2 },
     ],
   },
 
@@ -3212,8 +3212,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un video de 5 minutos simulando una entrevista de trabajo para un puesto bilingüe. Incluye: presentación, fortalezas/debilidades, y usa preguntas abiertas. Aplica método STAR.",
     resources: [
-      { id: 'r18-1', title: 'Guía de entrevistas', type: 'PDF', url: '/resources/guia-entrevistas.pdf', order: 1 },
-      { id: 'r18-2', title: 'Método STAR', type: 'PDF', url: '/resources/metodo-star.pdf', order: 2 },
+      { id: 'r18-1', title: 'Guía de entrevistas', type: 'PDF', url: '/resources/45-guia-entrevistas.pdf', order: 1 },
+      { id: 'r18-2', title: 'Método STAR', type: 'PDF', url: '/resources/46-metodo-star.pdf', order: 2 },
     ],
   },
 
@@ -3383,8 +3383,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un video de 5 minutos en conversación con un compañero (o tú mismo en dos roles). Demuestra: turnarse, seguir el hilo, usar preguntas abiertas, y conectar con lo dicho por el interlocutor.",
     resources: [
-      { id: 'r19-1', title: 'Estrategias de interacción', type: 'PDF', url: '/resources/estrategias-interaccion.pdf', order: 1 },
-      { id: 'r19-2', title: 'Conectores de seguimiento', type: 'PDF', url: '/resources/conectores-seguimiento.pdf', order: 2 },
+      { id: 'r19-1', title: 'Estrategias de interacción', type: 'PDF', url: '/resources/48-estrategias-interaccion.pdf', order: 1 },
+      { id: 'r19-2', title: 'Conectores de seguimiento', type: 'PDF', url: '/resources/sesion-19-conectores-seguimiento.pdf', order: 2 },
     ],
   },
 
@@ -3564,8 +3564,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un audio de 3 minutos reportando 5 mensajes diferentes que escuchaste durante la semana. Usa estilo indirecto correctamente con cambios de tiempos, pronombres y lugar.",
     resources: [
-      { id: 'r20-1', title: 'Estilo indirecto - Guía', type: 'PDF', url: '/resources/estilo-indirecto.pdf', order: 1 },
-      { id: 'r20-2', title: 'Ejercicios de estilo indirecto', type: 'PDF', url: '/resources/ejercicios-estilo-indirecto.pdf', order: 2 },
+      { id: 'r20-1', title: 'Estilo indirecto - Guía', type: 'PDF', url: '/resources/sesion-20-estilo-indirecto.pdf', order: 1 },
+      { id: 'r20-2', title: 'Ejercicios de estilo indirecto', type: 'PDF', url: '/resources/40-ejercicios-estilo-indirecto.pdf', order: 2 },
     ],
   },
 
@@ -3739,7 +3739,7 @@ export const sessionsData: SessionData[] = [
     homeworkInstructions: "Graba un video de 3 minutos dando consejos sobre 3 problemas diferentes. Usa estructuras variadas: aconsejo que + subjuntivo, deberías + condicional, si yo fuera tú + hipótesis, lo mejor es + infinitivo.",
     resources: [
       { id: 'r21-1', title: 'Estrategias de influencia', type: 'PDF', url: '/resources/estrategias-influencia.pdf', order: 1 },
-      { id: 'r21-2', title: 'Técnicas de negociación', type: 'PDF', url: '/resources/tecnicas-negociacion.pdf', order: 2 },
+      { id: 'r21-2', title: 'Técnicas de negociación', type: 'PDF', url: '/resources/sesion-21-tecnicas-negociacion.pdf', order: 2 },
     ],
   },
 
@@ -3910,7 +3910,7 @@ export const sessionsData: SessionData[] = [
     homeworkInstructions: "Graba un audio de 3 minutos insistiendo apropiadamente sobre una petición importante. Aumenta la intensidad gradualmente (desde '¿podrías?' hasta 'insisto en que'). Incluye gestión de conflictos.",
     resources: [
       { id: 'r22-1', title: 'Gestión de conflictos', type: 'PDF', url: '/resources/gestion-conflictos.pdf', order: 1 },
-      { id: 'r22-2', title: 'Recursos de énfasis y persuasión', type: 'PDF', url: '/resources/recursos-enfasis-persuasion.pdf', order: 2 },
+      { id: 'r22-2', title: 'Recursos de énfasis y persuasión', type: 'PDF', url: '/resources/44-recursos-enfasis-persuasion.pdf', order: 2 },
     ],
   },
 
@@ -4080,7 +4080,7 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba un video de 2 minutos con la apertura de una conferencia sobre un tema de tu interés. Incluye: gancho impactante (30 seg), conexión con audiencia (30 seg), idea central clara (30 seg), roadmap (30 seg).",
     resources: [
-      { id: 'r23-1', title: 'Guía de conferencias', type: 'PDF', url: '/resources/guia-conferencias.pdf', order: 1 },
+      { id: 'r23-1', title: 'Guía de conferencias', type: 'PDF', url: '/resources/50-guia-conferencias.pdf', order: 1 },
       { id: 'r23-2', title: 'Ejemplos de aperturas efectivas', type: 'VIDEO', url: '/resources/aperturas-video.mp4', order: 2 },
     ],
   },
@@ -4238,8 +4238,8 @@ export const sessionsData: SessionData[] = [
     ],
     homeworkInstructions: "Graba una mini-conferencia completa de 5 minutos sobre un tema de tu elección. Estructura: apertura (1 min), desarrollo organizado con 3 recursos de énfasis (3 min), cierre memorable con llamada a la acción (1 min).",
     resources: [
-      { id: 'r24-1', title: 'Guía de conferencias completas', type: 'PDF', url: '/resources/guia-conferencias-completas.pdf', order: 1 },
-      { id: 'r24-2', title: 'Gestión de preguntas en Q&A', type: 'PDF', url: '/resources/gestion-preguntas-qa.pdf', order: 2 },
+      { id: 'r24-1', title: 'Guía de conferencias completas', type: 'PDF', url: '/resources/52-guia-conferencias-completas.pdf', order: 1 },
+      { id: 'r24-2', title: 'Gestión de preguntas en Q&A', type: 'PDF', url: '/resources/47-gestion-preguntas-qa.pdf', order: 2 },
     ],
   },
 
@@ -4420,7 +4420,7 @@ export const sessionsData: SessionData[] = [
     homeworkInstructions: "Graba un video de 4 minutos role-play 5 situaciones diferentes con registros apropiados: entrevista de trabajo, cena con amigos, pedir información en la calle, defensa de tesis, WhatsApp con amigo.",
     resources: [
       { id: 'r25-1', title: 'Registros del español', type: 'PDF', url: '/resources/registros-espanol.pdf', order: 1 },
-      { id: 'r25-2', title: 'Ejemplos de registros contrastados', type: 'PDF', url: '/resources/ejemplos-registros-contrastados.pdf', order: 2 },
+      { id: 'r25-2', title: 'Ejemplos de registros contrastados', type: 'PDF', url: '/resources/49-ejemplos-registros-contrastados.pdf', order: 2 },
     ],
   },
 
@@ -4587,7 +4587,7 @@ export const sessionsData: SessionData[] = [
     homeworkInstructions: "Escribe un documento de 250 palabras reflexionando sobre las diferencias culturales en el lenguaje vulgar entre tu país y el mundo hispanohablante. Identifica 3 diferencias principales y explica su importancia cultural.",
     resources: [
       { id: 'r26-1', title: 'Pragmática del lenguaje vulgar', type: 'PDF', url: '/resources/pragmatica-vulgar.pdf', order: 1 },
-      { id: 'r26-2', title: 'Eufemismos y tabúes lingüísticos', type: 'PDF', url: '/resources/eufemismos-tabues.pdf', order: 2 },
+      { id: 'r26-2', title: 'Eufemismos y tabúes lingüísticos', type: 'PDF', url: '/resources/51-eufemismos-tabues.pdf', order: 2 },
     ],
   },
 
@@ -4746,7 +4746,7 @@ export const sessionsData: SessionData[] = [
     homeworkInstructions: "Graba un audio de 3 minutos describiendo 3 sentimientos complejos que hayas experimentado usando vocabulario abstracto preciso. Evita palabras genéricas ('bien', 'mal', 'importante') y usa términos específicos.",
     resources: [
       { id: 'r27-1', title: 'Vocabulario abstracto C1', type: 'PDF', url: '/resources/vocabulario-abstracto.pdf', order: 1 },
-      { id: 'r27-2', title: 'Fichas de vocabulario C1 por campos semánticos', type: 'PDF', url: '/resources/fichas-vocabulario-c1.pdf', order: 2 },
+      { id: 'r27-2', title: 'Fichas de vocabulario C1 por campos semánticos', type: 'PDF', url: '/resources/53-fichas-vocabulario-c1.pdf', order: 2 },
     ],
   },
 
