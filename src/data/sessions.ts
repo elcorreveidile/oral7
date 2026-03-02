@@ -92,6 +92,21 @@ export const sessionsData: SessionData[] = [
         isModeB: true,
         materials: ['Fotocopias con descriptores MCER C1'],
       },
+      {
+        id: 'd1-5',
+        step: 5,
+        title: 'Mini-debate: El aprendizaje de idiomas',
+        instructions: [
+          'Tema: "¿Es mejor aprender un idioma en el país de origen o en tu propio país?"',
+          'Forma dos grupos: A favor (en el país) y En contra (desde casa)',
+          'Cada grupo prepara 3 argumentos (5 min)',
+          'Debate: 2 intervenciones por equipo (2 min cada una)',
+          'El resto de la clase toma notas de los argumentos',
+          'Votación final: ¿Qué equipo fue más convincente?',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '20 min',
+      },
     ],
     grammarContent: {
       title: 'Repaso: Ser vs Estar + Perífrasis de interés',
@@ -159,6 +174,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck1-4', text: 'Sé usar ser y estar correctamente en presentaciones' },
       { id: 'ck1-5', text: 'Conozco el vocabulario básico de motivación y objetivos' },
     ],
+    homeworkInstructions: "Graba un audio de 2-3 minutos presentándote. Incluye tu origen, por qué estudias español y tus objetivos para el curso. Usa correctamente ser/estar y perífrasis de interés (me interesa, me gustaría).",
     resources: [
       { id: 'r1-1', title: 'Descriptores MCER C1 - Producción oral', type: 'PDF', url: '/resources/mcer-c1-produccion-oral.pdf', order: 1 },
       { id: 'r1-2', title: 'Guía del curso 2026', type: 'PDF', url: '/resources/guia-curso.pdf', order: 2 },
@@ -369,6 +385,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck2-4', text: 'Distingo entre conectores formales e informales' },
       { id: 'ck2-5', text: 'Puedo argumentar con cohesión y coherencia' },
     ],
+    homeworkInstructions: "Graba un video de 3 minutos argumentando sobre un tema de actualidad. Usa al menos 8 conectores diferentes de categorías variadas (estructuración, adición, contraste, consecuencia, conclusión).",
     resources: [
       { id: 'r2-1', title: 'Póster', description: 'Conectores por función', type: 'PDF', url: '/resources/conectores-tabla.pdf', order: 1 },
       { id: 'r2-2', title: 'Vocabulario', description: 'Argumentación (C1)', type: 'PDF', url: '/resources/ejercicios-conectores.pdf', order: 2 },
@@ -464,6 +481,22 @@ export const sessionsData: SessionData[] = [
         isModeB: true,
         materials: ['Transcripción de discurso'],
       },
+      {
+        id: 'd3-5',
+        step: 5,
+        title: 'Debate: La verdad en los medios',
+        instructions: [
+          'Tema: "¿Es responsabilidad del gobierno regular las noticias falsas en redes sociales?"',
+          'División: Grupo A (regulación necesaria) vs Grupo B (libertad de expresión)',
+          'Preparación: 8 minutos para preparar argumentos con evidencias',
+          'REGLA: Usa al menos 3 expresiones de opinión diferentes',
+          'REGLA: Incluye grados de certeza (es probable que, quizá, sin duda)',
+          'Rondas: 3 intervenciones por equipo, 2 minutos cada una',
+          'Cierre: El moderador resume los puntos clave',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '25 min',
+      },
     ],
     grammarContent: {
       title: 'Expresión de opinión, actitud y conocimiento',
@@ -541,6 +574,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck3-4', text: 'Puedo expresar diferentes grados de certeza' },
       { id: 'ck3-5', text: 'Sé atribuir opiniones a otras personas' },
     ],
+    homeworkInstructions: "Graba un audio de 3 minutos expresando tu opinión sobre un tema polémico. Usa al menos 5 fórmulas diferentes de opinión y 3 grados de certeza distintos (desde 'quizá' hasta 'estoy convencido de que').",
     resources: [
       { id: 'r3-1', title: 'Opinión', description: 'Fórmulas y certeza', type: 'PDF', url: '/resources/fichas-opinion-certeza.pdf', order: 1 },
       { id: 'r3-2', title: 'Roles', description: 'Debate IA', type: 'PDF', url: '/resources/subjuntivo-duda.pdf', order: 2 },
@@ -635,6 +669,22 @@ export const sessionsData: SessionData[] = [
         ],
         groupType: 'pairs',
         isModeB: true,
+      },
+      {
+        id: 'd4-5',
+        step: 5,
+        title: 'Debate: ¿Tú o usted?',
+        instructions: [
+          'Tema: "¿Debe abolirse la distinción tú/usted en el español moderno?"',
+          'Grupo A: Mantener la distinción (riqueza expresiva, cortesía)',
+          'Grupo B: Unificar el "tú" (igualdad, simplificación)',
+          'Preparación: 7 minutos para elaborar argumentos',
+          'RETO: Alterna entre registro formal e informal durante el debate',
+          '3 intervenciones por equipo (2 min cada una)',
+          'El público evalúa quién mantuvo mejor el registro asignado',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '20 min',
       },
     ],
     grammarContent: {
@@ -748,6 +798,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck4-4', text: 'Evito coloquialismos inapropiados' },
       { id: 'ck4-5', text: 'Sé usar tú y usted correctamente' },
     ],
+    homeworkInstructions: "Graba dos versiones de un mismo mensaje (1 minuto cada una): una en registro informal y otra en registro formal. Tema: pedir un favor a un profesor. Explica las diferencias lingüísticas.",
     resources: [
       { id: 'r4-1', title: 'Tabla de registros lingüísticos', type: 'PDF', url: '/resources/registros-tabla.pdf', order: 1 },
       { id: 'r4-2', title: 'Fórmulas de cortesía formales', type: 'PDF', url: '/resources/cortesia-formal.pdf', order: 2 },
@@ -919,6 +970,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck5-4', text: 'Uso expresiones apropiadas según el contexto' },
       { id: 'ck5-5', text: 'Evito ser confrontacional innecesariamente' },
     ],
+    homeworkInstructions: "Graba un video de 3 minutos debatiendo contigo mismo sobre un tema polémico. Presenta ambos lados usando expresiones de acuerdo y desacuerdo variadas (desde suavizadas hasta rotundas).",
     resources: [
       { id: 'r5-1', title: 'Tabla de acuerdo y desacuerdo', type: 'PDF', url: '/resources/acuerdo-desacuerdo-tabla.pdf', order: 1 },
       { id: 'r5-2', title: 'Pragmática del desacuerdo intercultural', type: 'PDF', url: '/resources/desacuerdo-intercultural.pdf', order: 2 },
@@ -1095,6 +1147,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck6-4', text: 'Sé conceder puntos válidos del oponente' },
       { id: 'ck6-5', text: 'Refuerzo mi posición tras contraargumentar' },
     ],
+    homeworkInstructions: "Graba un audio de 3 minutos donde presentes un argumento y luego lo contraargumentes usando la estructura completa: concesión → pivote → refutación → refuerzo. Usa conectores de contraargumentación variados.",
     resources: [
       { id: 'r6-1', title: 'Estructura de contraargumentación', type: 'PDF', url: '/resources/contraargumentacion-estructura.pdf', order: 1 },
       { id: 'r6-2', title: 'Ejercicios de contraargumentación', type: 'PDF', url: '/resources/ejercicios-contraargumentacion.pdf', order: 2 },
@@ -1243,8 +1296,10 @@ export const sessionsData: SessionData[] = [
       { id: 'ck7-4', text: 'Respondí a los argumentos del oponente' },
       { id: 'ck7-5', text: 'Cerré mi posición efectivamente' },
     ],
+    homeworkInstructions: "Graba un video de 5 minutos simulando un debate formal sobre el tema de tu elección. Estructura: apertura (2 min), refutación (2 min), cierre (1 min). Usa registro formal.",
     resources: [
       { id: 'r7-1', title: 'Rúbrica de debate', type: 'PDF', url: '/resources/rubrica-debate.pdf', order: 1 },
+      { id: 'r7-2', title: 'Guía de estructuración de argumentos', type: 'PDF', url: '/resources/guia-argumentos-debate.pdf', order: 2 },
     ],
   },
 
@@ -1392,8 +1447,10 @@ export const sessionsData: SessionData[] = [
       { id: 'ck8-4', text: 'Establecí metas específicas' },
       { id: 'ck8-5', text: 'Reflexioné sobre mi progreso' },
     ],
+    homeworkInstructions: "Escribe un documento de 300 palabras analizando tu desempeño en el debate. Identifica 2 fortalezas, 2 áreas de mejora, y establece 1 meta específica con formato SMART para el próximo bloque.",
     resources: [
       { id: 'r8-1', title: 'Rúbrica de autoevaluación', type: 'PDF', url: '/resources/rubrica-autoevaluacion.pdf', order: 1 },
+      { id: 'r8-2', title: 'Plantilla de feedback de debate', type: 'PDF', url: '/resources/plantilla-feedback-debate.pdf', order: 2 },
     ],
   },
 
@@ -1584,6 +1641,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck9-4', text: 'Mantengo un registro consistente' },
       { id: 'ck9-5', text: 'Tengo un plan de mejora para el Bloque 2' },
     ],
+    homeworkInstructions: "Graba un audio de 2 minutos corrigiendo una intervención de tu debate anterior. Elimina muletillas ('o sea', 'es que') y usa vocabulario C1 más preciso. Explica los cambios.",
     resources: [
       { id: 'r9-1', title: 'Errores comunes C1 - Lista', type: 'PDF', url: '/resources/errores-c1-lista.pdf', order: 1 },
       { id: 'r9-2', title: 'Guía de auto-corrección', type: 'PDF', url: '/resources/guia-autocorrection.pdf', order: 2 },
@@ -1681,6 +1739,22 @@ export const sessionsData: SessionData[] = [
         groupType: 'pairs',
         isModeB: true,
       },
+      {
+        id: 'd10-5',
+        step: 5,
+        title: 'Debate: ¿Qué es una "buena vida"?',
+        instructions: [
+          'Tema: "¿Qué es más importante para una vida plena: éxitos profesionales o experiencias personales?"',
+          'Grupo A: Éxitos profesionales (carrera, logros, reconocimiento)',
+          'Grupo B: Experiencias personales (familia, viajes, relaciones)',
+          'RETO: Narra anécdotas personales usando PASADOS correctamente',
+          'Usa al menos: Pretérito Perfecto Simple, Imperfecto, Pluscuamperfecto',
+          '3 rondas de argumentos (2 min cada uno)',
+          'El profesor corrige errores de pasados al final',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '25 min',
+      },
     ],
     grammarContent: {
       title: 'Pretéritos: Usos y diferencias',
@@ -1752,6 +1826,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck10-4', text: 'Evito errores comunes con los pasados' },
       { id: 'ck10-5', text: 'Relato información con precisión temporal' },
     ],
+    homeworkInstructions: "Graba un video de 3 minutos narrando una anécdota personal memorable. Usa al menos 5 conectores temporales variados (antes de, después de, mientras, cuando, en cuanto) y demuestra dominio de pretéritos.",
     resources: [
       { id: 'r10-1', title: 'Pretéritos: Guía completa', type: 'PDF', url: '/resources/preteritos-guia.pdf', order: 1 },
       { id: 'r10-2', title: 'Conectores temporales', type: 'PDF', url: '/resources/conectores-temporales.pdf', order: 2 },
@@ -1852,6 +1927,22 @@ export const sessionsData: SessionData[] = [
         groupType: 'pairs',
         isModeB: true,
       },
+      {
+        id: 'd11-5',
+        step: 5,
+        title: 'Debate: La planificación del tiempo',
+        instructions: [
+          'Tema: "¿Vale la pena planificar cada detalle de la vida o es mejor vivir el momento?"',
+          'Grupo A: Planificar (control, productividad, metas)',
+          'Grupo B: Vivir el momento (espontaneidad, flexibilidad, disfrute)',
+          'RETO: Usa conectores temporales con subjuntivo/indicativo correctamente',
+          'Antes de que + subjuntivo / Después de que + subjuntivo / En cuanto + subjuntivo',
+          '3 rondas de debate (2 min cada una)',
+          'El profesor registra errores de modo para revisión final',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '25 min',
+      },
     ],
     grammarContent: {
       title: 'Indicadores temporales y modo verbal',
@@ -1920,6 +2011,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck11-4', text: 'Evito errores comunes' },
       { id: 'ck11-5', text: 'Varío los conectores temporales' },
     ],
+    homeworkInstructions: "Graba un audio de 3 minutos narrando 'un día perfecto' usando al menos 6 indicadores temporales diferentes. Distingue correctamente entre indicativo y subjuntivo en estructuras temporales.",
     resources: [
       { id: 'r11-1', title: 'Indicadores temporales - Tabla', type: 'PDF', url: '/resources/indicadores-temporales.pdf', order: 1 },
       { id: 'r11-2', title: 'Ejercicios de temporales', type: 'PDF', url: '/resources/ejercicios-temporales.pdf', order: 2 },
@@ -2014,6 +2106,22 @@ export const sessionsData: SessionData[] = [
         groupType: 'small_group',
         isModeB: true,
       },
+      {
+        id: 'd12-5',
+        step: 5,
+        title: 'Debate: ¿Borrar la historia?',
+        instructions: [
+          'Tema: "Si pudieras borrar un evento histórico doloroso, ¿lo harías?"',
+          'Grupo A: Borrar (sanar, olvidar, avanzar)',
+          'Grupo B: No borrar (aprender, memoria, identidad)',
+          'RETO: Narra eventos históricos usando PRETÉRITOS correctamente',
+          'Usa: Perfecto Simple, Imperfecto, Pluscuamperfecto',
+          '3 rondas de argumentos (2 min cada una)',
+          'Incluye ejemplos históricos concretos',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '25 min',
+      },
     ],
     grammarContent: {
       title: 'Narración histórica: Pretéritos',
@@ -2071,6 +2179,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck12-4', text: 'Relato múltiples eventos con coherencia' },
       { id: 'ck12-5', text: 'Evito anacronismos lingüísticos' },
     ],
+    homeworkInstructions: "Graba un video de 4 minutos narrando un evento histórico de tu país o España. Usa vocabulario histórico preciso (reinado, batalla, tratado, revolución) y conectores temporales. Evita anacronismos.",
     resources: [
       { id: 'r12-1', title: 'Vocabulario histórico', type: 'PDF', url: '/resources/vocabulario-historico.pdf', order: 1 },
       { id: 'r12-2', title: 'Ejercicios de narración histórica', type: 'PDF', url: '/resources/narracion-historica.pdf', order: 2 },
@@ -2168,6 +2277,22 @@ export const sessionsData: SessionData[] = [
         groupType: 'pairs',
         isModeB: true,
       },
+      {
+        id: 'd13-5',
+        step: 5,
+        title: 'Debate: El poder de "¿Qué harías si...?"',
+        instructions: [
+          'Tema: "Si pudieras cambiar una decisión del pasado, ¿la cambiarías?"',
+          'Grupo A: Cambiar (corregir errores, mejorar)',
+          'Grupo B: No cambiar (aprender, destino, identidad)',
+          'RETO: Usa estructuras condicionales correctamente',
+          'Si + imperfecto subjuntivo + condicional / Si + pluscuamperfecto + condicional compuesto',
+          '3 rondas de debate (2 min cada una)',
+          'Ejemplo: "Si hubiera aceptado ese trabajo, habría ganado más dinero"',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '25 min',
+      },
     ],
     grammarContent: {
       title: 'La hipótesis: Estructuras condicionales',
@@ -2232,6 +2357,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck13-4', text: 'Evito errores comunes con el condicional' },
       { id: 'ck13-5', text: 'Expreso situaciones hipotéticas con claridad' },
     ],
+    homeworkInstructions: "Graba un audio de 3 minutos planteando y respondiendo 5 situaciones hipotéticas. Usa correctamente: si + indicativo → futuro/condicional (reales) y si + imperfecto subjuntivo → condicional (irreales).",
     resources: [
       { id: 'r13-1', title: 'Estructuras condicionales - Guía', type: 'PDF', url: '/resources/condicionales-guia.pdf', order: 1 },
       { id: 'r13-2', title: 'Ejercicios de hipótesis', type: 'PDF', url: '/resources/ejercicios-hipotesis.pdf', order: 2 },
@@ -2329,6 +2455,22 @@ export const sessionsData: SessionData[] = [
         groupType: 'pairs',
         isModeB: true,
       },
+      {
+        id: 'd14-5',
+        step: 5,
+        title: 'Debate: El arrepentimiento',
+        instructions: [
+          'Tema: "¿El arrepentimiento es útil o es una pérdida de tiempo?"',
+          'Grupo A: Útil (aprender, crecer, corregir)',
+          'Grupo B: Inútil (aceptar, avanzar, no cambiar nada)',
+          'RETO: Expresa arrepentimientos usando HIPÓTESIS PASADAS',
+          'Si + pluscuamperfecto subjuntivo + condicional compuesto',
+          'Ejemplo: "Si hubiera estudiado más, habría tenido mejores oportunidades"',
+          '3 rondas de argumentos (2 min cada una)',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '25 min',
+      },
     ],
     grammarContent: {
       title: 'Hipótesis en el pasado',
@@ -2392,6 +2534,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck14-4', text: 'Uso condicional compuesto apropiadamente' },
       { id: 'ck14-5', text: 'Evito errores con formas compuestas' },
     ],
+    homeworkInstructions: "Graba un video de 3 minutos compartiendo 3 arrepentimientos o lamentos del pasado. Usa estructuras de hipótesis irreversible: si + pluscuamperfecto subjuntivo → condicional compuesto.",
     resources: [
       { id: 'r14-1', title: 'Pluscuamperfecto subjuntivo - Guía', type: 'PDF', url: '/resources/pluscuamperfecto-subj.pdf', order: 1 },
       { id: 'r14-2', title: 'Ejercicios de hipótesis pasadas', type: 'PDF', url: '/resources/ejercicios-hipotesis-pasado.pdf', order: 2 },
@@ -2487,6 +2630,22 @@ export const sessionsData: SessionData[] = [
       {
         id: 'd15-4',
         step: 4,
+        title: 'Debate: La evaluación oral',
+        instructions: [
+          'Tema: "¿Es justo evaluar la expresión oral en un examen de idiomas?"',
+          'Grupo A: Justo (mide competencia real, necesario, motivador)',
+          'Grupo B: Injusto (nervios, subjetivo, presión)',
+          'RETO: Aplica todas las destrezas de debate aprendidas',
+          'Conectores, contraargumentación suavizada, registro formal',
+          '3 rondas de debate (2 min cada una)',
+          'El profesor da feedback sobre habilidades de debate',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '20 min',
+      },
+      {
+        id: 'd15-5',
+        step: 5,
         title: 'Simulacro completo con feedback',
         instructions: [
           'EXAMEN COMPLETO: 10-12 minutos por estudiante',
@@ -2502,8 +2661,8 @@ export const sessionsData: SessionData[] = [
         materials: ['Temas de examen', 'Rúbrica completa'],
       },
       {
-        id: 'd15-5',
-        step: 5,
+        id: 'd15-6',
+        step: 6,
         title: 'Análisis de criterios de evaluación',
         instructions: [
           'Analiza la rúbrica y autoevalúate:',
@@ -2571,6 +2730,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck15-4', text: 'Tengo un plan de estudio' },
       { id: 'ck15-5', text: 'Me siento preparado/a' },
     ],
+    homeworkInstructions: "Graba un simulacro completo de examen parcial (10-12 min): monólogo sobre un evento histórico (3-4 min) + respuestas a preguntas de hipótesis (5-6 min). Autoevalúate con la rúbrica.",
     resources: [
       { id: 'r15-1', title: 'Guía del examen parcial', type: 'PDF', url: '/resources/guia-examen-parcial.pdf', order: 1 },
       { id: 'r15-2', title: 'Rúbrica de evaluación', type: 'PDF', url: '/resources/rubrica-evaluacion.pdf', order: 2 },
@@ -2799,6 +2959,21 @@ export const sessionsData: SessionData[] = [
         groupType: 'individual',
         isModeB: true,
       },
+      {
+        id: 'd17-5',
+        step: 5,
+        title: 'Debate: Las vacaciones y el descanso',
+        instructions: [
+          'Tema: "¿Es necesario tomar vacaciones largas o son mejor las cortas y frecuentes?"',
+          'Grupo A: Vacaciones largas (desconexión total, viajes profundos)',
+          'Grupo B: Cortas y frecuentes (equilibrio, sostenibilidad)',
+          'RETO: Narra experiencias de Semana Santa usando PRETÉRITOS',
+          'Usa conectores de contraste y adición',
+          '3 rondas de argumentos (2 min cada una)',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '20 min',
+      },
     ],
     grammarContent: {
       title: 'Repaso: Pretéritos y conectores',
@@ -2844,7 +3019,11 @@ export const sessionsData: SessionData[] = [
       { id: 'ck17-4', text: 'Tengo metas claras para mayo' },
       { id: 'ck17-5', text: 'Repasé estructuras clave del curso' },
     ],
-    resources: [],
+    homeworkInstructions: "Graba un audio de 2 minutos compartiendo tu experiencia de Semana Santa. Usa pretéritos correctamente, conectores variados, y comparte 3 metas específicas para mayo.",
+    resources: [
+      { id: 'r17-1', title: 'Guía de repaso post-vacaciones', type: 'PDF', url: '/resources/repaso-post-vacaciones.pdf', order: 1 },
+      { id: 'r17-2', title: 'Ficha de metas SMART', type: 'PDF', url: '/resources/ficha-metas-smart.pdf', order: 2 },
+    ],
   },
 
   // ============================================
@@ -2946,6 +3125,22 @@ export const sessionsData: SessionData[] = [
         isModeB: true,
         materials: ['Transcripto de entrevista'],
       },
+      {
+        id: 'd18-5',
+        step: 5,
+        title: 'Debate: Entrevistas tradicionales vs modernas',
+        instructions: [
+          'Tema: "¿Son mejores las entrevistas presenciales o las virtuales?"',
+          'Grupo A: Presenciales (lenguaje corporal, conexión, impresión)',
+          'Grupo B: Virtuales (accesibilidad, comodidad, eficiencia)',
+          'RETO: Usa vocabulario profesional y conectores formales',
+          'Aplica método STAR para ejemplos concretos',
+          '3 rondas de argumentos (2 min cada una)',
+          'Incluye experiencias personales de entrevistas',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '20 min',
+      },
     ],
     grammarContent: {
       title: 'Lenguaje de entrevista',
@@ -2999,6 +3194,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck18-4', text: 'Uso registro formal-semiformal apropiado' },
       { id: 'ck18-5', text: 'Puedo simular una entrevista profesional' },
     ],
+    homeworkInstructions: "Graba un video de 5 minutos simulando una entrevista de trabajo para un puesto bilingüe. Incluye: presentación, fortalezas/debilidades, y usa preguntas abiertas. Aplica método STAR.",
     resources: [
       { id: 'r18-1', title: 'Guía de entrevistas', type: 'PDF', url: '/resources/guia-entrevistas.pdf', order: 1 },
       { id: 'r18-2', title: 'Método STAR', type: 'PDF', url: '/resources/metodo-star.pdf', order: 2 },
@@ -3102,6 +3298,22 @@ export const sessionsData: SessionData[] = [
         groupType: 'small_group',
         isModeB: true,
       },
+      {
+        id: 'd19-5',
+        step: 5,
+        title: 'Debate: La conversación en la era digital',
+        instructions: [
+          'Tema: "¿Las redes sociales han mejorado o empeorado la comunicación humana?"',
+          'Grupo A: Mejorado (conexión global, accesibilidad, diversidad)',
+          'Grupo B: Empeorado (superficialidad, aislamiento, polarización)',
+          'RETO: Aplica estrategias de interacción efectiva',
+          'Preguntas abiertas, conectar con el interlocutor, seguimiento',
+          '3 rondas de debate (2 min cada una)',
+          'Evita monopolizar y demuestra escucha activa',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '25 min',
+      },
     ],
     grammarContent: {
       title: 'Preguntas y seguimiento',
@@ -3153,8 +3365,10 @@ export const sessionsData: SessionData[] = [
       { id: 'ck19-4', text: 'Me turnó apropiadamente' },
       { id: 'ck19-5', text: 'Evito monopolizar la conversación' },
     ],
+    homeworkInstructions: "Graba un video de 5 minutos en conversación con un compañero (o tú mismo en dos roles). Demuestra: turnarse, seguir el hilo, usar preguntas abiertas, y conectar con lo dicho por el interlocutor.",
     resources: [
       { id: 'r19-1', title: 'Estrategias de interacción', type: 'PDF', url: '/resources/estrategias-interaccion.pdf', order: 1 },
+      { id: 'r19-2', title: 'Conectores de seguimiento', type: 'PDF', url: '/resources/conectores-seguimiento.pdf', order: 2 },
     ],
   },
 
@@ -3252,6 +3466,22 @@ export const sessionsData: SessionData[] = [
         groupType: 'pairs',
         isModeB: true,
       },
+      {
+        id: 'd20-5',
+        step: 5,
+        title: 'Debate: Verdad vs interpretación',
+        instructions: [
+          'Tema: "¿Es posible reportear los hechos sin interpretación?"',
+          'Grupo A: Sí (objetividad periodística, hechos puros)',
+          'Grupo B: No (sesgo inevitable, perspectiva subjetiva)',
+          'RETO: Reportea lo dicho por otros usando ESTILO INDIRECTO',
+          'Verbos variados: afirmó, sostuvo, argumentó, insistió, negó',
+          '3 rondas de debate (2 min cada una)',
+          'Cambia tiempos, pronombres y lugares correctamente',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '25 min',
+      },
     ],
     grammarContent: {
       title: 'Estilo indirecto: Cambios',
@@ -3316,8 +3546,10 @@ export const sessionsData: SessionData[] = [
       { id: 'ck20-4', text: 'Hago cambios apropiados de tiempos y pronombres' },
       { id: 'ck20-5', text: 'Evito errores comunes' },
     ],
+    homeworkInstructions: "Graba un audio de 3 minutos reportando 5 mensajes diferentes que escuchaste durante la semana. Usa estilo indirecto correctamente con cambios de tiempos, pronombres y lugar.",
     resources: [
       { id: 'r20-1', title: 'Estilo indirecto - Guía', type: 'PDF', url: '/resources/estilo-indirecto.pdf', order: 1 },
+      { id: 'r20-2', title: 'Ejercicios de estilo indirecto', type: 'PDF', url: '/resources/ejercicios-estilo-indirecto.pdf', order: 2 },
     ],
   },
 
@@ -3417,6 +3649,22 @@ export const sessionsData: SessionData[] = [
         isModeB: true,
         materials: ['Transcripto persuasivo'],
       },
+      {
+        id: 'd21-5',
+        step: 5,
+        title: 'Debate: Persuasión ética vs manipulación',
+        instructions: [
+          'Tema: "¿Cuál es la línea entre persuadir y manipular?"',
+          'Grupo A: Diferencia clara (información, respeto, autonomía)',
+          'Grupo B: Línea borrosa (influencia invisible, sesgo cognitivo)',
+          'RETO: Usa estructuras de influencia y persuasión',
+          'Te aconsejo que / Deberías / Si yo fuera tú / Lo mejor es',
+          '3 rondas de debate (2 min cada una)',
+          'Identifica estrategias usadas por el equipo contrario',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '25 min',
+      },
     ],
     grammarContent: {
       title: 'Estrategias de influencia',
@@ -3472,8 +3720,10 @@ export const sessionsData: SessionData[] = [
       { id: 'ck21-4', text: 'Uso registro apropiado' },
       { id: 'ck21-5', text: 'Reconozco estrategias de persuasión' },
     ],
+    homeworkInstructions: "Graba un video de 3 minutos dando consejos sobre 3 problemas diferentes. Usa estructuras variadas: aconsejo que + subjuntivo, deberías + condicional, si yo fuera tú + hipótesis, lo mejor es + infinitivo.",
     resources: [
       { id: 'r21-1', title: 'Estrategias de influencia', type: 'PDF', url: '/resources/estrategias-influencia.pdf', order: 1 },
+      { id: 'r21-2', title: 'Técnicas de negociación', type: 'PDF', url: '/resources/tecnicas-negociacion.pdf', order: 2 },
     ],
   },
 
@@ -3573,6 +3823,22 @@ export const sessionsData: SessionData[] = [
         groupType: 'small_group',
         isModeB: true,
       },
+      {
+        id: 'd22-5',
+        step: 5,
+        title: 'Debate: La insistencia en relaciones personales',
+        instructions: [
+          'Tema: "¿Cuándo es aceptable insistir y cuándo se convierte en acoso?"',
+          'Grupo A: Insistir es válido (perseverancia, claridad, compromiso)',
+          'Grupo B: Líneas claras (respeto, consentimiento, autonomía)',
+          'RETO: Usa estructuras de insistencia de diferentes niveles',
+          'Desde suave (podrías) hasta fuerte (insisto en que)',
+          '3 rondas de debate (2 min cada una)',
+          'Practica la gestión de conflictos y negociación',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '25 min',
+      },
     ],
     grammarContent: {
       title: 'Lenguaje de insistencia y negociación',
@@ -3625,8 +3891,10 @@ export const sessionsData: SessionData[] = [
       { id: 'ck22-4', text: 'Uso lenguaje persuasivo sin agresividad' },
       { id: 'ck22-5', text: 'Reconozco manipulación vs persuasión' },
     ],
+    homeworkInstructions: "Graba un audio de 3 minutos insistiendo apropiadamente sobre una petición importante. Aumenta la intensidad gradualmente (desde '¿podrías?' hasta 'insisto en que'). Incluye gestión de conflictos.",
     resources: [
       { id: 'r22-1', title: 'Gestión de conflictos', type: 'PDF', url: '/resources/gestion-conflictos.pdf', order: 1 },
+      { id: 'r22-2', title: 'Recursos de énfasis y persuasión', type: 'PDF', url: '/resources/recursos-enfasis-persuasion.pdf', order: 2 },
     ],
   },
 
@@ -3726,6 +3994,22 @@ export const sessionsData: SessionData[] = [
         isModeB: true,
         materials: ['Cronómetro'],
       },
+      {
+        id: 'd23-5',
+        step: 5,
+        title: 'Debate: El arte de presentar',
+        instructions: [
+          'Tema: "¿Qué es más importante: el contenido o cómo se presenta?"',
+          'Grupo A: Contenido (sustancia, datos, evidencia)',
+          'Grupo B: Presentación (storytelling, emoción, conexión)',
+          'RETO: Aplica estructuras de conferencia',
+          'Gancho, conexión con audiencia, idea central clara',
+          '3 rondas de argumentos (2 min cada una)',
+          'Demuestra habilidades de presentacionismo',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '25 min',
+      },
     ],
     grammarContent: {
       title: 'Lenguaje de conferencias',
@@ -3778,6 +4062,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck23-4', text: 'Uso ganchos variados' },
       { id: 'ck23-5', text: 'Doy un roadmap claro' },
     ],
+    homeworkInstructions: "Graba un video de 2 minutos con la apertura de una conferencia sobre un tema de tu interés. Incluye: gancho impactante (30 seg), conexión con audiencia (30 seg), idea central clara (30 seg), roadmap (30 seg).",
     resources: [
       { id: 'r23-1', title: 'Guía de conferencias', type: 'PDF', url: '/resources/guia-conferencias.pdf', order: 1 },
       { id: 'r23-2', title: 'Ejemplos de aperturas efectivas', type: 'VIDEO', url: '/resources/aperturas-video.mp4', order: 2 },
@@ -3875,6 +4160,22 @@ export const sessionsData: SessionData[] = [
         groupType: 'pairs',
         isModeB: true,
       },
+      {
+        id: 'd24-5',
+        step: 5,
+        title: 'Debate: Preguntas después de una conferencia',
+        instructions: [
+          'Tema: "¿Debe haber siempre Q&A después de una conferencia?"',
+          'Grupo A: Siempre (clarificación, engagement, profundización)',
+          'Grupo B: No siempre (tiempo limitado, preparación, formato)',
+          'RETO: Aplica estrategias de manejo de preguntas',
+          'Repetir, validar, responder brevemente, verificar',
+          '3 rondas de debate (2 min cada una)',
+          'Demuestra profesionalismo en respuestas',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '20 min',
+      },
     ],
     grammarContent: {
       title: 'Recursos de conferencias',
@@ -3919,8 +4220,10 @@ export const sessionsData: SessionData[] = [
       { id: 'ck24-4', text: 'Manejo preguntas del audiencia' },
       { id: 'ck24-5', text: 'Evito errores comunes' },
     ],
+    homeworkInstructions: "Graba una mini-conferencia completa de 5 minutos sobre un tema de tu elección. Estructura: apertura (1 min), desarrollo organizado con 3 recursos de énfasis (3 min), cierre memorable con llamada a la acción (1 min).",
     resources: [
       { id: 'r24-1', title: 'Guía de conferencias completas', type: 'PDF', url: '/resources/guia-conferencias-completas.pdf', order: 1 },
+      { id: 'r24-2', title: 'Gestión de preguntas en Q&A', type: 'PDF', url: '/resources/gestion-preguntas-qa.pdf', order: 2 },
     ],
   },
 
@@ -4019,6 +4322,22 @@ export const sessionsData: SessionData[] = [
         groupType: 'small_group',
         isModeB: true,
       },
+      {
+        id: 'd25-5',
+        step: 5,
+        title: 'Debate: Coloquialismos en contextos formales',
+        instructions: [
+          'Tema: "¿Es apropiado usar coloquialismos en un contexto académico?"',
+          'Grupo A: Apropiado (autenticidad, claridad, cercanía)',
+          'Grupo B: Inapropiado (profesionalismo, formalidad, respeto)',
+          'RETO: Usa ejemplos de variantes geográficas del español',
+          'España vs América, coloquialismos específicos',
+          '3 rondas de debate (2 min cada una)',
+          'Adapta el registro según el contexto',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '20 min',
+      },
     ],
     grammarContent: {
       title: 'Registros y variantes',
@@ -4082,8 +4401,10 @@ export const sessionsData: SessionData[] = [
       { id: 'ck25-4', text: 'Evito coloquialismos en contextos formales' },
       { id: 'ck25-5', text: 'Conozco variantes geográficas del español' },
     ],
+    homeworkInstructions: "Graba un video de 4 minutos role-play 5 situaciones diferentes con registros apropiados: entrevista de trabajo, cena con amigos, pedir información en la calle, defensa de tesis, WhatsApp con amigo.",
     resources: [
       { id: 'r25-1', title: 'Registros del español', type: 'PDF', url: '/resources/registros-espanol.pdf', order: 1 },
+      { id: 'r25-2', title: 'Ejemplos de registros contrastados', type: 'PDF', url: '/resources/ejemplos-registros-contrastados.pdf', order: 2 },
     ],
   },
 
@@ -4184,6 +4505,22 @@ export const sessionsData: SessionData[] = [
         groupType: 'small_group',
         isModeB: true,
       },
+      {
+        id: 'd26-5',
+        step: 5,
+        title: 'Debate: Lenguaje vulgar en espacios públicos',
+        instructions: [
+          'Tema: "¿Es aceptable el lenguaje vulgar en espacios públicos?"',
+          'Grupo A: Aceptable (libertad de expresión, autenticidad, contextual)',
+          'Grupo B: Inaceptable (respeto, civismo, ejemplaridad)',
+          'RETO: Analiza pragmática y funciones del lenguaje vulgar',
+          'Expresar enfado, crear intimidad, rebelarse, enfatizar',
+          '3 rondas de debate (2 min cada una)',
+          'Mantén respeto y registro académico',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '20 min',
+      },
     ],
     grammarContent: {
       title: 'Pragmática del lenguaje vulgar',
@@ -4231,8 +4568,10 @@ export const sessionsData: SessionData[] = [
       { id: 'ck26-4', text: 'Evito ofensas involuntarias' },
       { id: 'ck26-5', text: 'Sé cuándo es apropiado/inapropiado' },
     ],
+    homeworkInstructions: "Escribe un documento de 250 palabras reflexionando sobre las diferencias culturales en el lenguaje vulgar entre tu país y el mundo hispanohablante. Identifica 3 diferencias principales y explica su importancia cultural.",
     resources: [
       { id: 'r26-1', title: 'Pragmática del lenguaje vulgar', type: 'PDF', url: '/resources/pragmatica-vulgar.pdf', order: 1 },
+      { id: 'r26-2', title: 'Eufemismos y tabúes lingüísticos', type: 'PDF', url: '/resources/eufemismos-tabues.pdf', order: 2 },
     ],
   },
 
@@ -4325,6 +4664,22 @@ export const sessionsData: SessionData[] = [
         groupType: 'pairs',
         isModeB: true,
       },
+      {
+        id: 'd27-5',
+        step: 5,
+        title: 'Debate: Precisión emocional vs simplicidad',
+        instructions: [
+          'Tema: "¿Es mejor expresar emociones con precisión o con simplicidad?"',
+          'Grupo A: Precisión (claridad, matices, autenticidad)',
+          'Grupo B: Simplicidad (universalidad, conexión, naturalidad)',
+          'RETO: Usa vocabulario abstracto y emocional preciso',
+          'Palabras específicas para sentimientos y matices',
+          '3 rondas de debate (2 min cada una)',
+          'Demuestra precisión léxica del nivel C1',
+        ],
+        groupType: 'whole_class',
+        timeRequired: '20 min',
+      },
     ],
     grammarContent: {
       title: 'Vocabulario abstracto',
@@ -4372,8 +4727,10 @@ export const sessionsData: SessionData[] = [
       { id: 'ck27-4', text: 'Evito palabras genéricas' },
       { id: 'ck27-5', text: 'He ampliado mi repertorio léxico' },
     ],
+    homeworkInstructions: "Graba un audio de 3 minutos describiendo 3 sentimientos complejos que hayas experimentado usando vocabulario abstracto preciso. Evita palabras genéricas ('bien', 'mal', 'importante') y usa términos específicos.",
     resources: [
       { id: 'r27-1', title: 'Vocabulario abstracto C1', type: 'PDF', url: '/resources/vocabulario-abstracto.pdf', order: 1 },
+      { id: 'r27-2', title: 'Fichas de vocabulario C1 por campos semánticos', type: 'PDF', url: '/resources/fichas-vocabulario-c1.pdf', order: 2 },
     ],
   },
 
@@ -4514,7 +4871,11 @@ export const sessionsData: SessionData[] = [
       { id: 'ck28-4', text: 'Reflexioné sobre mi progreso' },
       { id: 'ck28-5', text: 'Me despedí del grupo' },
     ],
-    resources: [],
+    homeworkInstructions: "Prepara tu presentación final de 5 minutos sobre un tema de tu elección (o sugerido). Incluye: estructura clara, vocabulario C1, conectores variados, registro apropiado, y recursos de énfasis. Graba un ensayo previo.",
+    resources: [
+      { id: 'r28-1', title: 'Rúbrica de presentación final C1', type: 'PDF', url: '/resources/rubrica-presentacion-final.pdf', order: 1 },
+      { id: 'r28-2', title: 'Guía de estructuración de presentaciones', type: 'PDF', url: '/resources/guia-estructuracion-presentaciones.pdf', order: 2 },
+    ],
   },
 ]
 

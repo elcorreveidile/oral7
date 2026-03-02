@@ -70,6 +70,8 @@ export default function EntregasPage() {
   }
 
   const handleSubmit = async (files: any[]) => {
+    // Save scroll position before any state changes
+    const scrollY = window.scrollY
 
     // Save submission
     if (!selectedAssignment) {
@@ -98,13 +100,19 @@ export default function EntregasPage() {
 
       const data = await response.json()
 
-      setDialogOpen(false)
-
-      // Reload submissions
+      // Update submissions first
       setSubmissions((prev) => ({
         ...prev,
         [selectedAssignment.taskId]: data.submission,
       }))
+
+      // Close dialog
+      setDialogOpen(false)
+
+      // Restore scroll position after state updates and render
+      requestAnimationFrame(() => {
+        window.scrollTo(0, scrollY)
+      })
 
       toast({
         title: "Entrega guardada",
