@@ -21,7 +21,7 @@ async function main() {
 
     if (existing) {
       // Update existing session
-      await prisma.session.update({
+      const updatedSession = await prisma.session.update({
         where: { sessionNumber: session.sessionNumber },
         data: {
           date: session.date,
@@ -38,7 +38,26 @@ async function main() {
           modeAContent: session.modeAContent as any,
           modeBContent: session.modeBContent as any,
         },
+        select: { id: true },
       })
+
+      await prisma.resource.deleteMany({
+        where: { sessionId: updatedSession.id },
+      })
+
+      if (session.resources?.length) {
+        await prisma.resource.createMany({
+          data: session.resources.map((resource) => ({
+            sessionId: updatedSession.id,
+            title: resource.title,
+            description: resource.description ?? null,
+            type: resource.type as any,
+            url: resource.url,
+            order: resource.order,
+          })),
+        })
+      }
+
       updated++
     } else {
       // Create new session
@@ -58,6 +77,15 @@ async function main() {
           vocabularyContent: session.vocabularyContent as any,
           modeAContent: session.modeAContent as any,
           modeBContent: session.modeBContent as any,
+          resources: {
+            create: (session.resources || []).map((resource) => ({
+              title: resource.title,
+              description: resource.description ?? null,
+              type: resource.type as any,
+              url: resource.url,
+              order: resource.order,
+            })),
+          },
         },
       })
       created++
