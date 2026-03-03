@@ -54,7 +54,7 @@ Esta rúbrica simplificada está diseñada específicamente para evaluar el exam
 
 | Criterio | 5-Excelente | 3-Bueno | 1-Suficiente |
 |----------|-------------|---------|--------------|
-| **Comprensión** | Entiende todo,包括 matices | Entiende mayoría | Dificultad con preguntas complejas |
+| **Comprensión** | Entiende todo, incluidos los matices | Entiende mayoría | Dificultad con preguntas complejas |
 | **Relevancia** | Responde directamente y completamente | Generalmente responde bien | A veces irrelevante |
 | **Elaboración** | Respuestas elaboradas y detalladas | Respuestas adecuadas | Respuestas breves o incompletas |
 

@@ -176,7 +176,7 @@ El curso utiliza un enfoque comunicativo que integra:
 - **A- (90-92%):** Muy bueno, sólido nivel C1
 - **B+ (87-89%):** Bueno, nivel C1 en áreas principales
 - **B (83-86%):** Satisfactorio, nivel C1 con áreas de mejora
-- **B- (80-82%):** Adecuado,接近 C1
+- **B- (80-82%):** Adecuado, cercano a C1
 - **C+ (77-79%):** Suficiente, fuerte B2
 - **C (70-76%):** B2 consolidado
 - **D (60-69%):** B2 en desarrollo
@@ -313,7 +313,7 @@ El curso utiliza un enfoque comunicativo que integra:
 ### Progresión Esperada
 - **Inicio del curso:** B2 sólido, transición a C1
 - **Mitad del curso:** C1 en producción continua
-- **Final del curso:** C1 consolidado,接近 C2 en áreas de fortaleza
+- **Final del curso:** C1 consolidado, cercano a C2 en áreas de fortaleza
 
 ---
 

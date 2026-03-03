@@ -31,7 +31,7 @@ Esta rúbrica está diseñada para ayudarte a evaluar TU PROPIO desempeño en de
 **1. ¿Cómo te sentiste durante el debate?**
 - ☐ Muy confiada/o
 - ☐ Algo confiada/o
-- ☐ Nerviosa/o pero控制ada/o
+- ☐ Nerviosa/o pero controlada/o
 - ☐ Muy nerviosa/o
 - ☐ Aterrorizada/o
 
@@ -40,7 +40,7 @@ Esta rúbrica está diseñada para ayudarte a evaluar TU PROPIO desempeño en de
 **2. ¿Qué parte del debate sentiste que fue tu MEJOR momento?**
 - _________________________
 
-**3. ¿Qué parte del辩论 sentiste que fue tu PEOR momento?**
+**3. ¿Qué parte del debate sentiste que fue tu PEOR momento?**
 - _________________________
 
 **4. ¿Cuál fue el momento más desafiante? ¿Por qué?**
