@@ -269,7 +269,7 @@ async function main() {
       block: 2,
       blockTitle: 'Interacción Avanzada',
       objectives: [
-        'Negociar达成协议 efectivamente',
+        'Negociar y alcanzar acuerdos efectivamente',
         'Mediar en conflictos interculturales',
         'Usar lenguaje de cortesía',
         'Construir consenso',

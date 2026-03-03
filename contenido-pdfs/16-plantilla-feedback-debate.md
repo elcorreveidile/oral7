@@ -48,11 +48,11 @@
 ### Refutación
 
 ### Eficacia de la refutación | Puntuación: ___/10
-- **¿Se识别ó y respondió a los argumentos oponentes?**
+- **¿Se identificó y respondió a los argumentos oponentes?**
   [ ] Sí, muy efectivamente
   [ ] Sí, parcialmente
   [ ] Poco o de forma limitada
-  [ ] No se识别ó o no se respondió
+  [ ] No se identificó o no se respondió
 
 - **¿La refutación fue lógica y bien argumentada?**
   [ ] Muy lógica
