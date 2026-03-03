@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 
       if (existing) {
         // Update existing session
-        await prisma.session.update({
+        const updatedSession = await prisma.session.update({
           where: { sessionNumber: sessionData.sessionNumber },
           data: {
             date: sessionData.date,
@@ -46,7 +46,26 @@ export async function POST(request: NextRequest) {
             modeAContent: sessionData.modeAContent as any,
             modeBContent: sessionData.modeBContent as any,
           },
+          select: { id: true },
         })
+
+        await prisma.resource.deleteMany({
+          where: { sessionId: updatedSession.id },
+        })
+
+        if (sessionData.resources?.length) {
+          await prisma.resource.createMany({
+            data: sessionData.resources.map((resource) => ({
+              sessionId: updatedSession.id,
+              title: resource.title,
+              description: resource.description ?? null,
+              type: resource.type as any,
+              url: resource.url,
+              order: resource.order,
+            })),
+          })
+        }
+
         updated++
       } else {
         // Create new session
@@ -66,6 +85,15 @@ export async function POST(request: NextRequest) {
             vocabularyContent: sessionData.vocabularyContent as any,
             modeAContent: sessionData.modeAContent as any,
             modeBContent: sessionData.modeBContent as any,
+            resources: {
+              create: (sessionData.resources || []).map((resource) => ({
+                title: resource.title,
+                description: resource.description ?? null,
+                type: resource.type as any,
+                url: resource.url,
+                order: resource.order,
+              })),
+            },
           },
         })
         created++

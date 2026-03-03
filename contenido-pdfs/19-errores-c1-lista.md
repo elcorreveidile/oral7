@@ -9,9 +9,9 @@
 Esta lista presenta los errores más frecuentes que cometen los estudiantes de español C1 en producción oral, junto con explicaciones de por qué ocurren y cómo evitarlos.
 
 ### Importancia de identificar errores
-- **Auto-corrección**: Primero paso para mejorar es reconocer el error
+- **Auto-corrección**: El primer paso para mejorar es reconocer el error
 - **Precisión lingüística**: C1 requiere alto grado de corrección gramatical
-- **Credibilidad**: Errores básicos reducen credibilidad en contextos profesionales
+- **Credibilidad**: Los errores básicos reducen la credibilidad en contextos profesionales
 - **Progreso**: Conocer errores comunes permite trabajar sistemáticamente en ellos
 
 ---
@@ -21,7 +21,7 @@ Esta lista presenta los errores más frecuentes que cometen los estudiantes de e
 ### 1.1 Uso Incorrecto de Ser vs. Estar
 
 ### El error
-❌ "Soy de acuerdo" / "Estoy aburrido" (cuando debería ser ser)
+❌ "Soy de acuerdo" / "Soy aburrido" (cuando debería ser **estar** en el segundo caso)
 
 ### La regla
 **SER** = Identidad, características permanentes, origen, profesión
@@ -53,7 +53,7 @@ Esta lista presenta los errores más frecuentes que cometen los estudiantes de e
 ❌ "Cuando **era** niño, **fui** al parque todos los días."
 ✅ "Cuando **era** niño, **iba** al parque todos los días."
 
-**Regla:** Acciones habituales en el pasado = IMPPERFECTO, no pretérito
+**Regla:** Acciones habituales en el pasado = IMPERFECTO, no pretérito
 
 ### Error 2: Pretérito perfecto vs. Pretérito indefinido
 
@@ -83,7 +83,7 @@ Esta lista presenta los errores más frecuentes que cometen los estudiantes de e
 ❌ "No **creo** que él **viene**."
 ✅ "No **creo** que él **venga**."
 
-**Regla:** Expresiones de duda, negación, o subjective opinion → SUBJUNTIVO
+**Regla:** Expresiones de duda, negación, o opinión subjetiva → SUBJUNTIVO
 
 ### Error 2: Después de "cuando" con sentido futuro
 
@@ -136,12 +136,12 @@ Esta lista presenta los errores más frecuentes que cometen los estudiantes de e
 | Palabra en inglés | No significa | Significa realmente |
 |-------------------|--------------|---------------------|
 | **Actual** | Current/real | **Real/verdadero** → Actual = **actual** (current) |
-| **Assist** | Ayudar | **Attender** → Asistir = **attend** |
+| **Assist** | Ayudar | **Attend** → Asistir = **attend** |
 | **Career** | Carrera de coche | **Profession/trabajo** → Carrera = **race** or **academic career** |
 | **Carpeta** | Carpet (alfombra) | **Folder** → Carpet = **alfombra** |
-| **Embarazada** | Embarrassed | **Pregnant** → Embarrassed = **avergonzada/verguenza** |
+| **Embarazada** | Embarrassed | **Pregnant** → Embarrassed = **avergonzada/vergüenza** |
 | **Éxito** | Exit | **Success** → Exit = **salida** |
-| **Fabrica** | Fabric | **Factory** → Fabric = **tela** |
+| **Fábrica** | Fabric | **Factory** → Fabric = **tela** |
 | **Introduce** | Introduce (personas) | **Present** → Introduce = **introducir/insertar** |
 | **Librería** | Library | **Bookstore** → Library = **biblioteca** |
 | **Realizar** | Realize (darse cuenta) | **Do/carry out** → Realize = **darse cuenta/entender** |
@@ -153,25 +153,25 @@ Esta lista presenta los errores más frecuentes que cometen los estudiantes de e
 ### 2.2 Palabras que Se Confunden
 
 ### Por vs. Para
-- **POR** = causa, medio, duración approximate, intercambio
-  - "Te **por** ayuda" (gracias por)
+- **POR** = causa, medio, duración aproximada, intercambio
+  - "Gracias **por** tu ayuda"
   - "**Por** teléfono" (medio)
-  - "**Por** dos horas" (duración approximate)
+  - "**Por** dos horas" (duración aproximada)
 
-- **PARA** = destino, propósito, receipient, deadline
+- **PARA** = destino, propósito, destinatario, fecha límite
   - "Voy **para** Madrid" (destino)
-  - "Es **para** ti" (recipient)
-  - "**Para** el viernes" (deadline)
+  - "Es **para** ti" (destinatario)
+  - "**Para** el viernes" (fecha límite)
 
 ### Muy vs. Mucho
-- **MUY** + adjetivo/adv
+- **MUY** + adjetivo/adverbio
   - "Es **muy** inteligente" ❌ "Es muy inteligente**a**"
 
 - **MUCHO** + verbo/sustantivo
-  - "Te **mucho**" ❌ "Te **quiero mucho**" (verbo)
+  - "Te quiero" (correcto) / "Te quiero mucho" (énfasis)
 
 ### Tan vs. Tanto
-- **TAN** + adjetivo/adv
+- **TAN** + adjetivo/adverbio
   - "Es **tan** alto"
 
 - **TANTO** + sustantivo
@@ -196,18 +196,18 @@ Esta lista presenta los errores más frecuentes que cometen los estudiantes de e
 ### 3.1 Sonidos Difíciles
 
 ### B vs. V
-- En español estándar, B y V suenan IGUAL (bilabial fricativa)
-- ❌ "Vo" frenó" ❌ "Be"一个好的
-- ✅ "Vo" frenó" ✅ "Be"一个好的 (ambos suenan igual)
+- En español estándar, **B** y **V** suenan prácticamente igual (fonema /b/ con realizaciones [b] y [β]).
+- ❌ Pronunciarlas como sonidos totalmente distintos (como en inglés).
+- ✅ Pronunciarlas con el mismo valor fonético del español.
 
 ### H (no se pronuncia)
 - ❌ "**h**ablo" (con sonido de h)
-- ✅ "ablo" (la h es muda)
+- ✅ "hablo" (la **h** no se pronuncia)
 
 ### LL vs. Y
 - En español estándar, LL e Y suelen sonar igual
 - ❌ "**y**amar" ❌ "**ll**amar" (diferentes)
-- ✅ Ambos suelen sonar como "y" en "yes"
+- ✅ En gran parte del mundo hispánico suenan igual (yeísmo).
 
 ### R vs. RR
 - **R** suave (una vibración simple): "pero", "cara"
@@ -224,7 +224,7 @@ Esta lista presenta los errores más frecuentes que cometen los estudiantes de e
 
 2. **Llanas/Graves** (acento en penúltima sílaba):
    - Llevan tilde si NO terminan en N, S o vocal
-   - "**á**rbol", "cán**cer**", "difí**cil**"
+   - "**á**rbol", "cáncer", "difícil"
 
 3. **Esdrújulas** (acento en antepenúltima sílaba):
    - **SIEMPRE** llevan tilde
@@ -238,7 +238,7 @@ Esta lista presenta los errores más frecuentes que cometen los estudiantes de e
 
 ### Sujeto - Verbo - Objeto
 ❌ "El libro compré."
-✅ "Compré el libro." (o "El libro lo compré" si enfatizas el objeto)
+✅ "Compré el libro." (orden neutro en español).
 
 ### Adjetivos después de sustantivos
 ❌ "El **rojo** coche"
@@ -263,9 +263,9 @@ Esta lista presenta los errores más frecuentes que cometen los estudiantes de e
 ### 4.3 Oraciones Subordinadas
 
 ❌ "Porque es inteligente, todos le respetan."
-✅ "Todos le respetan **porque** es inteligente." (en español estándar, "porque" va generalmente al final)
+✅ "Todos le respetan porque es inteligente."
 
-**Excepción:** Para énfasis o en contextos muy formales, se puede invertir
+**Nota:** También es posible anteponer la subordinada por razones discursivas: "Porque es inteligente, todos le respetan".
 
 ---
 
@@ -275,18 +275,18 @@ Esta lista presenta los errores más frecuentes que cometen los estudiantes de e
 
 ### Por eso vs. Por lo que
 ❌ "Estudió **por eso**, **por eso** aprobó."
-✅ "Estudió **por lo que**, **por lo tanto** aprobó."
+✅ "Estudió mucho, por lo tanto aprobó."
 
 **Regla:**
-- **"Por eso"** = "That's why" (resultado)
-- **"Por lo tanto"** = "Therefore" (conclusión formal)
+- **"Por eso"** = resultado
+- **"Por lo tanto"** = conclusión formal
 
 ### Sin embargo vs. No obstante
-❌ "**Sin embargo**, llueve."
-✅ "**No obstante**", llueve." (contexto específico)
+❌ "Llueve. Sin embargo." (uso incompleto del conector)
+✅ "Llueve; sin embargo, saldré." / "No obstante, saldré." (contraste correcto)
 
 **Regla:**
-- **"Sin embargo"** = contrast general
+- **"Sin embargo"** = contraste general
 - **"No obstante"** = más formal, concesión
 
 ---
@@ -340,7 +340,7 @@ Antes de hablar, revisa:
 
 ### Ejercicio 1: Identifica y corrige
 
-1. "Soy de acuerdo con tú opinion."
+1. "Soy de acuerdo con tu opinión."
    Corrección: _________________________
 
 2. "Cuando era niño, fui a la escuela todos los días."
@@ -361,7 +361,7 @@ Antes de hablar, revisa:
 
 1. "(Soy/Estoy) muy cansado hoy."
 2. "La casa (es/está) muy grande."
-3. "No (creo/creo que) sea fácil."
+3. "No creo que sea fácil."
 4. "(Por/Para) mañana, lo terminaré."
 5. "Es (muy/mucho) importante."
 
