@@ -66,7 +66,7 @@ Mantener un "monitor interno" activo mientras hablas, escuchando tu propio discu
 
 ### Paso 1: Conciencia de patrones de error
 Identifica tus errores más frecuentes:
-- ¿Tierras verbales?
+- ¿Tiempos verbales?
 - ¿Ser/Estar?
 - ¿Subjuntivo?
 - ¿Pronombres?
@@ -75,7 +75,7 @@ Identifica tus errores más frecuentes:
 No intentes corregir todo simultáneamente. Enfócate:
 - **Semana 1**: Solo ser/estar
 - **Semana 2**: Solo subjuntivo
-- **Semana 3**: solo pronombres
+- **Semana 3**: Solo pronombres
 
 ### Paso 3: Auto-preguntas mientras hablas
 - "¿Debería usar subjuntivo aquí?"
