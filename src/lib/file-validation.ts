@@ -70,9 +70,22 @@ export const FILE_TYPES = {
   },
   MOV: {
     mime: ['video/quicktime'],
-    signature: [0x00, 0x00, 0x00, 0x14, 0x66, 0x74, 0x79, 0x70] as number[], // ftyp
+    // ftyp box: bytes 0-3 are the box size (varies by encoder), bytes 4-7 are the "ftyp" fourcc
+    // Use signatureOffset=4 so we match only the fourcc, which is constant
+    signature: [0x66, 0x74, 0x79, 0x70] as number[], // "ftyp"
+    signatureOffset: 4,
     maxSize: 100 * 1024 * 1024, // 100MB
     category: 'video'
+  },
+
+  // Audio - M4A/AAC (Safari recordings)
+  MP4_AUDIO: {
+    mime: ['audio/mp4', 'audio/aac', 'audio/x-m4a'],
+    // Same ftyp box structure as MOV/MP4 — bytes 4-7 are the "ftyp" fourcc
+    signature: [0x66, 0x74, 0x79, 0x70] as number[], // "ftyp"
+    signatureOffset: 4,
+    maxSize: 25 * 1024 * 1024, // 25MB
+    category: 'audio'
   },
 
   // Documents
@@ -123,6 +136,10 @@ export function validateFileSignature(buffer: Buffer, mimeType: string): boolean
     return false
   }
 
+  // Some types (MOV, MP4_AUDIO) have their magic bytes at a non-zero offset.
+  // signatureOffset defaults to 0 for types that don't declare it.
+  const offset = (fileType as unknown as { signatureOffset?: number }).signatureOffset ?? 0
+
   // Get the signature(s) for this file type
   const signatures = fileType.signature
 
@@ -130,11 +147,12 @@ export function validateFileSignature(buffer: Buffer, mimeType: string): boolean
   if (Array.isArray(signatures[0])) {
     // Multiple possible signatures
     return (signatures as number[][]).some(sig =>
-      buffer.subarray(0, sig.length).equals(Buffer.from(sig))
+      buffer.subarray(offset, offset + sig.length).equals(Buffer.from(sig))
     )
   } else {
     // Single signature
-    return buffer.subarray(0, signatures.length).equals(Buffer.from(signatures as number[]))
+    const sig = signatures as number[]
+    return buffer.subarray(offset, offset + sig.length).equals(Buffer.from(sig))
   }
 }
 

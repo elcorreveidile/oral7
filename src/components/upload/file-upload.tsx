@@ -74,6 +74,10 @@ export function FileUpload({
       "audio/wav",
       "audio/mpeg",
       "audio/webm",
+      // Safari records as MP4/AAC
+      "audio/mp4",
+      "audio/aac",
+      "audio/x-m4a",
       "video/mp4",
       "video/webm",
       "video/quicktime",
@@ -153,8 +157,22 @@ export function FileUpload({
     }
   }
 
-  const removeFile = (index: number) => {
+  const removeFile = async (index: number) => {
+    const file = uploadedFiles[index]
+
+    // Optimistically remove from UI
     setUploadedFiles((prev) => prev.filter((_, i) => i !== index))
+
+    // Delete from server so storage isn't leaked
+    try {
+      await fetch("/api/upload", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: file.url }),
+      })
+    } catch {
+      // Non-critical: file may already be gone or URL may be local in dev
+    }
   }
 
   const getAcceptedTypes = () => {

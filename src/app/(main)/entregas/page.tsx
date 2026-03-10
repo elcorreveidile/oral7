@@ -7,7 +7,7 @@ import { Upload, FileText, CheckCircle, AlertCircle } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { TaskSubmission } from "@/components/upload/task-submission"
 import { formatDateSpanish } from "@/lib/utils"
 import { useToast } from "@/components/ui/use-toast"
@@ -175,49 +175,25 @@ export default function EntregasPage() {
                     )}
                   </div>
 
-                  <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button
-                        onClick={() => setSelectedAssignment(assignment)}
-                        variant={hasSubmission ? "outline" : "default"}
-                      >
-                        {hasSubmission ? (
-                          <>
-                            <Upload className="mr-2 h-4 w-4" />
-                            Añadir más
-                          </>
-                        ) : (
-                          <>
-                            <Upload className="mr-2 h-4 w-4" />
-                            Subir entrega
-                          </>
-                        )}
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-2xl">
-                      <DialogHeader>
-                        <DialogTitle>Subir entrega - Sesión {selectedAssignment?.sessionNumber}</DialogTitle>
-                        <DialogDescription>
-                          {selectedAssignment?.sessionTitle}
-                        </DialogDescription>
-                      </DialogHeader>
-
-                      {/* Show task instructions if available */}
-                      {selectedAssignment?.taskInstructions && (
-                        <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                          <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">Instrucciones:</p>
-                          <p className="text-sm text-blue-800 dark:text-blue-200 whitespace-pre-wrap">{selectedAssignment.taskInstructions}</p>
-                        </div>
-                      )}
-
-                      <TaskSubmission
-                        taskId={selectedAssignment?.taskId || ""}
-                        taskType="ANY"
-                        onSubmit={handleSubmit}
-                        submitLabel="Guardar entrega"
-                      />
-                    </DialogContent>
-                  </Dialog>
+                  <Button
+                    onClick={() => {
+                      setSelectedAssignment(assignment)
+                      setDialogOpen(true)
+                    }}
+                    variant={hasSubmission ? "outline" : "default"}
+                  >
+                    {hasSubmission ? (
+                      <>
+                        <Upload className="mr-2 h-4 w-4" />
+                        Añadir más
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="mr-2 h-4 w-4" />
+                        Subir entrega
+                      </>
+                    )}
+                  </Button>
                 </div>
 
                 {hasSubmission?.feedback && (
@@ -236,6 +212,34 @@ export default function EntregasPage() {
           )
         })}
       </div>
+
+      {/* Single shared dialog — rendered once outside the map to avoid all dialogs
+          opening at the same time when dialogOpen becomes true */}
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Subir entrega - Sesión {selectedAssignment?.sessionNumber}</DialogTitle>
+            <DialogDescription>
+              {selectedAssignment?.sessionTitle}
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Show task instructions if available */}
+          {selectedAssignment?.taskInstructions && (
+            <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <p className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-1">Instrucciones:</p>
+              <p className="text-sm text-blue-800 dark:text-blue-200 whitespace-pre-wrap">{selectedAssignment.taskInstructions}</p>
+            </div>
+          )}
+
+          <TaskSubmission
+            taskId={selectedAssignment?.taskId || ""}
+            taskType="ANY"
+            onSubmit={handleSubmit}
+            submitLabel="Guardar entrega"
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
