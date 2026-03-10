@@ -1,14 +1,14 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Video, Square, Play, Pause, Trash2, Loader2, Camera } from "lucide-react"
+import { Video, Square, Play, Pause, Trash2, Loader2, Camera, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/components/ui/use-toast"
 
 interface VideoRecorderProps {
-  onRecordingComplete?: (videoBlob: Blob, videoUrl: string) => void
+  onRecordingComplete?: (videoBlob: Blob, videoUrl: string) => Promise<void> | void
   maxDuration?: number // in seconds
   disabled?: boolean // Disable recording while uploading
 }
@@ -27,6 +27,9 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300, disabled
   const previewRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  // Track duration via ref to avoid calling stopRecording() inside a setState updater
+  const durationRef = useRef(0)
+  const pendingBlobRef = useRef<{ blob: Blob; url: string } | null>(null)
 
   const { toast } = useToast()
 
@@ -87,7 +90,8 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300, disabled
     }
 
     checkDevicesAvailability()
-  }, [toast])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Detect supported MIME type for video recording
   const getSupportedMimeType = () => {
@@ -171,13 +175,12 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300, disabled
         setVideoUrl(url)
         setStreamActive(false)
 
+        // Store blob for when user explicitly confirms upload
+        pendingBlobRef.current = { blob: videoBlob, url }
+
         // Stop stream to release camera
         if (streamRef.current) {
           streamRef.current.getTracks().forEach((track) => track.stop())
-        }
-
-        if (onRecordingComplete) {
-          onRecordingComplete(videoBlob, url)
         }
       }
 
@@ -185,15 +188,14 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300, disabled
       setIsRecording(true)
       setDuration(0)
 
-      // Start duration counter
+      // Start duration counter — use ref to avoid calling stopRecording() inside a setState updater
+      durationRef.current = 0
       intervalRef.current = setInterval(() => {
-        setDuration((prev) => {
-          if (prev >= maxDuration - 1) {
-            stopRecording()
-            return maxDuration
-          }
-          return prev + 1
-        })
+        durationRef.current += 1
+        setDuration(durationRef.current)
+        if (durationRef.current >= maxDuration) {
+          stopRecording()
+        }
       }, 1000)
     } catch (error) {
 
@@ -227,11 +229,23 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300, disabled
     setIsPlaying(!isPlaying)
   }
 
+  const confirmRecording = async () => {
+    if (pendingBlobRef.current && onRecordingComplete) {
+      setUploading(true)
+      try {
+        await onRecordingComplete(pendingBlobRef.current.blob, pendingBlobRef.current.url)
+      } finally {
+        setUploading(false)
+      }
+    }
+  }
+
   const deleteRecording = () => {
     if (videoUrl) {
       URL.revokeObjectURL(videoUrl)
       setVideoUrl(null)
     }
+    pendingBlobRef.current = null
     setDuration(0)
     setIsPlaying(false)
   }
@@ -409,6 +423,24 @@ export function VideoRecorder({ onRecordingComplete, maxDuration = 300, disabled
               <div className="text-center text-sm text-muted-foreground">
                 Duración: {formatTime(duration)}
               </div>
+
+              <Button
+                onClick={confirmRecording}
+                disabled={disabled || uploading}
+                className="w-full"
+              >
+                {uploading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Subiendo...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="mr-2 h-4 w-4" />
+                    Usar esta grabación
+                  </>
+                )}
+              </Button>
             </div>
           )}
 

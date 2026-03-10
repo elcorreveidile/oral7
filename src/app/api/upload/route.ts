@@ -20,6 +20,7 @@ import {
   FileScannerUnavailableError,
   scanFileForMalware,
 } from "@/lib/file-scanning"
+import { deleteSubmissionFiles } from "@/lib/submission-storage"
 
 export async function POST(request: NextRequest) {
   let userId: string | undefined
@@ -236,6 +237,44 @@ export async function POST(request: NextRequest) {
         error: "Error al procesar el archivo",
         details: sanitizedMessage
       },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+
+    if (!session) {
+      return NextResponse.json(
+        { error: "No autorizado" },
+        { status: 401 }
+      )
+    }
+
+    const body = await request.json().catch(() => null)
+    const url = body?.url
+
+    if (!url || typeof url !== "string") {
+      return NextResponse.json(
+        { error: "URL de archivo no proporcionada" },
+        { status: 400 }
+      )
+    }
+
+    const result = await deleteSubmissionFiles([{ url }])
+
+    if (result.failed > 0) {
+      console.warn(`[Upload DELETE] Failed to delete file for user ${session.user.id}:`, result.failures)
+      // Return success anyway — the file may already be gone or the URL may be local
+    }
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error(`[Upload DELETE Error]:`, error)
+    return NextResponse.json(
+      { error: "Error al eliminar el archivo" },
       { status: 500 }
     )
   }

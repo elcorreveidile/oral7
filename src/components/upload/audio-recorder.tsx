@@ -8,7 +8,7 @@ import { Progress } from "@/components/ui/progress"
 import { useToast } from "@/components/ui/use-toast"
 
 interface AudioRecorderProps {
-  onRecordingComplete?: (audioBlob: Blob, audioUrl: string) => void
+  onRecordingComplete?: (audioBlob: Blob, audioUrl: string) => Promise<void> | void
   maxDuration?: number // in seconds
   disabled?: boolean // Disable recording while uploading
 }
@@ -25,6 +25,8 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
   const audioChunksRef = useRef<Blob[]>([])
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  // Track duration via ref to avoid calling stopRecording() inside a setState updater
+  const durationRef = useRef(0)
 
   const { toast } = useToast()
 
@@ -66,7 +68,8 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
     }
 
     checkMicAvailability()
-  }, [toast])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Detect supported MIME type for audio recording
   // Order matters: prioritize best quality formats first
@@ -165,15 +168,14 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
       setIsRecording(true)
       setDuration(0)
 
-      // Start duration counter
+      // Start duration counter — use ref to avoid calling stopRecording() inside a setState updater
+      durationRef.current = 0
       intervalRef.current = setInterval(() => {
-        setDuration((prev) => {
-          if (prev >= maxDuration - 1) {
-            stopRecording()
-            return maxDuration
-          }
-          return prev + 1
-        })
+        durationRef.current += 1
+        setDuration(durationRef.current)
+        if (durationRef.current >= maxDuration) {
+          stopRecording()
+        }
       }, 1000)
     } catch (error: any) {
 
@@ -229,9 +231,14 @@ export function AudioRecorder({ onRecordingComplete, maxDuration = 300, disabled
     setIsPlaying(false)
   }
 
-  const confirmRecording = () => {
+  const confirmRecording = async () => {
     if (pendingBlobRef.current && onRecordingComplete) {
-      onRecordingComplete(pendingBlobRef.current.blob, pendingBlobRef.current.url)
+      setUploading(true)
+      try {
+        await onRecordingComplete(pendingBlobRef.current.blob, pendingBlobRef.current.url)
+      } finally {
+        setUploading(false)
+      }
     }
   }
 
