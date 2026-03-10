@@ -103,7 +103,8 @@ export function TaskSubmission({
               <TabsContent value="audio" className="mt-6">
                 <AudioRecorder
                   onRecordingComplete={async (blob) => {
-                    const file = new File([blob], `grabacion-${Date.now()}.webm`, { type: "audio/webm" })
+                    const ext = getExtensionForBlob(blob)
+                    const file = new File([blob], `grabacion-${Date.now()}${ext}`, { type: blob.type })
                     await uploadFile(file)
                   }}
                   disabled={uploadStatus === "uploading"}
@@ -113,7 +114,8 @@ export function TaskSubmission({
               <TabsContent value="video" className="mt-6">
                 <VideoRecorder
                   onRecordingComplete={async (blob) => {
-                    const file = new File([blob], `grabacion-${Date.now()}.webm`, { type: "video/webm" })
+                    const ext = getExtensionForBlob(blob)
+                    const file = new File([blob], `grabacion-${Date.now()}${ext}`, { type: blob.type })
                     await uploadFile(file)
                   }}
                   disabled={uploadStatus === "uploading"}
@@ -135,7 +137,8 @@ export function TaskSubmission({
             {taskType === "AUDIO_RECORDING" && (
               <AudioRecorder
                 onRecordingComplete={async (blob) => {
-                  const file = new File([blob], `grabacion-${Date.now()}.webm`, { type: "audio/webm" })
+                  const ext = getExtensionForBlob(blob)
+                  const file = new File([blob], `grabacion-${Date.now()}${ext}`, { type: blob.type })
                   await uploadFile(file)
                 }}
                 disabled={uploadStatus === "uploading"}
@@ -145,7 +148,8 @@ export function TaskSubmission({
             {taskType === "VIDEO_RECORDING" && (
               <VideoRecorder
                 onRecordingComplete={async (blob) => {
-                  const file = new File([blob], `grabacion-${Date.now()}.webm`, { type: "video/webm" })
+                  const ext = getExtensionForBlob(blob)
+                  const file = new File([blob], `grabacion-${Date.now()}${ext}`, { type: blob.type })
                   await uploadFile(file)
                 }}
                 disabled={uploadStatus === "uploading"}
@@ -220,6 +224,21 @@ export function TaskSubmission({
       </CardContent>
     </Card>
   )
+
+  function getExtensionForBlob(blob: Blob): string {
+    const type = blob.type.split(";")[0].trim()
+    const map: Record<string, string> = {
+      "audio/webm": ".webm",
+      "audio/ogg": ".ogg",
+      "audio/mp4": ".mp4",
+      "audio/aac": ".aac",
+      "audio/mpeg": ".mp3",
+      "video/webm": ".webm",
+      "video/mp4": ".mp4",
+      "video/quicktime": ".mov",
+    }
+    return map[type] ?? ".webm"
+  }
 
   async function uploadFile(file: File) {
     setUploadStatus("uploading")
