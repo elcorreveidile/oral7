@@ -113,7 +113,7 @@ export default function CalendarioPage() {
               <FileText className="h-8 w-8 text-granada-600 shrink-0" />
               <div className="flex-1">
                 <p className="font-medium">Grupo 0702</p>
-                <p className="text-sm text-muted-foreground">Lunes y jueves · 13:00–14:30 · Aula A8</p>
+                <p className="text-sm text-muted-foreground">Martes y jueves · 13:00–14:30 · Aula A8</p>
               </div>
               <Badge variant="granada">PDF</Badge>
             </a>
@@ -125,7 +125,7 @@ export default function CalendarioPage() {
               <FileText className="h-8 w-8 text-granada-600 shrink-0" />
               <div className="flex-1">
                 <p className="font-medium">Grupo 0703</p>
-                <p className="text-sm text-muted-foreground">Lunes y jueves · 10:00–11:30 · Aula A24</p>
+                <p className="text-sm text-muted-foreground">Martes y jueves · 10:00–11:30 · Aula A24</p>
               </div>
               <Badge variant="granada">PDF</Badge>
             </a>
