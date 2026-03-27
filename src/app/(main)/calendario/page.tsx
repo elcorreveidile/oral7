@@ -101,21 +101,35 @@ export default function CalendarioPage() {
             <FileText className="h-5 w-5" />
             Programación del curso
           </CardTitle>
-          <CardDescription>Guía docente oficial de la asignatura</CardDescription>
+          <CardDescription>Guía docente oficial · Producción e Interacción Oral en Español · Nivel 7 · Curso 2025-2026</CardDescription>
         </CardHeader>
         <CardContent>
-          <a
-            href="/resources/guia-docente-piosp-nivel7.pdf"
-            download
-            className="flex items-center gap-3 p-3 rounded-lg bg-granada-50 dark:bg-granada-950/30 hover:bg-granada-100 dark:hover:bg-granada-950/50 transition-colors"
-          >
-            <FileText className="h-8 w-8 text-granada-600 shrink-0" />
-            <div className="flex-1">
-              <p className="font-medium">Producción e Interacción Oral en Español · Nivel 7</p>
-              <p className="text-sm text-muted-foreground">Guía docente · Curso 2025-2026 · CEH · Grupo 0702</p>
-            </div>
-            <Badge variant="granada">PDF</Badge>
-          </a>
+          <div className="space-y-2">
+            <a
+              href="/resources/guia-docente-piosp-nivel7-grupo0702.pdf"
+              download
+              className="flex items-center gap-3 p-3 rounded-lg bg-granada-50 dark:bg-granada-950/30 hover:bg-granada-100 dark:hover:bg-granada-950/50 transition-colors"
+            >
+              <FileText className="h-8 w-8 text-granada-600 shrink-0" />
+              <div className="flex-1">
+                <p className="font-medium">Grupo 0702</p>
+                <p className="text-sm text-muted-foreground">Lunes y jueves · 13:00–14:30 · Aula A8</p>
+              </div>
+              <Badge variant="granada">PDF</Badge>
+            </a>
+            <a
+              href="/resources/guia-docente-piosp-nivel7-grupo0703.pdf"
+              download
+              className="flex items-center gap-3 p-3 rounded-lg bg-granada-50 dark:bg-granada-950/30 hover:bg-granada-100 dark:hover:bg-granada-950/50 transition-colors"
+            >
+              <FileText className="h-8 w-8 text-granada-600 shrink-0" />
+              <div className="flex-1">
+                <p className="font-medium">Grupo 0703</p>
+                <p className="text-sm text-muted-foreground">Lunes y jueves · 10:00–11:30 · Aula A24</p>
+              </div>
+              <Badge variant="granada">PDF</Badge>
+            </a>
+          </div>
         </CardContent>
       </Card>
 
