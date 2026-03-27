@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
-import { Calendar, BookOpen, GraduationCap } from "lucide-react"
+import { Calendar, BookOpen, GraduationCap, FileText } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
@@ -93,6 +93,31 @@ export default function CalendarioPage() {
           Producción e interacción oral en español · Nivel C1
         </p>
       </div>
+
+      {/* Course guide */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            Programación del curso
+          </CardTitle>
+          <CardDescription>Guía docente oficial de la asignatura</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <a
+            href="/resources/guia-docente-piosp-nivel7.pdf"
+            download
+            className="flex items-center gap-3 p-3 rounded-lg bg-granada-50 dark:bg-granada-950/30 hover:bg-granada-100 dark:hover:bg-granada-950/50 transition-colors"
+          >
+            <FileText className="h-8 w-8 text-granada-600 shrink-0" />
+            <div className="flex-1">
+              <p className="font-medium">Producción e Interacción Oral en Español · Nivel 7</p>
+              <p className="text-sm text-muted-foreground">Guía docente · Curso 2025-2026 · CEH · Grupo 0702</p>
+            </div>
+            <Badge variant="granada">PDF</Badge>
+          </a>
+        </CardContent>
+      </Card>
 
       {/* Important dates */}
       <Card>
