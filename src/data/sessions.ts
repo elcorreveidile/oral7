@@ -2749,7 +2749,7 @@ export const sessionsData: SessionData[] = [
       { id: 'ck15-4', text: 'Tengo un plan de estudio' },
       { id: 'ck15-5', text: 'Me siento preparado/a' },
     ],
-    homeworkInstructions: "Graba un simulacro completo de examen parcial (10-12 min): monólogo sobre un evento histórico (3-4 min) + respuestas a preguntas de hipótesis (5-6 min). Autoevalúate con la rúbrica.",
+    homeworkInstructions: "Esta sesión no tiene actividad asignada. No hay que subir grabación.",
     resources: [
       { id: 'r15-1', title: 'Guía del examen parcial', type: 'PDF', url: '/resources/36-guia-examen-parcial.pdf', order: 1 },
       { id: 'r15-2', title: 'Rúbrica de evaluación', type: 'PDF', url: '/resources/37-rubrica-evaluacion.pdf', order: 2 },
