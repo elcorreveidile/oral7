@@ -5172,6 +5172,7 @@ export const sessionsData: SessionData[] = [
           ],
         },
         order: 1,
+        isModeBOnly: false,
       },
       {
         id: 'task-29-2',
@@ -5189,6 +5190,7 @@ export const sessionsData: SessionData[] = [
           ],
         },
         order: 2,
+        isModeBOnly: false,
       },
     ],
     checklistItems: [
