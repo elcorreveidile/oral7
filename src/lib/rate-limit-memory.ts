@@ -26,11 +26,11 @@ class MemoryRateLimiter {
    */
   private cleanup() {
     const now = Date.now()
-    for (const [key, entry] of this.store.entries()) {
+    this.store.forEach((entry, key) => {
       if (now > entry.resetTime) {
         this.store.delete(key)
       }
-    }
+    })
   }
 
   /**
