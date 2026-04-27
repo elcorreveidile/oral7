@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { TaskData } from "@/types"
 import { usePedagogicalMode } from "@/components/providers"
 import { Badge } from "@/components/ui/badge"
+import { sanitizeHtml } from "@/lib/sanitize"
 
 interface TaskInteractiveProps {
   task: TaskData
@@ -87,7 +88,7 @@ export function TaskInteractive({ task, onSubmit }: TaskInteractiveProps) {
       <div className="space-y-4">
         {task.content.items.map((item: any, index: number) => (
           <div key={item.id || index} className="space-y-2">
-            <p className="font-medium">{item.content.question}</p>
+            <p className="font-medium" dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.content.question || '', 'moderate') }} />
             <div className="grid gap-2 sm:grid-cols-2">
               {item.options.map((option: any, optIndex: number) => {
                 const isSelected = selectedAnswers[item.id] === option.id
@@ -141,7 +142,7 @@ export function TaskInteractive({ task, onSubmit }: TaskInteractiveProps) {
               <p className="text-lg">
                 {item.content.text.split("___").map((part: string, i: number, arr: string[]) => (
                   <span key={i}>
-                    {part}
+                    <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(part, 'moderate') }} />
                     {i < arr.length - 1 && (
                       <input
                         type="text"

@@ -1,9 +1,11 @@
 /**
  * Rate Limiting con Redis para Producción
  * Compatible con Railway Redis, Upstash Redis, o cualquier Redis estándar
+ * Incluye fallback en memoria cuando Redis no está disponible
  */
 
 import { NextResponse } from 'next/server'
+import { getMemoryRateLimiter } from './rate-limit-memory'
 
 // Cliente Redis (lazy load)
 let redisClient: any = null
@@ -204,9 +206,21 @@ export async function rateLimit(
   const operationTimeoutMs = options.timeoutMs ?? getDefaultOperationTimeoutMs()
   const redis = await getRedisClient()
 
-  // Por defecto fail-closed para rutas sensibles; login puede pedir fail-open controlado.
+  // Si Redis no está disponible, usar fallback en memoria
   if (!redis) {
-    return fallbackResult(config, onRedisError, 'redis_unavailable')
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[RateLimit] Redis no disponible, usando fallback en memoria')
+    }
+
+    // Usar rate limiting en memoria como fallback
+    const memoryLimiter = getMemoryRateLimiter()
+    const memoryResult = memoryLimiter.check(identifier, config.limit, config.window)
+
+    return {
+      ...memoryResult,
+      degraded: true,
+      reason: 'redis_unavailable'
+    }
   }
 
   try {
@@ -240,10 +254,23 @@ export async function rateLimit(
   } catch (error) {
     if (error instanceof RateLimitTimeoutError) {
       console.error('[RateLimit] Timeout:', error.message)
-      return fallbackResult(config, onRedisError, 'redis_timeout')
+    } else {
+      console.error('[RateLimit] Error:', error)
     }
-    console.error('[RateLimit] Error:', error)
-    return fallbackResult(config, onRedisError, 'redis_error')
+
+    // Fallback a rate limiting en memoria cuando Redis falla
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[RateLimit] Redis error, usando fallback en memoria')
+    }
+
+    const memoryLimiter = getMemoryRateLimiter()
+    const memoryResult = memoryLimiter.check(identifier, config.limit, config.window)
+
+    return {
+      ...memoryResult,
+      degraded: true,
+      reason: error instanceof RateLimitTimeoutError ? 'redis_timeout' : 'redis_error'
+    }
   }
 }
 
