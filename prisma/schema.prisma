@@ -15,23 +15,30 @@ datasource db {
 // ============================================
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String
-  password      String?   // Hash bcrypt - opcional para OAuth
-  image         String?
-  role          UserRole  @default(STUDENT)
-  twoFactorEnabled Boolean @default(false)
-  twoFactorSecret  String? // Secret TOTP cifrado
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                String               @id @default(dbgenerated("(gen_random_uuid())::text"))
+  email             String               @unique
+  name              String
+  password          String?
+  image             String?
+  role              UserRole             @default(STUDENT)
+  level             String?              @default("C2")
+  motivation        String?
+  active            Int?                 @default(1)
+  twoFactorEnabled  Boolean              @default(false)
+  twoFactorSecret   String?
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+  last_login        DateTime?            @db.Timestamp(6)
+  created_at        DateTime?            @default(now()) @db.Timestamp(6)
+  updated_at        DateTime?            @default(now()) @db.Timestamp(6)
 
   // Relaciones
-  attendances   Attendance[]
-  progress      UserProgress[]
-  checklistItems UserChecklistItem[]
-  submissions   Submission[]
-  auditLogs     AuditLog[]
+  attendances       Attendance[]
+  debateVotes       DebateVote[]
+  submissions       Submission[]
+  checklistItems    UserChecklistItem[]
+  progress          UserProgress[]
+  user_registrations user_registrations[]
 
   @@index([email])
   @@index([role])
@@ -45,12 +52,11 @@ enum UserRole {
 
 model PasswordResetToken {
   id        String   @id @default(cuid())
-  email     String   // Email del usuario que solicita el reset
-  token     String   @unique  // Token único para el reset
-  expiresAt DateTime // Fecha de expiración (generalmente 1 hora)
-
+  email     String
+  token     String   @unique
+  expiresAt DateTime
   createdAt DateTime @default(now())
-  usedAt    DateTime? // Cuándo se usó el token
+  usedAt    DateTime?
 
   @@index([email])
   @@index([token])
@@ -60,7 +66,6 @@ model PasswordResetToken {
 model AuditLog {
   id         String   @id @default(cuid())
   adminId    String
-  admin      User     @relation(fields: [adminId], references: [id], onDelete: Cascade)
   action     String
   entityType String
   entityId   String?
@@ -81,30 +86,26 @@ model AuditLog {
 
 model Session {
   id              String        @id @default(cuid())
-  sessionNumber   Int           @unique  // Número de sesión (1-27)
-  date            DateTime      // Fecha de la sesión
-  title           String        // Título de la sesión
-  subtitle        String?       // Subtítulo opcional
-  blockNumber     Int           // Bloque temático (1, 2 o 3)
-  blockTitle      String        // Título del bloque
-  isExamDay       Boolean       @default(false)  // Si es día de examen
-  examType        ExamType?     // Tipo de examen si aplica
+  sessionNumber   Int           @unique
+  date            DateTime
+  title           String
+  subtitle        String?
+  blockNumber     Int
+  blockTitle      String
+  isExamDay       Boolean       @default(false)
+  examType        ExamType?
 
-  // Contenido estructurado (JSON)
-  objectives      Json          // Array de objetivos
-  timing          Json          // Desglose temporal
-  dynamics        Json          // Dinámicas de aula
-
-  // Contenido adicional
-  grammarContent  Json?         // Contenido gramatical
-  vocabularyContent Json?       // Contenido de vocabulario
-  modeAContent    Json?         // Contenido Modo A (colaborativo)
-  modeBContent    Json?         // Contenido Modo B (analítico)
+  objectives      Json
+  timing          Json
+  dynamics        Json
+  grammarContent  Json?
+  vocabularyContent Json?
+  modeAContent    Json?
+  modeBContent    Json?
 
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
-  // Relaciones
   attendances     Attendance[]
   tasks           Task[]
   checklistItems  ChecklistItem[]
@@ -116,8 +117,8 @@ model Session {
 }
 
 enum ExamType {
-  PARTIAL   // Examen parcial
-  FINAL     // Examen final
+  PARTIAL
+  FINAL
 }
 
 // ============================================
@@ -125,36 +126,33 @@ enum ExamType {
 // ============================================
 
 model Task {
-  id              String      @id @default(cuid())
-  sessionId       String
-  session         Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  id          String      @id @default(cuid())
+  sessionId   String
+  title       String
+  description String?
+  type        TaskType
+  content     Json
+  order       Int
+  isModeBOnly Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
-  title           String      // Título de la tarea
-  description     String?     // Descripción
-  type            TaskType    // Tipo de tarea interactiva
-  content         Json        // Contenido de la tarea (preguntas, opciones, etc.)
-  order           Int         // Orden dentro de la sesión
-
-  isModeBOnly     Boolean     @default(false)  // Solo visible en Modo B
-
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-
-  submissions     Submission[]
+  submissions Submission[]
+  session     Session     @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@map("tasks")
 }
 
 enum TaskType {
-  MULTIPLE_CHOICE     // Selección múltiple
-  FILL_BLANKS         // Rellenar huecos
-  DRAG_DROP           // Arrastrar y soltar
-  MATCHING            // Emparejar
-  ORDERING            // Ordenar elementos
-  FREE_TEXT           // Texto libre
-  AUDIO_RECORDING     // Grabación de audio
-  VIDEO_RECORDING     // Grabación de vídeo
-  DOCUMENT_UPLOAD     // Subida de documentos
+  MULTIPLE_CHOICE
+  FILL_BLANKS
+  DRAG_DROP
+  MATCHING
+  ORDERING
+  FREE_TEXT
+  AUDIO_RECORDING
+  VIDEO_RECORDING
+  DOCUMENT_UPLOAD
 }
 
 // ============================================
@@ -162,21 +160,30 @@ enum TaskType {
 // ============================================
 
 model Submission {
-  id          String      @id @default(cuid())
-  userId      String
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  taskId      String
-  task        Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  id             String    @id @default(cuid())
+  userId         String
+  taskId         String
+  content        Json
+  score          Float?
+  feedback       String?
+  user_id        Int?
+  session_id     Int?
+  activity_id    String?
+  activity_title String?
+  word_count     Int?      @default(0)
+  status         String?   @default("pending")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  created_at     DateTime? @default(now()) @db.Timestamp(6)
+  updated_at     DateTime? @default(now()) @db.Timestamp(6)
 
-  content     Json        // Respuesta del estudiante
-  score       Float?      // Puntuación (si aplica)
-  feedback    String?     // Feedback del profesor
-
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  task           Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, taskId])
-  @@index([userId, taskId])
+  @@index([session_id], map: "idx_submissions_session")
+  @@index([status], map: "idx_submissions_status")
+  @@index([user_id], map: "idx_submissions_user")
   @@map("submissions")
 }
 
@@ -185,14 +192,12 @@ model Submission {
 // ============================================
 
 model ChecklistItem {
-  id          String    @id @default(cuid())
-  sessionId   String
-  session     Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-  text        String    // Texto del ítem
-  order       Int       // Orden
-
-  userItems   UserChecklistItem[]
+  id        String              @id @default(cuid())
+  sessionId String
+  text      String
+  order     Int
+  session   Session             @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userItems UserChecklistItem[]
 
   @@map("checklist_items")
 }
@@ -200,15 +205,13 @@ model ChecklistItem {
 model UserChecklistItem {
   id              String        @id @default(cuid())
   userId          String
-  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   checklistItemId String
-  checklistItem   ChecklistItem @relation(fields: [checklistItemId], references: [id], onDelete: Cascade)
-
   isCompleted     Boolean       @default(false)
   completedAt     DateTime?
+  checklistItem   ChecklistItem @relation(fields: [checklistItemId], references: [id], onDelete: Cascade)
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, checklistItemId])
-  @@index([userId, checklistItemId])
   @@map("user_checklist_items")
 }
 
@@ -217,17 +220,15 @@ model UserChecklistItem {
 // ============================================
 
 model Resource {
-  id          String        @id @default(cuid())
-  sessionId   String
-  session     Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-  title       String        // Título del recurso
-  description String?       // Descripción o instrucciones (opcional)
-  type        ResourceType  // Tipo de recurso
-  url         String        // URL o path del archivo
-  order       Int           // Orden
-
-  createdAt   DateTime      @default(now())
+  id        String       @id @default(cuid())
+  sessionId String
+  title     String
+  description String?
+  type      ResourceType
+  url       String
+  order     Int
+  createdAt DateTime     @default(now())
+  session   Session      @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   @@map("resources")
 }
@@ -245,25 +246,23 @@ enum ResourceType {
 // ============================================
 
 model Attendance {
-  id          String    @id @default(cuid())
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sessionId   String
-  session     Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-  registeredAt DateTime @default(now())  // Momento del registro
-  method      AttendanceMethod  // Método de registro
+  id           String           @id @default(cuid())
+  userId       String
+  sessionId    String
+  registeredAt DateTime         @default(now())
+  method       AttendanceMethod
+  session      Session          @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, sessionId])
-  @@index([userId, sessionId])
   @@index([sessionId])
   @@map("attendances")
 }
 
 enum AttendanceMethod {
-  QR_SCAN     // Escaneado de QR
-  MANUAL_CODE // Código introducido manualmente
-  ADMIN       // Registrado por el profesor
+  QR_SCAN
+  MANUAL_CODE
+  ADMIN
 }
 
 // ============================================
@@ -271,14 +270,12 @@ enum AttendanceMethod {
 // ============================================
 
 model QRCode {
-  id          String    @id @default(cuid())
-  code        String    @unique  // Código único (6-8 caracteres)
-  sessionId   String    // Referencia a la sesión
-
-  expiresAt   DateTime  // Fecha de expiración
-  isActive    Boolean   @default(true)
-
-  createdAt   DateTime  @default(now())
+  id        String   @id @default(cuid())
+  code      String   @unique
+  sessionId String
+  expiresAt DateTime
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
 
   @@map("qr_codes")
 }
@@ -288,16 +285,15 @@ model QRCode {
 // ============================================
 
 model UserProgress {
-  id          String    @id @default(cuid())
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sessionId   String
-  session     Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-  viewedAt    DateTime?        // Cuándo vio la sesión por primera vez
-  timeSpent   Int       @default(0)  // Tiempo en la sesión (segundos)
-  lastAccess  DateTime  @default(now())
-  modePreference String  @default("A")  // Preferencia de modo (A o B)
+  id             String    @id @default(cuid())
+  userId         String
+  sessionId      String
+  viewedAt       DateTime?
+  timeSpent      Int       @default(0)
+  lastAccess     DateTime  @default(now())
+  modePreference String    @default("A")
+  session        Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, sessionId])
   @@map("user_progress")
@@ -308,12 +304,134 @@ model UserProgress {
 // ============================================
 
 model Settings {
-  id              String    @id @default("global")
-  currentSession  Int       @default(1)  // Sesión actual del curso
-  courseStartDate DateTime  // Fecha de inicio del curso
-  courseEndDate   DateTime  // Fecha de fin del curso
-
-  updatedAt       DateTime  @updatedAt
+  id              String   @id @default("global")
+  currentSession  Int      @default(1)
+  courseStartDate DateTime
+  courseEndDate   DateTime
+  updatedAt       DateTime @updatedAt
 
   @@map("settings")
+}
+
+// ============================================
+// MODELO DE VOTACIÓN DE DEBATES
+// ============================================
+
+model DebateTopic {
+  id          String       @id @default(cuid())
+  title       String
+  description String
+  category    String
+  order       Int
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  votes       DebateVote[]
+
+  @@map("debate_topics")
+}
+
+model DebateVote {
+  id        String      @id @default(cuid())
+  userId    String
+  topicId   String
+  rank      Int
+  createdAt DateTime    @default(now())
+
+  topic     DebateTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, topicId])
+  @@index([userId])
+  @@index([topicId])
+  @@map("debate_votes")
+}
+
+// ============================================
+// MODELOS ADICIONALES (LEGACY)
+// ============================================
+
+model course_sessions {
+  id         Int       @id
+  date       String
+  day        String
+  title      String
+  theme      Int?
+  workshop   Int?
+  contents   String?
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model feedback {
+  id            Int       @id @default(autoincrement())
+  submission_id Int       @unique
+  reviewer_id   String
+  feedback_text String
+  grade         String?
+  annotations   String?
+  created_at    DateTime? @default(now()) @db.Timestamp(6)
+  updated_at    DateTime? @default(now()) @db.Timestamp(6)
+
+  @@index([submission_id], map: "idx_feedback_submission")
+}
+
+model messages {
+  id           Int       @id @default(autoincrement())
+  from_user_id String
+  to_user_id   String
+  subject      String
+  content      String
+  read         Int?      @default(0)
+  parent_id    Int?
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
+
+  @@index([to_user_id], map: "idx_messages_to")
+}
+
+model notifications {
+  id         Int       @id @default(autoincrement())
+  user_id    String
+  type       String
+  title      String
+  message    String
+  read       Int?      @default(0)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+
+  @@index([user_id], map: "idx_notifications_user")
+}
+
+model registration_codes {
+  id                 String               @id
+  code               String               @unique
+  isActive           Boolean              @default(true)
+  maxUses            Int                  @default(1)
+  usedCount          Int                  @default(0)
+  description        String?
+  createdAt          DateTime             @default(now())
+  expiresAt          DateTime?
+  user_registrations user_registrations[]
+}
+
+model student_progress {
+  id           Int       @id @default(autoincrement())
+  user_id      String
+  session_id   Int
+  completed    Int?      @default(0)
+  completed_at DateTime? @db.Timestamp(6)
+  notes        String?
+
+  @@unique([user_id, session_id])
+  @@index([user_id], map: "idx_student_progress_user")
+}
+
+model user_registrations {
+  id                 String             @id
+  userId             String
+  codeId             String
+  usedAt             DateTime           @default(now())
+  registration_codes registration_codes @relation(fields: [codeId], references: [id], onDelete: Cascade)
+  users              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([codeId, userId])
 }

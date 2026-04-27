@@ -17,6 +17,7 @@ import {
   User,
   Users,
   X,
+  Vote,
 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
@@ -38,6 +39,7 @@ const studentNavItems = [
   { href: "/dashboard", label: "Inicio", icon: Home },
   { href: "/sesiones", label: "Sesiones", icon: BookOpen },
   { href: "/calendario", label: "Calendario", icon: Calendar },
+  { href: "/votacion-debates", label: "Votación", icon: Vote },
   { href: "/entregas", label: "Entregas", icon: Upload },
   { href: "/asistencia", label: "Asistencia", icon: QrCode },
 ]
@@ -46,6 +48,7 @@ const adminNavItems = [
   { href: "/admin", label: "Panel", icon: Home },
   { href: "/admin/sesiones", label: "Sesiones", icon: BookOpen },
   { href: "/admin/estudiantes", label: "Estudiantes", icon: Users },
+  { href: "/admin/debates/resultados", label: "Resultados", icon: Vote },
   { href: "/admin/asistencia", label: "Asistencia", icon: QrCode },
   { href: "/admin/entregas", label: "Entregas", icon: Upload },
   { href: "/admin/qr", label: "Generar QR", icon: QrCode },
