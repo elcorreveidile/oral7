@@ -70,7 +70,7 @@ export function verifyCSRFToken(token: string, storedHash: string): boolean {
  * }
  * ```
  */
-export async function csrfMiddleware(req: Request): Promise { valid: boolean; error?: string } {
+export async function csrfMiddleware(req: Request): Promise<{ valid: boolean; error?: string }> {
   try {
     // Verificar si viene de NextAuth (ya tiene CSRF protection)
     const sessionToken = req.headers.get('cookie')?.match(/next-auth\.session-token=([^;]+)/)?.[1]
