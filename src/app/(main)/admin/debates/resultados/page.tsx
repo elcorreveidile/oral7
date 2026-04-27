@@ -195,7 +195,7 @@ export default function DebateResultsPage() {
                     </h5>
                     <div className="grid grid-cols-4 gap-2">
                       {[1, 2, 3, 4].map(rank => {
-                        const votesForRank = topic.votes.filter(v => v.rank === rank);
+                        const votesForRank = topic.votes?.filter(v => v.rank === rank) || [];
                         return (
                           <div key={rank} className="bg-gray-100 p-2 rounded text-center">
                             <div className="text-lg font-bold text-gray-900">
