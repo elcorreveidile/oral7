@@ -498,6 +498,65 @@ export const updateChecklistSchema = z.object({
 export type UpdateChecklistInput = z.infer<typeof updateChecklistSchema>
 
 // ============================================
+// ESQUEMAS DE DEBATES
+// ============================================
+
+/**
+ * Esquema para voto individual en debates
+ */
+const voteItemSchema = z.object({
+  topicId: z
+    .string()
+    .min(1, "El ID del tema es obligatorio")
+    .uuid("Formato de ID de tema inválido"),
+  rank: z
+    .number()
+    .int("El rank debe ser un entero")
+    .min(1, "El rank mínimo es 1")
+    .max(4, "El rank máximo es 4"),
+})
+
+/**
+ * Esquema para registro de votos en debates
+ * Requiere exactamente 4 votos con ranks únicos (1, 2, 3, 4)
+ */
+export const debateVoteSchema = z.object({
+  votes: z
+    .array(voteItemSchema)
+    .length(4, "Debes seleccionar exactamente 4 temas")
+    .refine(
+      (votes) => {
+        const ranks = votes.map(v => v.rank).sort((a, b) => a - b)
+        return ranks[0] === 1 && ranks[1] === 2 && ranks[2] === 3 && ranks[3] === 4
+      },
+      "Los ranks deben ser 1, 2, 3 y 4 (sin repetir)"
+    )
+    .refine(
+      (votes) => {
+        const topicIds = votes.map(v => v.topicId)
+        const uniqueIds = new Set(topicIds)
+        return uniqueIds.size === topicIds.length
+      },
+      "No puedes votar por el mismo tema más de una vez"
+    ),
+})
+
+export type DebateVoteInput = z.infer<typeof debateVoteSchema>
+
+/**
+ * Esquema para query params de resultados de debates
+ */
+export const debateResultsQuerySchema = z.object({
+  detailed: z
+    .string()
+    .optional()
+    .transform(val => val === 'true')
+    .optional(),
+})
+
+export type DebateResultsQueryInput = z.infer<typeof debateResultsQuerySchema>
+
+// ============================================
 // EXPORTACIÓN DE TODOS LOS ESQUEMAS
 // ============================================
 
@@ -530,6 +589,9 @@ export const schemas = {
 
   // Contact
   contactForm: contactFormSchema,
+
+  // Debates
+  debateVote: debateVoteSchema,
 
   // Progress
   updateProgress: updateProgressSchema,

@@ -18,6 +18,17 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const detailed = searchParams.get('detailed') === 'true';
 
+    // VALIDAR QUE SOLO ADMINS PUEDEN VER RESULTADOS DETALLADOS
+    if (detailed && session.user.role !== 'ADMIN') {
+      return NextResponse.json(
+        {
+          error: 'Unauthorized',
+          message: 'Solo los administradores pueden ver los resultados detallados con información de votantes'
+        },
+        { status: 403 }
+      );
+    }
+
     // Obtener todos los temas con sus votos
     const topics = await prisma.debateTopic.findMany({
       where: { isActive: true },
