@@ -1,0 +1,46 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{sectsty}
+\usepackage{titlesec}
+\usepackage{tikz}
+\usepackage{array}
+
+\geometry{
+    a4paper,
+    total={170mm,247mm},
+    left=20mm,
+    top=18mm,
+    right=20mm,
+    bottom=20mm
+}
+
+% Sin números de página
+\pagestyle{empty}
+
+% Estilo de secciones con números en círculos
+\newcommand{\circled}[1]{%
+    \tikz[baseline=(char.base)]{%
+        \node[shape=circle,draw,inner sep=0.5pt,fill=black,text=white,font=\bfseries\footnotesize] (char) {#1};%
+    }%
+}
+
+% Formato de secciones
+\titleformat{\section}
+{\normalfont\Large\bfseries}
+{\circled{\thesection}}{0.5em}{}
+
+\titlespacing*{\section}{0pt}{12pt plus 2pt minus 2pt}{8pt plus 2pt minus 2pt}
+
+\titleformat{\subsection}
+{\normalfont\normalsize\bfseries}
+{}{0em}{}
+
+\titlespacing*{\subsection}{8pt plus 2pt minus 2pt}{4pt plus 2pt minus 2pt}{4pt plus 2pt minus 2pt}
+
+% Personalizar formato de títulos markdown
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\begin{document}
