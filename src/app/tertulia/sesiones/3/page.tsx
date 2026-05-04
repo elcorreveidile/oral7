@@ -36,7 +36,7 @@ export default function Sesion3Page() {
           <Badge variant="secondary" className="bg-stone-100 text-stone-700 border-stone-200">Martes 12 de mayo · 60 min</Badge>
         </div>
         <h1 className="text-3xl font-bold text-stone-900 mb-2">Refutación y discurso espontáneo</h1>
-        <p className="text-stone-600">Martes 12 de mayo de 2026, 60 minutos.</p>
+        <p className="text-stone-600">Martes 12 de mayo de 2026, 60 minutos. PIO 7 a las 10:00 · PIO 8 a las 13:00.</p>
       </div>
 
       <Separator className="mb-8 bg-amber-200/60" />

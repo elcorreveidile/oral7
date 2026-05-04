@@ -95,6 +95,7 @@ export default function TertuliaPage() {
             <div>
               <p className="text-xs text-stone-500">Participantes</p>
               <p className="text-sm font-semibold text-stone-800">22 estudiantes B2</p>
+              <p className="text-sm text-stone-700">PIO 7 (10:00) + PIO 8 (13:00)</p>
               <p className="text-sm text-stone-700">+ 5 cronistas (PE)</p>
             </div>
           </div>

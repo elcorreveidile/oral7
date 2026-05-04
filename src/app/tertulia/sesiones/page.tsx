@@ -64,7 +64,7 @@ export default function SesionesIndexPage() {
         </div>
         <h1 className="text-3xl font-bold text-stone-900 mb-3">Las cinco sesiones de preparación</h1>
         <p className="text-stone-600 leading-relaxed">
-          Del 5 al 19 de mayo, una semana de trabajo intensivo antes del debate en La Tertulia.
+          Del 5 al 19 de mayo. Cada sesión se imparte dos veces: PIO 7 a las 10:00 y PIO 8 a las 13:00.
         </p>
       </div>
 

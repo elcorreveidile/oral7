@@ -5,18 +5,18 @@ import { Separator } from "@/components/ui/separator"
 const BLOQUES = [
   {
     tiempo: "0 – 16 min",
-    titulo: "Debate 4 ensayado",
-    detalle: "Grupo B, segundo tema (o el que falte de la sesión anterior).",
+    titulo: "Debate pendiente (si procede)",
+    detalle: "Si en la sesión 4 no dio tiempo a repasar algún debate, se ensaya aquí.",
   },
   {
     tiempo: "16 – 35 min",
     titulo: "Preparación del debate final",
-    detalle: "Trabajo en grupos pequeños sobre subtemas del debate sobre La Tertulia y Granada 2031, incluida la cuestión “asociación con salario / socios voluntarios”. Cada grupo elabora 2 preguntas concretas para lanzar en el debate final.",
+    detalle: "Trabajo en grupos pequeños sobre subtemas del debate sobre La Tertulia y Granada 2031, incluida la cuestión de la asociación cultural (¿con salario o socios voluntarios?). Cada grupo elabora 2 preguntas concretas para lanzar en el debate final.",
   },
   {
     tiempo: "35 – 50 min",
     titulo: "Banco común de preguntas",
-    detalle: "Votación rápida de las mejores preguntas para el debate final. Designación de un moderador rotativo para el final.",
+    detalle: "Votación rápida de las mejores preguntas. Designación del moderador rotativo para el debate final.",
   },
   {
     tiempo: "50 – 58 min",
@@ -40,8 +40,8 @@ export default function Sesion5Page() {
           <Badge variant="secondary" className="bg-rose-100 text-rose-800 border-rose-200">Sesión 5 · Víspera</Badge>
           <Badge variant="secondary" className="bg-stone-100 text-stone-700 border-stone-200">Martes 19 de mayo · 60 min</Badge>
         </div>
-        <h1 className="text-3xl font-bold text-stone-900 mb-2">Debate 4 + preparación del final + logística</h1>
-        <p className="text-stone-600">Martes 19 de mayo de 2026, 60 minutos. Víspera del debate.</p>
+        <h1 className="text-3xl font-bold text-stone-900 mb-2">Debate pendiente + preparación del final + logística</h1>
+        <p className="text-stone-600">Martes 19 de mayo de 2026, 60 minutos. Víspera del debate. PIO 7 a las 10:00 · PIO 8 a las 13:00.</p>
       </div>
 
       <Separator className="mb-8 bg-amber-200/60" />
