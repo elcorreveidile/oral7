@@ -11,7 +11,7 @@ const BLOQUES = [
   {
     tiempo: "5 – 21 min",
     titulo: "Debate 1 ensayado",
-    detalle: "Grupo A, tema asignado.",
+    detalle: "Primer tema del grupo. Todos los roles activos.",
   },
   {
     tiempo: "21 – 22 min",
@@ -21,7 +21,7 @@ const BLOQUES = [
   {
     tiempo: "22 – 38 min",
     titulo: "Debate 2 ensayado",
-    detalle: "Grupo B, tema asignado.",
+    detalle: "Segundo tema del grupo. Todos los roles activos.",
   },
   {
     tiempo: "38 – 39 min",
@@ -30,8 +30,8 @@ const BLOQUES = [
   },
   {
     tiempo: "39 – 55 min",
-    titulo: "Debate 3 ensayado",
-    detalle: "Grupo A, segundo tema. Si el tiempo aprieta, pasa a la sesión 5.",
+    titulo: "Repaso dirigido",
+    detalle: "Vuelta a las fases que más costaron (cruce, cierre). Opcional: intercambio de roles.",
   },
   {
     tiempo: "55 – 60 min",
@@ -51,7 +51,7 @@ export default function Sesion4Page() {
           <Badge variant="secondary" className="bg-stone-100 text-stone-700 border-stone-200">Miércoles 13 de mayo · 60 min</Badge>
         </div>
         <h1 className="text-3xl font-bold text-stone-900 mb-2">Ensayo de los debates</h1>
-        <p className="text-stone-600">Miércoles 13 de mayo de 2026, 60 minutos.</p>
+        <p className="text-stone-600">Miércoles 13 de mayo de 2026, 60 minutos. PIO 7 a las 10:00 · PIO 8 a las 13:00.</p>
       </div>
 
       <Separator className="mb-8 bg-amber-200/60" />

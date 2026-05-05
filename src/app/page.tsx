@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { BookOpen, MessageSquare, Target, Users, Award, Zap, Clock, CheckCircle2, ArrowRight, GraduationCap, Mic } from 'lucide-react'
+import { BookOpen, MessageSquare, Target, Users, Award, Zap, Clock, CheckCircle2, ArrowRight, GraduationCap, Mic, Mic2 } from 'lucide-react'
 
 export default function LandingPage() {
   return (
@@ -29,8 +29,16 @@ export default function LandingPage() {
             <a href="#pricing" className="text-slate-600 hover:text-orange-600 transition-colors">
               Inscripción
             </a>
+            <Link href="/tertulia" className="flex items-center gap-1.5 text-amber-700 hover:text-amber-800 font-medium transition-colors">
+              <Mic2 className="h-3.5 w-3.5" />
+              Debates en La Tertulia
+            </Link>
           </nav>
           <div className="flex items-center gap-3">
+            <Link href="/tertulia" className="md:hidden flex items-center gap-1 text-xs text-amber-700 hover:text-amber-800 font-medium transition-colors">
+              <Mic2 className="h-3.5 w-3.5" />
+              Debates
+            </Link>
             <Link href="/login">
               <Button variant="ghost" size="sm" className="text-slate-600">
                 Iniciar sesión
