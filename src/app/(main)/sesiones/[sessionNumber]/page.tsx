@@ -2,8 +2,10 @@
 
 import { useParams } from "next/navigation"
 import { useEffect } from "react"
+import Link from "next/link"
 import { SessionMiniweb } from "@/components/miniweb/session-miniweb"
 import { getSessionData } from "@/data/sessions"
+import { Mic2 } from "lucide-react"
 
 export default function SessionPage() {
   const params = useParams()
@@ -88,5 +90,26 @@ export default function SessionPage() {
     )
   }
 
-  return <SessionMiniweb session={sessionData} />
+  return (
+    <>
+      {sessionNum === 28 && (
+        <div className="max-w-4xl mx-auto px-4 pt-6">
+          <Link
+            href="/tertulia"
+            className="flex items-center gap-3 rounded-xl border border-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 px-4 py-3 hover:border-amber-400 hover:shadow-sm transition-all group"
+          >
+            <div className="p-2 rounded-lg bg-amber-100 group-hover:bg-amber-200 transition-colors shrink-0">
+              <Mic2 className="h-4 w-4 text-amber-700" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-amber-800 leading-tight">Debates en La Tertulia</p>
+              <p className="text-xs text-amber-700/80 truncate">Dossier del proyecto · 20 mayo · Bar Cultural La Tertulia, Granada</p>
+            </div>
+            <span className="ml-auto text-amber-600 text-xs font-medium shrink-0 group-hover:underline">Ver →</span>
+          </Link>
+        </div>
+      )}
+      <SessionMiniweb session={sessionData} />
+    </>
+  )
 }
